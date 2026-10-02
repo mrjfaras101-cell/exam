@@ -12,6 +12,10 @@ on:
 permissions:
   contents: write   # لنشر الإصدار التجريبي مع ملف APK
 
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true   # دفعة جديدة تُلغي البناء القديم (توفير وقت المشغّل)
+
 jobs:
   apk:
     name: بناء ملف APK
@@ -37,7 +41,9 @@ jobs:
           cache: true
 
       - name: معلومات البيئة
-        run: flutter --version && dart --version
+        run: |
+          flutter --version && dart --version
+          mkdir -p /tmp/ci-logs        # مجلد سجلات الخطوات الحرجة (للتشخيص عند الفشل)
 
       - name: توليد مجلد أندرويد
         working-directory: app
@@ -59,9 +65,10 @@ jobs:
       - name: أيقونة التطبيق من الشعار
         working-directory: app
         run: |
+          set -o pipefail
           # الأيقونات مُولَّدة مسبقًا ومُلتزمة في assets/branding/icons
           # (لا نعتمد على أداة خارجية أثناء البناء)
-          python3 tool/install_app_icons.py
+          python3 tool/install_app_icons.py 2>&1 | tee /tmp/ci-logs/icons.log
 
       - name: فحوصات محرّك القراءة (Node + Python)
         run: |
@@ -79,16 +86,22 @@ jobs:
       - name: التحليل (flutter analyze)
         id: analyze
         working-directory: app
-        run: flutter analyze
+        run: |
+          set -o pipefail
+          flutter analyze 2>&1 | tee /tmp/ci-logs/analyze.log
 
       - name: الاختبارات (flutter test)
         id: test
         working-directory: app
-        run: flutter test --reporter expanded
+        run: |
+          set -o pipefail
+          flutter test --reporter expanded 2>&1 | tee /tmp/ci-logs/test.log
 
       - name: بناء APK
         working-directory: app
-        run: flutter build apk --release --no-tree-shake-icons
+        run: |
+          set -o pipefail
+          flutter build apk --release --no-tree-shake-icons 2>&1 | tee /tmp/ci-logs/build.log
 
       - name: تجهيز المخرجات
         run: |
@@ -125,6 +138,10 @@ jobs:
             --notes "$NOTES" \
             --prerelease \
             --target "$GITHUB_SHA"
+
+      - name: تقرير الفشل (سجلات مقروءة من واجهة GitHub)
+        if: failure()
+        run: python3 .github/scripts/ci_log_report.py
 
       - name: ملخص النتيجة
         if: always()

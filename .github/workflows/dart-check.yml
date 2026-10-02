@@ -1,0 +1,73 @@
+name: فحوص سريعة (تحليل + اختبارات Dart)
+
+# سير خفيف بلا أندرويد/بناء APK: يعطي نتيجة التحليل والاختبارات في دقائق،
+# بينما سير «بناء APK» يبني الحزمة الكاملة على مهل.
+on:
+  push:
+    branches: [arena/01a0fc3b-exam, main]
+    paths:
+      - 'app/lib/**'
+      - 'app/test/**'
+      - 'app/pubspec.yaml'
+      - 'app/analysis_options.yaml'
+      - '.github/workflows/dart-check.yml'
+      - '.github/scripts/ci_log_report.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dart-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: تحليل واختبارات
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: جلب المستودع
+        uses: actions/checkout@v4
+
+      - name: تهيئة Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: التبعيات
+        id: pubget
+        working-directory: app
+        run: |
+          mkdir -p /tmp/ci-logs
+          flutter pub get 2>&1 | tee /tmp/ci-logs/pubget.log
+
+      - name: التحليل (flutter analyze)
+        id: analyze
+        working-directory: app
+        run: |
+          set -o pipefail
+          flutter analyze 2>&1 | tee /tmp/ci-logs/analyze.log
+
+      - name: الاختبارات (flutter test)
+        id: test
+        working-directory: app
+        run: |
+          set -o pipefail
+          flutter test --reporter expanded 2>&1 | tee /tmp/ci-logs/test.log
+
+      - name: تقرير الفشل (سجلات مقروءة من واجهة GitHub)
+        if: failure()
+        run: python3 .github/scripts/ci_log_report.py
+
+      - name: الملخص
+        if: always()
+        run: |
+          {
+            echo "### فحوص سريعة"
+            echo "- التبعيات: ${{ steps.pubget.outcome }}"
+            echo "- التحليل: ${{ steps.analyze.outcome }}"
+            echo "- الاختبارات: ${{ steps.test.outcome }}"
+          } >> $GITHUB_STEP_SUMMARY
