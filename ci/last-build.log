@@ -1,14 +1,17 @@
-# سجل البناء — Fri Oct  2 12:07:31 UTC 2026
-الالتزام: e9c0303f08c20ae6e233c955641b57686800a1f2
+# سجل البناء — Fri Oct  2 12:15:45 UTC 2026
+الالتزام: ae10772ae78f951eb51a9324101b2bd7813bc076
 نتيجة التحليل: success | الاختبارات: success | البناء: failure
+
+## تعديلات compileSdk
+(لا يوجد سجل)
 
 ## flutter analyze (آخر 120 سطرًا)
 Analyzing app...                                                
-No issues found! (ran in 13.1s)
+No issues found! (ran in 14.8s)
 
 ## flutter test (آخر 120 سطرًا)
 00:00 +0: loading /home/runner/work/exam/exam/app/test/omr_engine_test.dart
-00:00 +0: /home/runner/work/exam/exam/app/test/grading_test.dart: ── التصحيح الأساسي ── كل الإجابات صحيحة = الدرجة الكاملة
+00:00 +0: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: قراءة سليمة: رمز الورقة + رقم الجلوس + كل الإجابات
 00:00 +1: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: قراءة سليمة: رمز الورقة + رقم الجلوس + كل الإجابات
 00:00 +2: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: قراءة سليمة: رمز الورقة + رقم الجلوس + كل الإجابات
 00:00 +3: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: قراءة سليمة: رمز الورقة + رقم الجلوس + كل الإجابات
@@ -29,8 +32,8 @@ No issues found! (ran in 13.1s)
 00:00 +18: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: قراءة سليمة: رمز الورقة + رقم الجلوس + كل الإجابات
 00:00 +19: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: ميل إضاءة + ضوضاء: القراءة نفسها
 00:00 +20: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: ورقة مقلوبة 180°: تُقرأ بالاتجاه الصحيح
-00:00 +21: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: تظليل باهت: يُقرأ مع وسم مراجعة (لا يُقرأ فراغًا)
-00:00 +22: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: تظليل مزدوج: وسم التباس ولا تخمين
+00:01 +21: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: تظليل باهت: يُقرأ مع وسم مراجعة (لا يُقرأ فراغًا)
+00:01 +22: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: تظليل مزدوج: وسم التباس ولا تخمين
 00:01 +23: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: ورقة مفتاح: بتّة المفتاح تُقرأ وتمنع احتساب درجة
 00:01 +24: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: دقة منخفضة: رفض واضح برسالة مفهومة
 00:01 +25: All tests passed!
@@ -82,6 +85,6 @@ Execution failed for task ':jni_flutter:checkReleaseAarMetadata'.
 > Run with --scan to get full insights from a Build Scan (powered by Develocity).
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 4m 15s
-Running Gradle task 'assembleRelease'...                          256.4s
+BUILD FAILED in 4m 41s
+Running Gradle task 'assembleRelease'...                          281.7s
 Gradle task assembleRelease failed with exit code 1
