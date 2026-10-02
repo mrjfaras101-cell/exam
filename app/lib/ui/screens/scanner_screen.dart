@@ -312,7 +312,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
                 if (c == null) return;
                 torchOn = !torchOn;
                 try {
-                  await c.setTorchMode(torchOn ? TorchMode.on : TorchMode.off);
+                  await c.setFlashMode(torchOn ? FlashMode.torch : FlashMode.off);
                 } catch (_) {
                   _snack('هذا الجهاز لا يدعم إضاءة الكاميرا');
                 }

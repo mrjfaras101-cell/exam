@@ -231,7 +231,7 @@ class SheetReader {
     final glareRatio = glareTotal == 0 ? 0.0 : glarePx / glareTotal;
 
     final quality = SheetQuality(
-      pxPerMm: pxPerMm, sharpness: sharpness, edgeWidthMm: edgeWidthMm,
+      pxPerMm: pxPerMm, sharpness: sharpness.round(), edgeWidthMm: edgeWidthMm,
       coverage: coverage, whiteRef: whiteRef, glareRatio: glareRatio, otsu: thr,
     );
 
@@ -271,7 +271,7 @@ class SheetReader {
       codeMargin = math.min(codeMargin, (codeFills[i] - th.codeThreshold).abs());
     }
     final serial = codeVal & ((1 << SheetGeometry.codeBits) - 1);
-    final isKeySheet = ((codeVal >> SheetGeometry.codeBit) & 1) == 1;
+    final isKeySheet = ((codeVal >> SheetGeometry.codeKeyBit) & 1) == 1;
 
     // شبكة رقم الجلوس
     final digitReadings = <DigitReading>[];

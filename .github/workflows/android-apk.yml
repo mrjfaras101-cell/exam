@@ -55,17 +55,21 @@ jobs:
         working-directory: app
         run: flutter pub get
 
-      - name: التحليل (تنبيهي)
+      - name: التحليل
         id: analyze
         continue-on-error: true
         working-directory: app
-        run: flutter analyze
+        run: |
+          set -o pipefail
+          flutter analyze 2>&1 | tee /tmp/analyze.log
 
-      - name: الاختبارات (تنبيهي)
+      - name: الاختبارات
         id: test
         continue-on-error: true
         working-directory: app
-        run: flutter test --reporter expanded
+        run: |
+          set -o pipefail
+          flutter test --reporter expanded 2>&1 | tee /tmp/test.log
 
       - name: بناء APK
         id: build
@@ -74,17 +78,35 @@ jobs:
           set -o pipefail
           flutter build apk --release --no-tree-shake-icons 2>&1 | tee /tmp/build.log
           
-      - name: نشر سجل البناء عند الفشل
-        if: failure()
+      - name: نشر السجلات في المستودع
+        if: always()
         run: |
           mkdir -p ci
-          { echo "الالتزام: $(git rev-parse HEAD)"; echo "التاريخ: $(date -u)"; echo "--- آخر 400 سطر من سجل البناء ---"; tail -400 /tmp/build.log; } > ci/last-build.log
+          {
+            echo "# سجل البناء — $(date -u)"
+            echo "الالتزام: $(git rev-parse HEAD)"
+            echo "نتيجة التحليل: ${{ steps.analyze.outcome }} | الاختبارات: ${{ steps.test.outcome }} | البناء: ${{ steps.build.outcome }}"
+            echo
+            echo "## flutter analyze (آخر 120 سطرًا)"
+            tail -120 /tmp/analyze.log 2>/dev/null || echo "(لا يوجد سجل)"
+            echo
+            echo "## flutter test (آخر 120 سطرًا)"
+            tail -120 /tmp/test.log 2>/dev/null || echo "(لا يوجد سجل)"
+            echo
+            echo "## flutter build apk (آخر 150 سطرًا)"
+            tail -150 /tmp/build.log 2>/dev/null || echo "(لا يوجد سجل)"
+          } > ci/last-build.log
+          wc -l ci/last-build.log
           git config user.name "arena-agent"
           git config user.email "agent@arena.ai"
           git add -f ci/last-build.log
-          git commit -m "CI: سجل فشل البناء [skip ci]"
-          git push origin HEAD:arena/01a0fc3b-exam
-          echo "تم نشر السجل في ci/last-build.log"
+          if git diff --cached --quiet; then
+            echo "لا تغيير في السجل — لا حاجة للنشر"
+          else
+            git commit -m "CI: تحديث سجل البناء [skip ci]"
+            git push origin HEAD:arena/01a0fc3b-exam
+            echo "تم نشر السجل في ci/last-build.log"
+          fi
 
       - name: تجهيز المخرجات
         run: |

@@ -184,33 +184,50 @@ class _ResultsTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
+    if (state.attempts.isEmpty) return const SizedBox.shrink();
     return Card(
       child: Column(children: [
         for (final a in state.attempts) ...[
-          ListTile(
-            dense: true,
-            leading: Icon(
-              a.needsReview ? Icons.error_outline : Icons.check_circle_outline,
-              color: a.needsReview ? Theme.of(context).colorScheme.error : Theme.of(context).colorScheme.primary,
-            ),
-            title: Text('${a.studentNumber ?? '—'}  ${a.studentName ?? ''}'),
-            subtitle: Text('${a.correct} صحيح · ${a.wrong} خطأ · ${a.blank} فارغ'),
-            trailing: Text('${a.score.toStringAsFixed(1)}/${a.total.toStringAsFixed(0)}  (${a.percent.toStringAsFixed(1)}%)',
-                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5)),
-            onTap: () => _editAttempt(context, a),
-          ),
+          _AttemptRow(attempt: a),
           const Divider(height: 1),
         ],
       ]),
     );
   }
+}
 
-  void _editAttempt(BuildContext context, Attempt attempt) {
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (context) => _EditAttemptSheet(attempt: attempt),
+/// صف نتيجة طالب واحد — يُعيد حساب التصحيح من المفتاح الحالي (يشمل الأسئلة الملغاة).
+class _AttemptRow extends StatelessWidget {
+  const _AttemptRow({required this.attempt});
+  final Attempt attempt;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<AppState>();
+    final g = state.graded(attempt);
+    final scheme = Theme.of(context).colorScheme;
+
+    return ListTile(
+      dense: true,
+      leading: Icon(
+        attempt.needsReview ? Icons.error_outline : Icons.check_circle_outline,
+        color: attempt.needsReview ? scheme.error : scheme.primary,
+      ),
+      title: Text('${attempt.studentNumber ?? '—'}  ${attempt.studentName ?? ''}'),
+      subtitle: Text(
+        '${g.correct} صحيح · ${g.wrong} خطأ · ${g.blank} فارغ'
+        '${attempt.manuallyEdited ? ' · تعديل يدوي' : ''}',
+      ),
+      trailing: Text(
+        '${attempt.score.toStringAsFixed(1)}/${attempt.total.toStringAsFixed(0)}  (${attempt.percent.toStringAsFixed(1)}%)',
+        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12.5),
+      ),
+      onTap: () => showModalBottomSheet<void>(
+        context: context,
+        showDragHandle: true,
+        isScrollControlled: true,
+        builder: (_) => _EditAttemptSheet(attempt: attempt),
+      ),
     );
   }
 }
