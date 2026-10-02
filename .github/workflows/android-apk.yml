@@ -55,47 +55,32 @@ jobs:
         working-directory: app
         run: flutter pub get
 
-      - name: توافقية compileSdk لحزم Flutter (إصلاح مؤقت)
-        run: |
-          python3 - <<'PY'
-          import os, pathlib, re, sys
-
-          # بعض الحزم (مثل printing) تُصرّف نفسها بـ compileSdk 30 بينما تبعيات androidx
-          # الحديثة تطلب 33+. نرفع compileSdk لكل حزم pub مع احترام صيغة كل ملف.
-          root = pathlib.Path(os.path.expanduser('~/.pub-cache'))
-          patched = []
-          for f in sorted(root.rglob('android/build.gradle*')):
-              try:
-                  s = f.read_text(errors='ignore')
-              except Exception:
-                  continue
-              before = s
-              if f.name.endswith('.kts'):
-                  s = re.sub(r'compileSdkVersion\(\s*(\d+)\s*\)', 'compileSdkVersion(36)', s)
-                  s = re.sub(r'compileSdk\s*=\s*\d+', 'compileSdk = 36', s)
-              else:
-                  s = re.sub(r'compileSdkVersion\s+\d+', 'compileSdkVersion 36', s)
-                  s = re.sub(r'compileSdk\s*=\s*\d+', 'compileSdk = 36', s)
-              if s != before:
-                  f.write_text(s)
-                  patched.append(str(f))
-
-          # رفع minSdk للتطبيق إلى 24 (أندرويد 7+) لتفادي تعارض متطلبات الحزم
-          app_gradle = pathlib.Path('android/app')
-          for g in app_gradle.glob('build.gradle*'):
-              t = g.read_text()
-              t2 = re.sub(r'minSdk\s*=\s*[^\n]+', 'minSdk = 24', t)
-              t2 = re.sub(r'minSdkVersion\s+\S+', 'minSdkVersion 24', t2)
-              if t2 != t:
-                  g.write_text(t2)
-                  patched.append(str(g))
-
-          print(f'عدد الملفات المعدّلة: {len(patched)}')
-          for x in patched:
-              print(' -', x)
-          PY
+      - name: توافقية compileSdk + تشخيص
         working-directory: app
-
+        run: |
+          mkdir -p ../ci
+          {
+            echo "HOME=$HOME"
+            echo "GRADLE_USER_HOME=${GRADLE_USER_HOME:-غير محدد}"
+            echo "PUB_CACHE=${PUB_CACHE:-غير محدد}"
+            echo
+            echo "--- تعديل compileSdk/minSdk ---"
+            python3 tool/fix_pub_cache_compile_sdk.py --sdk 36 --min-sdk 24
+            for d in "$HOME/.gradle" "${GRADLE_USER_HOME:-$HOME/.gradle}"; do
+              mkdir -p "$d/init.d"
+              cp tool/android-init.gradle "$d/init.d/compile-sdk.gradle"
+              echo "init script → $d/init.d/compile-sdk.gradle"
+            done
+            echo
+            echo "--- قيم compileSdk في حزم pub (بعد التعديل) ---"
+            grep -rn "compileSdk" "$HOME/.pub-cache/hosted/pub.dev"/*/android/build.gradle* 2>/dev/null | head -60
+            echo
+            echo "--- أين ذُكر jni ---"
+            grep -n -B2 -A6 "jni" pubspec.lock 2>/dev/null | head -40
+            echo
+            echo "--- شجرة الاعتماديات (jni/printing/share) ---"
+            flutter pub deps --style=compact 2>/dev/null | grep -i -E "^[-| ]*(jni|jni_flutter|printing|share_plus|pdf)" | head -20
+          } 2>&1 | tee ../ci/patch.log
       - name: التحليل
         id: analyze
         continue-on-error: true
@@ -128,8 +113,8 @@ jobs:
             echo "الالتزام: $(git rev-parse HEAD)"
             echo "نتيجة التحليل: ${{ steps.analyze.outcome }} | الاختبارات: ${{ steps.test.outcome }} | البناء: ${{ steps.build.outcome }}"
             echo
-            echo "## تعديلات compileSdk"
-            tail -40 /tmp/patch.log 2>/dev/null || echo "(لا يوجد سجل)"
+            echo "## تعديلات compileSdk والتشخيص (آخر 90 سطرًا)"
+            tail -90 ../ci/patch.log 2>/dev/null || echo "(لا يوجد سجل)"
             echo
             echo "## flutter analyze (آخر 120 سطرًا)"
             tail -120 /tmp/analyze.log 2>/dev/null || echo "(لا يوجد سجل)"
