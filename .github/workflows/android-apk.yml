@@ -21,6 +21,8 @@ jobs:
     steps:
       - name: جلب المستودع
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # تاريخ كامل: يمنع أي مشاكل في الدفع/الإصدارات
 
       - name: تهيئة Java
         uses: actions/setup-java@v4
