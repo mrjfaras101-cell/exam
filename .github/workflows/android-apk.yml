@@ -2,14 +2,15 @@ name: بناء APK (أندرويد)
 
 on:
   push:
-    branches: [arena/01a0fc3b-exam]
+    branches: [arena/01a0fc3b-exam, main]
     paths:
       - 'app/**'
+      - 'app/pubspec.yaml'
       - '.github/workflows/android-apk.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write   # لنشر سجل البناء عند الفشل + الإصدار
+  contents: write   # لنشر الإصدار التجريبي مع ملف APK
 
 jobs:
   apk:
@@ -44,98 +45,34 @@ jobs:
           git checkout -- pubspec.yaml lib test analysis_options.yaml 2>/dev/null || true
           rm -f test/widget_test.dart
           python3 tool/apply_platform_config.py || true
-          echo "--- pubspec (أول 40 سطرًا) ---"
-          head -40 pubspec.yaml
+          echo "--- pubspec (أول 25 سطرًا) ---"
+          head -25 pubspec.yaml
           echo "--- AndroidManifest ---"
           cat android/app/src/main/AndroidManifest.xml
-          echo "--- build.gradle ---"
-          ls android/app/ && cat android/app/build.gradle* | head -60
 
-      - name: التبعيات (flutter pub get)
+      - name: التبعيات
         working-directory: app
         run: flutter pub get
 
-      - name: توافقية compileSdk + تشخيص
+      - name: توافقية compileSdk للحزم (إصلاح مؤقت)
         working-directory: app
         run: |
-          mkdir -p ../ci
-          {
-            echo "HOME=$HOME"
-            echo "GRADLE_USER_HOME=${GRADLE_USER_HOME:-غير محدد}"
-            echo "PUB_CACHE=${PUB_CACHE:-غير محدد}"
-            echo
-            echo "--- تعديل compileSdk/minSdk ---"
-            python3 tool/fix_pub_cache_compile_sdk.py --sdk 36 --min-sdk 24
-            for d in "$HOME/.gradle" "${GRADLE_USER_HOME:-$HOME/.gradle}"; do
-              mkdir -p "$d/init.d"
-              cp tool/android-init.gradle "$d/init.d/compile-sdk.gradle"
-              echo "init script → $d/init.d/compile-sdk.gradle"
-            done
-            echo
-            echo "--- قيم compileSdk في حزم pub (بعد التعديل) ---"
-            grep -rn "compileSdk" "$HOME/.pub-cache/hosted/pub.dev"/*/android/build.gradle* 2>/dev/null | head -60
-            echo
-            echo "--- أين ذُكر jni ---"
-            grep -n -B2 -A6 "jni" pubspec.lock 2>/dev/null | head -40
-            echo
-            echo "--- شجرة الاعتماديات (jni/printing/share) ---"
-            flutter pub deps --style=compact 2>/dev/null | grep -i -E "^[-| ]*(jni|jni_flutter|printing|share_plus|pdf)" | head -20
-          } 2>&1 | tee ../ci/patch.log
-      - name: التحليل
-        id: analyze
-        continue-on-error: true
-        working-directory: app
-        run: |
-          set -o pipefail
-          flutter analyze 2>&1 | tee /tmp/analyze.log
+          # بعض الحزم تُصرّف نفسها بـ compileSdk أقدم من متطلبات androidx الحديثة
+          python3 tool/fix_pub_cache_compile_sdk.py --sdk 36 --min-sdk 24
+          mkdir -p "$HOME/.gradle/init.d"
+          cp tool/android-init.gradle "$HOME/.gradle/init.d/compile-sdk.gradle"
 
-      - name: الاختبارات
-        id: test
-        continue-on-error: true
+      - name: التحليل (flutter analyze)
         working-directory: app
-        run: |
-          set -o pipefail
-          flutter test --reporter expanded 2>&1 | tee /tmp/test.log
+        run: flutter analyze
+
+      - name: الاختبارات (flutter test)
+        working-directory: app
+        run: flutter test --reporter expanded
 
       - name: بناء APK
-        id: build
         working-directory: app
-        run: |
-          set -o pipefail
-          flutter build apk --release --no-tree-shake-icons 2>&1 | tee /tmp/build.log
-          
-      - name: نشر السجلات في المستودع
-        if: always()
-        run: |
-          mkdir -p ci
-          {
-            echo "# سجل البناء — $(date -u)"
-            echo "الالتزام: $(git rev-parse HEAD)"
-            echo "نتيجة التحليل: ${{ steps.analyze.outcome }} | الاختبارات: ${{ steps.test.outcome }} | البناء: ${{ steps.build.outcome }}"
-            echo
-            echo "## تعديلات compileSdk والتشخيص (آخر 90 سطرًا)"
-            tail -90 ../ci/patch.log 2>/dev/null || echo "(لا يوجد سجل)"
-            echo
-            echo "## flutter analyze (آخر 120 سطرًا)"
-            tail -120 /tmp/analyze.log 2>/dev/null || echo "(لا يوجد سجل)"
-            echo
-            echo "## flutter test (آخر 120 سطرًا)"
-            tail -120 /tmp/test.log 2>/dev/null || echo "(لا يوجد سجل)"
-            echo
-            echo "## flutter build apk (آخر 150 سطرًا)"
-            tail -150 /tmp/build.log 2>/dev/null || echo "(لا يوجد سجل)"
-          } > ci/last-build.log
-          wc -l ci/last-build.log
-          git config user.name "arena-agent"
-          git config user.email "agent@arena.ai"
-          git add -f ci/last-build.log
-          if git diff --cached --quiet; then
-            echo "لا تغيير في السجل — لا حاجة للنشر"
-          else
-            git commit -m "CI: تحديث سجل البناء [skip ci]"
-            git push origin HEAD:arena/01a0fc3b-exam
-            echo "تم نشر السجل في ci/last-build.log"
-          fi
+        run: flutter build apk --release --no-tree-shake-icons
 
       - name: تجهيز المخرجات
         run: |
@@ -156,13 +93,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          NOTES=$(cat <<'EOF'
-          نسخة تجريبية من تطبيق «مُصحِّح» — تصحيح أوراق الاختبارات بالكاميرا.
+          NOTES="نسخة تجريبية من تطبيق «مُصحِّح» — تصحيح أوراق الاختبارات بالكاميرا.
 
-          التطبيق موقّع بمفتاح التطوير (قابل للتثبيت مباشرة، وليس للنشر على Google Play).
-          للتركيب: افتح الرابط من جوال أندرويد ثم اسمح بـ«تثبيت من مصادر غير معروفة».
-          EOF
-          )
+          التركيب: افتح الرابط من جوال أندرويد، ثم اسمح بالتثبيت من مصادر غير معروفة.
+          ملاحظة: الملف موقّع بمفتاح التطوير (للتجربة، وليس للنشر على Google Play)."
           gh release delete apk-demo --yes --cleanup-tag 2>/dev/null || true
           gh release create apk-demo dist/musahhih-1.0.0.apk \
             --title "مُصحِّح — نسخة تجريبية (APK)" \
@@ -176,3 +110,4 @@ jobs:
           echo "### نتيجة البناء" >> $GITHUB_STEP_SUMMARY
           echo "- التحليل: ${{ steps.analyze.outcome }}" >> $GITHUB_STEP_SUMMARY
           echo "- الاختبارات: ${{ steps.test.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "- رابط التنزيل: https://github.com/${{ github.repository }}/releases/download/apk-demo/musahhih-1.0.0.apk" >> $GITHUB_STEP_SUMMARY
