@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write   # لنشر سجل البناء عند الفشل + الإصدار
 
 jobs:
   apk:
@@ -68,8 +68,23 @@ jobs:
         run: flutter test --reporter expanded
 
       - name: بناء APK
+        id: build
         working-directory: app
-        run: flutter build apk --release --no-tree-shake-icons
+        run: |
+          set -o pipefail
+          flutter build apk --release --no-tree-shake-icons 2>&1 | tee /tmp/build.log
+          
+      - name: نشر سجل البناء عند الفشل
+        if: failure()
+        run: |
+          mkdir -p ci
+          { echo "الالتزام: $(git rev-parse HEAD)"; echo "التاريخ: $(date -u)"; echo "--- آخر 400 سطر من سجل البناء ---"; tail -400 /tmp/build.log; } > ci/last-build.log
+          git config user.name "arena-agent"
+          git config user.email "agent@arena.ai"
+          git add -f ci/last-build.log
+          git commit -m "CI: سجل فشل البناء [skip ci]"
+          git push origin HEAD:arena/01a0fc3b-exam
+          echo "تم نشر السجل في ci/last-build.log"
 
       - name: تجهيز المخرجات
         run: |
