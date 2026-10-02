@@ -227,6 +227,7 @@ class _ExamWizardScreenState extends State<ExamWizardScreen> {
           Row(children: [
             Expanded(
               child: DropdownButtonFormField<int>(
+                // ignore: deprecated_member_use — initialValue لا يوجد قبل Flutter 3.33
                 value: optionCount,
                 decoration: const InputDecoration(labelText: 'عدد خيارات «دائرة»'),
                 items: const [2, 3, 4, 5].map((n) => DropdownMenuItem(value: n, child: Text('$n'))).toList(),
@@ -236,6 +237,7 @@ class _ExamWizardScreenState extends State<ExamWizardScreen> {
             const SizedBox(width: 10),
             Expanded(
               child: DropdownButtonFormField<String>(
+                // ignore: deprecated_member_use — initialValue لا يوجد قبل Flutter 3.33
                 value: labels,
                 decoration: const InputDecoration(labelText: 'رموز الخيارات'),
                 items: const [

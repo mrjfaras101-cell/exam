@@ -240,7 +240,7 @@ class _EditAttemptSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
     final exam = state.active!;
-    final labelsOf = (Question q) => q.type == QuestionType.yesNo
+    List<String> labelsOf(Question q) => q.type == QuestionType.yesNo
         ? const ['نعم', 'لا']
         : (exam.optionLabels == 'en' ? const ['A', 'B', 'C', 'D', 'E'] : const ['أ', 'ب', 'ج', 'د', 'هـ']);
     final scheme = Theme.of(context).colorScheme;

@@ -28,7 +28,6 @@ class SheetPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final s = pxPerMm;
     Offset mm(double x, double y) => Offset(x * s, y * s);
-    double px(double mmValue) => mmValue * s;
 
     canvas.drawRect(Rect.fromLTWH(0, 0, 210 * s, 297 * s), Paint()..color = Colors.white);
 

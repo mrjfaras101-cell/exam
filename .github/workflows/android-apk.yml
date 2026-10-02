@@ -55,6 +55,47 @@ jobs:
         working-directory: app
         run: flutter pub get
 
+      - name: توافقية compileSdk لحزم Flutter (إصلاح مؤقت)
+        run: |
+          python3 - <<'PY'
+          import os, pathlib, re, sys
+
+          # بعض الحزم (مثل printing) تُصرّف نفسها بـ compileSdk 30 بينما تبعيات androidx
+          # الحديثة تطلب 33+. نرفع compileSdk لكل حزم pub مع احترام صيغة كل ملف.
+          root = pathlib.Path(os.path.expanduser('~/.pub-cache'))
+          patched = []
+          for f in sorted(root.rglob('android/build.gradle*')):
+              try:
+                  s = f.read_text(errors='ignore')
+              except Exception:
+                  continue
+              before = s
+              if f.name.endswith('.kts'):
+                  s = re.sub(r'compileSdkVersion\(\s*(\d+)\s*\)', 'compileSdkVersion(36)', s)
+                  s = re.sub(r'compileSdk\s*=\s*\d+', 'compileSdk = 36', s)
+              else:
+                  s = re.sub(r'compileSdkVersion\s+\d+', 'compileSdkVersion 36', s)
+                  s = re.sub(r'compileSdk\s*=\s*\d+', 'compileSdk = 36', s)
+              if s != before:
+                  f.write_text(s)
+                  patched.append(str(f))
+
+          # رفع minSdk للتطبيق إلى 24 (أندرويد 7+) لتفادي تعارض متطلبات الحزم
+          app_gradle = pathlib.Path('android/app')
+          for g in app_gradle.glob('build.gradle*'):
+              t = g.read_text()
+              t2 = re.sub(r'minSdk\s*=\s*[^\n]+', 'minSdk = 24', t)
+              t2 = re.sub(r'minSdkVersion\s+\S+', 'minSdkVersion 24', t2)
+              if t2 != t:
+                  g.write_text(t2)
+                  patched.append(str(g))
+
+          print(f'عدد الملفات المعدّلة: {len(patched)}')
+          for x in patched:
+              print(' -', x)
+          PY
+        working-directory: app
+
       - name: التحليل
         id: analyze
         continue-on-error: true
@@ -121,6 +162,25 @@ jobs:
           name: musahhih-apk
           path: dist/*
           retention-days: 30
+
+      - name: نشر إصدار تجريبي مع ملف APK
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NOTES=$(cat <<'EOF'
+          نسخة تجريبية من تطبيق «مُصحِّح» — تصحيح أوراق الاختبارات بالكاميرا.
+
+          التطبيق موقّع بمفتاح التطوير (قابل للتثبيت مباشرة، وليس للنشر على Google Play).
+          للتركيب: افتح الرابط من جوال أندرويد ثم اسمح بـ«تثبيت من مصادر غير معروفة».
+          EOF
+          )
+          gh release delete apk-demo --yes --cleanup-tag 2>/dev/null || true
+          gh release create apk-demo dist/musahhih-1.0.0.apk \
+            --title "مُصحِّح — نسخة تجريبية (APK)" \
+            --notes "$NOTES" \
+            --prerelease \
+            --target "$GITHUB_SHA"
 
       - name: ملخص النتيجة
         if: always()

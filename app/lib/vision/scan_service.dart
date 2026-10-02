@@ -4,7 +4,6 @@
 /// ليست قابلة للنقل بين العُزل — فيُبنى القالب داخل العزل من مواصفات مختصرة.
 library;
 
-import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 

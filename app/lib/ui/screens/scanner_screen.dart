@@ -6,7 +6,6 @@ library;
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -234,10 +233,10 @@ class _ScannerScreenState extends State<ScannerScreen> {
   }
 
   Future<void> _pickImages() async {
+    final state = context.read<AppState>();
     final picker = ImagePicker();
     final files = await picker.pickMultiImage();
-    if (files.isEmpty) return;
-    final state = context.read<AppState>();
+    if (files.isEmpty || !mounted) return;
     var done = 0;
     for (final f in files) {
       setState(() => hud = 'جارٍ تصحيح الصور… ${done + 1}/${files.length}');

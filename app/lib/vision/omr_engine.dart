@@ -341,7 +341,8 @@ class SheetReader {
 
       final anyGlare = orderQ.any((i) => glares[i] > 0.5 && fv[i] < th.tHigh);
       if (anyGlare && status != 'ok') {
-        reason = (reason == null ? '' : '$reason + ') + 'لمعان على الفقاعة';
+        final prefix = reason == null ? '' : '$reason + ';
+        reason = '$prefixلمعان على الفقاعة';
       }
 
       final byOption = List<int>.generate(idx.length, (i) => i)..sort((a, b) => idx[a].compareTo(idx[b]));
@@ -596,7 +597,7 @@ _FidResult _findFiducials(
     return _FidResult(ok: false, reason: 'لم أجد علامات التسجيل — تأكّد من ظهور أركان الورقة الأربعة');
   }
 
-  final ideal = kFiducialPitchXMm / kFiducialPitchYMm;
+  const ideal = kFiducialPitchXMm / kFiducialPitchYMm;
   final src = <List<double>>[kFiducialCenters[0], kFiducialCenters[1], kFiducialCenters[2], kFiducialCenters[3]];
   _BestFid? best;
 
