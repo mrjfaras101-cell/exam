@@ -1,66 +1,225 @@
-الالتزام: 9290f8fd9954e170c6cc1f3ed7f01d4da6749f69
-التاريخ: Fri Oct  2 11:52:58 UTC 2026
---- آخر 400 سطر من سجل البناء ---
-Running Gradle task 'assembleRelease'...                        
-WARNING: Your app uses the following plugins that apply Kotlin Gradle Plugin (KGP): package_info_plus, share_plus, wakelock_plus
-Future versions of Flutter will fail to build if your app uses plugins that apply KGP.
+# سجل البناء — Fri Oct  2 11:59:51 UTC 2026
+الالتزام: 7df3bf3ba56481d0211f57b77a83f6c395dab0e2
+نتيجة التحليل: failure | الاختبارات: failure | البناء: failure
 
-Please check the changelogs of these plugins and upgrade to a version that supports Built-in Kotlin.
-If no such version exists, report the issue to the plugin. If necessary, here is a guide on filing
-an issue against a plugin: https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-app-developers#report-incompatible-kotlin-gradle-plugin-usage-to-plugin-authors
+## flutter analyze (آخر 120 سطرًا)
+Analyzing app...                                                
 
-If you are a plugin author, please migrate your plugin to Built-in Kotlin using this guide: https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-plugin-authors
-Checking the license for package Android SDK Platform 30 in /usr/local/lib/android/sdk/licenses
-License for package Android SDK Platform 30 accepted.
-Preparing "Install Android SDK Platform 30 (revision 3)".
-"Install Android SDK Platform 30 (revision 3)" ready.
-Installing Android SDK Platform 30 in /usr/local/lib/android/sdk/platforms/android-30
-"Install Android SDK Platform 30 (revision 3)" complete.
-"Install Android SDK Platform 30 (revision 3)" finished.
-lib/ui/screens/results_screen.dart:197:33: Error: The getter 'correct' isn't defined for the type 'Attempt'.
- - 'Attempt' is from 'package:musahhih/domain/models.dart' ('lib/domain/models.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'correct'.
-            subtitle: Text('${a.correct} صحيح · ${a.wrong} خطأ · ${a.blank} فارغ'),
-                                ^^^^^^^
-lib/ui/screens/results_screen.dart:197:53: Error: The getter 'wrong' isn't defined for the type 'Attempt'.
- - 'Attempt' is from 'package:musahhih/domain/models.dart' ('lib/domain/models.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'wrong'.
-            subtitle: Text('${a.correct} صحيح · ${a.wrong} خطأ · ${a.blank} فارغ'),
-                                                    ^^^^^
-lib/ui/screens/results_screen.dart:197:70: Error: The getter 'blank' isn't defined for the type 'Attempt'.
- - 'Attempt' is from 'package:musahhih/domain/models.dart' ('lib/domain/models.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'blank'.
-            subtitle: Text('${a.correct} صحيح · ${a.wrong} خطأ · ${a.blank} فارغ'),
-                                                                     ^^^^^
-lib/ui/screens/scanner_screen.dart:315:50: Error: The getter 'TorchMode' isn't defined for the type '_ScannerScreenState'.
- - '_ScannerScreenState' is from 'package:musahhih/ui/screens/scanner_screen.dart' ('lib/ui/screens/scanner_screen.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'TorchMode'.
-                  await c.setTorchMode(torchOn ? TorchMode.on : TorchMode.off);
-                                                 ^^^^^^^^^
-lib/ui/screens/scanner_screen.dart:315:65: Error: The getter 'TorchMode' isn't defined for the type '_ScannerScreenState'.
- - '_ScannerScreenState' is from 'package:musahhih/ui/screens/scanner_screen.dart' ('lib/ui/screens/scanner_screen.dart').
-Try correcting the name to the name of an existing getter, or defining a getter or field named 'TorchMode'.
-                  await c.setTorchMode(torchOn ? TorchMode.on : TorchMode.off);
-                                                                ^^^^^^^^^
-lib/ui/screens/scanner_screen.dart:315:27: Error: The method 'setTorchMode' isn't defined for the type 'CameraController'.
- - 'CameraController' is from 'package:camera/src/camera_controller.dart' ('../../../../.pub-cache/hosted/pub.dev/camera-0.10.6/lib/src/camera_controller.dart').
-Try correcting the name to the name of an existing method, or defining a method named 'setTorchMode'.
-                  await c.setTorchMode(torchOn ? TorchMode.on : TorchMode.off);
-                          ^^^^^^^^^^^^
-lib/vision/omr_engine.dart:274:51: Error: Member not found: 'codeBit'.
-    final isKeySheet = ((codeVal >> SheetGeometry.codeBit) & 1) == 1;
-                                                  ^^^^^^^
-lib/vision/omr_engine.dart:234:36: Error: The argument type 'double' can't be assigned to the parameter type 'int'.
-      pxPerMm: pxPerMm, sharpness: sharpness, edgeWidthMm: edgeWidthMm,
-                                   ^
-Target kernel_snapshot_program failed: Exception
+warning • The declaration 'px' isn't referenced. Try removing the declaration of 'px' • lib/sheet/sheet_painter.dart:31:12 • unused_element
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre. Try replacing the use of the deprecated member with the replacement • lib/ui/screens/exam_screen.dart:230:17 • deprecated_member_use
+   info • 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre. Try replacing the use of the deprecated member with the replacement • lib/ui/screens/exam_screen.dart:239:17 • deprecated_member_use
+   info • Use a function declaration rather than a variable assignment to bind a function to a name. Try rewriting the closure assignment as a function declaration • lib/ui/screens/results_screen.dart:243:11 • prefer_function_declarations_over_variables
+   info • The import of 'dart:typed_data' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/services.dart'. Try removing the import directive • lib/ui/screens/scanner_screen.dart:9:8 • unnecessary_import
+   info • Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check • lib/ui/screens/scanner_screen.dart:240:19 • use_build_context_synchronously
+   info • Use interpolation to compose strings and values. Try using string interpolation to build the composite string • lib/vision/omr_engine.dart:344:18 • prefer_interpolation_to_compose_strings
+   info • Use 'const' for final variables initialized to a constant value. Try replacing 'final' with 'const' • lib/vision/omr_engine.dart:599:3 • prefer_const_declarations
+   info • The import of 'dart:typed_data' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/foundation.dart'. Try removing the import directive • lib/vision/scan_service.dart:7:8 • unnecessary_import
+  error • Methods can't be invoked in constant expressions • test/omr_engine_test.dart:23:18 • const_eval_method_invocation
+  error • Methods can't be invoked in constant expressions • test/omr_engine_test.dart:24:18 • const_eval_method_invocation
+   info • Use 'const' for final variables initialized to a constant value. Try replacing 'final' with 'const' • test/omr_engine_test.dart:257:5 • prefer_const_declarations
 
+12 issues found. (ran in 11.9s)
 
-FAILURE: Build failed with an exception.
+## flutter test (آخر 120 سطرًا)
+00:00 +0: loading /home/runner/work/exam/exam/app/test/omr_engine_test.dart
+test/omr_engine_test.dart:23:34: Error: Method invocation is not a constant expression.
+const int imgW = (210 * pxPerMm).round();
+                                 ^^^^^
+test/omr_engine_test.dart:24:34: Error: Method invocation is not a constant expression.
+const int imgH = (297 * pxPerMm).round();
+                                 ^^^^^
+00:00 +0 -1: loading /home/runner/work/exam/exam/app/test/omr_engine_test.dart [E]
+  Failed to load "/home/runner/work/exam/exam/app/test/omr_engine_test.dart":
+  Compilation failed for testPath=/home/runner/work/exam/exam/app/test/omr_engine_test.dart: test/omr_engine_test.dart:23:34: Error: Method invocation is not a constant expression.
+  const int imgW = (210 * pxPerMm).round();
+                                   ^^^^^
+  test/omr_engine_test.dart:24:34: Error: Method invocation is not a constant expression.
+  const int imgH = (297 * pxPerMm).round();
+                                   ^^^^^
+  .
+  Error: The Dart compiler exited unexpectedly.
+  package:flutter_tools/src/base/common.dart 34:3  throwToolExit
+  package:flutter_tools/src/compile.dart 1024:11   DefaultResidentCompiler._compile.<fn>
+  dart:async/zone_root.dart 48:47                  _rootRunUnary
+  dart:async/zone.dart 816:35                      _CustomZone.runUnary
+  dart:async/future_impl.dart 948:45               Future._propagateToListeners.handleValueCallback
+  dart:async/future_impl.dart 977:13               Future._propagateToListeners
+  dart:async/future_impl.dart 862:9                Future._propagateToListeners
+  dart:async/future_impl.dart 720:5                Future._completeWithValue
+  dart:async/future_impl.dart 804:7                Future._asyncCompleteWithValue.<fn>
+  dart:async/zone_root.dart 35:13                  _rootRun
+  dart:async/zone.dart 810:35                      _CustomZone.run
+  dart:async/zone.dart 702:7                       _CustomZone.runGuarded
+  dart:async/zone.dart 743:23                      _CustomZone.bindCallbackGuarded.<fn>
+  dart:async/schedule_microtask.dart 40:35         _microtaskLoop
+  dart:async/schedule_microtask.dart 49:5          _startMicrotaskLoop
+  dart:isolate-patch/isolate_patch.dart 127:13     _runPendingImmediateCallback
+  dart:isolate-patch/isolate_patch.dart 193:5      _RawReceivePort._handleMessage
+  
+00:00 +0 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── التصحيح الأساسي ── كل الإجابات صحيحة = الدرجة الكاملة
+00:00 +1 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── التصحيح الأساسي ── خطأ واحد بوزن 2 يُنقص الدرجة
+00:00 +2 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── التصحيح الأساسي ── السؤال الفارغ = صفر ولا خصم (المجموع 1+2+1)
+00:00 +3 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── التصحيح الأساسي ── الخصم لا يطبَّق على الصحيح
+00:00 +4 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── التصحيح الأساسي ── الخصم على الخطأ (0.25 لكل علامة) والدرجة لا تقل عن صفر
+00:00 +5 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── التصحيح الأساسي ── السؤال الملغى يُستثنى من الدرجة الكلية
+00:00 +6 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── إحصاءات الصف ── المتوسط صحيح
+00:00 +7 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── إحصاءات الصف ── الوسيط صحيح
+00:00 +8 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── إحصاءات الصف ── نسبة النجاح صحيحة
+00:00 +9 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── إحصاءات الصف ── الأعلى والأدنى
+00:00 +10 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── إحصاءات الصف ── التوزيع 10 خانات ومجموعها = عدد الأوراق
+00:00 +11 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── تحليل الأسئلة ── عدد الأسئلة في التحليل
+00:00 +12 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── تحليل الأسئلة ── صعوبة السؤال الأول = 3 صحاح من 6
+00:00 +13 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── تحليل الأسئلة ── معامل التمييز محسوب ضمن المجال [-1, 1]
+00:00 +14 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── تحليل الأسئلة ── تمييز ضعيف يُرصد
+00:00 +15 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── تحليل الأسئلة ── مؤشر «راجع المفتاح» يظهر عند تركّز المشتّت
+00:00 +16 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── تحليل الأسئلة ── توزيع الاختيارات صحيح
+00:00 +17 -1: /home/runner/work/exam/exam/app/test/grading_test.dart: ── ثبات KR-20 ── KR-20 رقم صالح أو null
+00:00 +18 -1: Some tests failed.
 
-* What went wrong:
-Execution failed for task ':app:compileFlutterBuildRelease'.
-> Process 'command '/opt/hostedtoolcache/flutter/stable-3.47.6-x64/flutter/bin/flutter'' finished with non-zero exit value 1
+Failing tests:
+  /home/runner/work/exam/exam/app/test/omr_engine_test.dart: loading /home/runner/work/exam/exam/app/test/omr_engine_test.dart
+
+## flutter build apk (آخر 150 سطرًا)
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      13.  Dependency 'androidx.lifecycle:lifecycle-process:2.7.0' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :printing is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 36.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      14.  Dependency 'androidx.savedstate:savedstate:1.2.1' requires libraries and applications that
+           depend on it to compile against version 33 or later of the
+           Android APIs.
+
+           :printing is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 33, for example 36.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      15.  Dependency 'androidx.annotation:annotation-experimental:1.4.0' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :printing is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 36.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      16.  Dependency 'androidx.profileinstaller:profileinstaller:1.3.1' requires libraries and applications that
+           depend on it to compile against version 33 or later of the
+           Android APIs.
+
+           :printing is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 33, for example 36.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      17.  Dependency 'androidx.startup:startup-runtime:1.1.1' requires libraries and applications that
+           depend on it to compile against version 31 or later of the
+           Android APIs.
+
+           :printing is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 31, for example 36.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      18.  Dependency 'androidx.tracing:tracing:1.2.0' requires libraries and applications that
+           depend on it to compile against version 33 or later of the
+           Android APIs.
+
+           :printing is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 33, for example 36.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      19.  Dependency 'androidx.exifinterface:exifinterface:1.4.1' requires libraries and applications that
+           depend on it to compile against version 34 or later of the
+           Android APIs.
+
+           :printing is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 34, for example 36.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      20.  Dependency 'androidx.arch.core:core-runtime:2.2.0' requires libraries and applications that
+           depend on it to compile against version 33 or later of the
+           Android APIs.
+
+           :printing is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 33, for example 36.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
+
+      21.  Dependency 'androidx.window.extensions.core:core:1.0.0' requires libraries and applications that
+           depend on it to compile against version 33 or later of the
+           Android APIs.
+
+           :printing is currently compiled against android-30.
+
+           Recommended action: Update this project to use a newer compileSdk
+           of at least 33, for example 36.
+
+           Note that updating a library or application's compileSdk (which
+           allows newer APIs to be used) can be done separately from updating
+           targetSdk (which opts the app in to new runtime behavior) and
+           minSdk (which determines which devices the app can be installed
+           on).
 
 * Try:
 > Run with --stacktrace option to get the stack trace.
@@ -68,7 +227,6 @@ Execution failed for task ':app:compileFlutterBuildRelease'.
 > Run with --scan to get full insights from a Build Scan (powered by Develocity).
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 2m 18s
-[=========                              ] 25%                                   
-Running Gradle task 'assembleRelease'...                          139.2s
+BUILD FAILED in 4m 3s
+Running Gradle task 'assembleRelease'...                          244.0s
 Gradle task assembleRelease failed with exit code 1
