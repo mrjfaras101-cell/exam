@@ -1,17 +1,17 @@
-# سجل البناء — Fri Oct  2 12:15:45 UTC 2026
-الالتزام: ae10772ae78f951eb51a9324101b2bd7813bc076
-نتيجة التحليل: success | الاختبارات: success | البناء: failure
+# سجل البناء — Fri Oct  2 12:23:46 UTC 2026
+الالتزام: 626fe415d721d545e2c761c7e84212db04a7db53
+نتيجة التحليل: success | الاختبارات: success | البناء: success
 
-## تعديلات compileSdk
+## تعديلات compileSdk والتشخيص (آخر 90 سطرًا)
 (لا يوجد سجل)
 
 ## flutter analyze (آخر 120 سطرًا)
 Analyzing app...                                                
-No issues found! (ran in 14.8s)
+No issues found! (ran in 15.4s)
 
 ## flutter test (آخر 120 سطرًا)
 00:00 +0: loading /home/runner/work/exam/exam/app/test/omr_engine_test.dart
-00:00 +0: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: قراءة سليمة: رمز الورقة + رقم الجلوس + كل الإجابات
+00:00 +0: /home/runner/work/exam/exam/app/test/grading_test.dart: ── التصحيح الأساسي ── كل الإجابات صحيحة = الدرجة الكاملة
 00:00 +1: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: قراءة سليمة: رمز الورقة + رقم الجلوس + كل الإجابات
 00:00 +2: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: قراءة سليمة: رمز الورقة + رقم الجلوس + كل الإجابات
 00:00 +3: /home/runner/work/exam/exam/app/test/omr_engine_test.dart: قراءة سليمة: رمز الورقة + رقم الجلوس + كل الإجابات
@@ -40,6 +40,17 @@ No issues found! (ran in 14.8s)
 
 ## flutter build apk (آخر 150 سطرًا)
 Running Gradle task 'assembleRelease'...                        
+[android-init] compileSdk → 36 لـ app
+[android-init] compileSdk → 36 لـ camera_android
+[android-init] compileSdk → 36 لـ flutter_plugin_android_lifecycle
+[android-init] compileSdk → 36 لـ image_picker_android
+[android-init] compileSdk → 36 لـ jni
+[android-init] compileSdk → 36 لـ jni_flutter
+[android-init] compileSdk → 36 لـ package_info_plus
+[android-init] compileSdk → 36 لـ printing
+[android-init] compileSdk → 36 لـ share_plus
+[android-init] compileSdk → 36 لـ sqflite_android
+[android-init] compileSdk → 36 لـ wakelock_plus
 WARNING: Your app uses the following plugins that apply Kotlin Gradle Plugin (KGP): package_info_plus, share_plus, wakelock_plus
 Future versions of Flutter will fail to build if your app uses plugins that apply KGP.
 
@@ -56,35 +67,5 @@ Installing CMake 3.22.1 in /usr/local/lib/android/sdk/cmake/3.22.1
 "Install CMake 3.22.1 v.3.22.1" complete.
 "Install CMake 3.22.1 v.3.22.1" finished.
 Caught exception: Already watching path: /home/runner/work/exam/exam/app/android
-
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-Execution failed for task ':jni_flutter:checkReleaseAarMetadata'.
-> A failure occurred while executing com.android.build.gradle.internal.tasks.CheckAarMetadataWorkAction
-   > An issue was found when checking AAR metadata:
-
-       1.  Dependency ':jni' requires libraries and applications that
-           depend on it to compile against version 36 or later of the
-           Android APIs.
-
-           :jni_flutter is currently compiled against android-35.
-
-           Recommended action: Update this project to use a newer compileSdk
-           of at least 36, for example 36.
-
-           Note that updating a library or application's compileSdk (which
-           allows newer APIs to be used) can be done separately from updating
-           targetSdk (which opts the app in to new runtime behavior) and
-           minSdk (which determines which devices the app can be installed
-           on).
-
-* Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights from a Build Scan (powered by Develocity).
-> Get more help at https://help.gradle.org.
-
-BUILD FAILED in 4m 41s
-Running Gradle task 'assembleRelease'...                          281.7s
-Gradle task assembleRelease failed with exit code 1
+Running Gradle task 'assembleRelease'...                          331.8s
+✓ Built build/app/outputs/flutter-apk/app-release.apk (58.5MB)
