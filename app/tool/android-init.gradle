@@ -1,0 +1,34 @@
+// init script لـ Gradle: يفرض compileSdk على كل مشاريع أندرويد الفرعية (حزم Flutter).
+//
+// السبب: بعض الحزم تُصرّف نفسها بـ compileSdk أقدم من متطلبات تبعيات androidx الحديثة،
+// فيفشل البناء برسائل مثل:
+//   Dependency ':jni' requires ... compile against version 36 or later ...
+//   :jni_flutter is currently compiled against android-35.
+//
+// يُستخدم عبر نسخه إلى ~/.gradle/init.d/ (يُطبَّق تلقائيًا على كل بناء Gradle):
+//   mkdir -p ~/.gradle/init.d && cp app/tool/android-init.gradle ~/.gradle/init.d/
+//
+// آمن: كل محاولة داخل try/catch، وإن لم تنجح يبقى البناء على قيمه الأصلية.
+
+def FORCED_COMPILE_SDK = 36
+
+allprojects { p ->
+    p.afterEvaluate {
+        def ext = p.extensions.findByName('android')
+        if (ext == null) return
+        def changed = false
+        try {
+            ext.compileSdk = FORCED_COMPILE_SDK
+            changed = true
+        } catch (Throwable ignored) {
+        }
+        try {
+            ext.compileSdkVersion(FORCED_COMPILE_SDK)
+            changed = true
+        } catch (Throwable ignored) {
+        }
+        if (changed) {
+            println "[android-init] compileSdk → ${FORCED_COMPILE_SDK} لـ ${p.name}"
+        }
+    }
+}
