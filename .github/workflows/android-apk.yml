@@ -54,6 +54,15 @@ jobs:
         working-directory: app
         run: flutter pub get
 
+      - name: أيقونة التطبيق من الشعار
+        working-directory: app
+        run: dart run flutter_launcher_icons
+
+      - name: فحوصات محرّك القراءة (Node + Python)
+        run: |
+          node demo/test/check_dart_parity.mjs
+          node demo/test/grading_test.mjs
+
       - name: توافقية compileSdk للحزم (إصلاح مؤقت)
         working-directory: app
         run: |
@@ -93,7 +102,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          NOTES="نسخة تجريبية من تطبيق «مُصحِّح» — تصحيح أوراق الاختبارات بالكاميرا.
+          NOTES="نسخة تجريبية من تطبيق «مُصحِّح — Basem» لتصحيح أوراق الاختبارات بالكاميرا.
+
+          الجديد في هذه النسخة:
+          • ورقة الإجابة بنصف A4 — نسختان في كل صفحة A4 (40 طالبًا = 20 ورقة طباعة فقط).
+          • عدد الأسئلة حتى 40 سؤالًا في ورقة واحدة.
+          • في الاختبارات المختلطة: أسئلة «نعم أو لا» تأتي دائمًا في آخر الورقة ومتتالية.
+          • شعار جديد للتطبيق باسم Basem + أيقونة تطبيق جديدة.
 
           التركيب: افتح الرابط من جوال أندرويد، ثم اسمح بالتثبيت من مصادر غير معروفة.
           ملاحظة: الملف موقّع بمفتاح التطوير (للتجربة، وليس للنشر على Google Play)."

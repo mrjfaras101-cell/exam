@@ -1,5 +1,9 @@
 {
- "note": "أوراق اصطناعية مُولَّدة بـ demo/test/gen_scans.py — تُستخدم لزر «تجريبي» في النسخة التجريبية",
+ "note": "أوراق اصطناعية بنصف A4 مولَّدة بـ demo/test/gen_scans.py — تُستخدم لزر «تجريبي» في النسخة التجريبية",
+ "paper": {
+  "w": 148.5,
+  "h": 210
+ },
  "serial": 3,
  "key": [
   2,
@@ -15,7 +19,7 @@
  ],
  "scans": [
   {
-   "file": "scan_00.pgm",
+   "file": "rot_00.pgm",
    "studentId": "20260101",
    "name": "أحمد",
    "code": 3,
@@ -67,7 +71,7 @@
    "rotated180": false
   },
   {
-   "file": "scan_01.pgm",
+   "file": "rot_01.pgm",
    "studentId": "20260102",
    "name": "ريم",
    "code": 3,
@@ -121,7 +125,7 @@
    "rotated180": false
   },
   {
-   "file": "scan_02.pgm",
+   "file": "rot_02.pgm",
    "studentId": "20260103",
    "name": "يوسف",
    "code": 3,
@@ -173,10 +177,10 @@
    "flaws": {
     "6": "double"
    },
-   "rotated180": false
+   "rotated180": true
   },
   {
-   "file": "scan_03.pgm",
+   "file": "rot_03.pgm",
    "studentId": "20260104",
    "name": "سارة",
    "code": 3,
@@ -228,7 +232,7 @@
    "rotated180": false
   },
   {
-   "file": "scan_04.pgm",
+   "file": "rot_04.pgm",
    "studentId": "20260105",
    "name": "عمر",
    "code": 3,
@@ -277,10 +281,10 @@
     ]
    },
    "flaws": {},
-   "rotated180": false
+   "rotated180": true
   },
   {
-   "file": "scan_05.pgm",
+   "file": "rot_05.pgm",
    "studentId": "20260106",
    "name": "ليان",
    "code": 3,

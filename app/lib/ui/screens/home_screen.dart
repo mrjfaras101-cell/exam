@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../domain/models.dart';
 import '../../state/app_state.dart';
+import '../../main.dart' show kLogoAsset;
 import 'exam_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,7 +15,16 @@ class HomeScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('مُصحِّح'), actions: [
+      appBar: AppBar(
+        title: Row(children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(kLogoAsset, width: 30, height: 30),
+          ),
+          const SizedBox(width: 10),
+          const Text('مُصحِّح'),
+        ]),
+        actions: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Center(child: Text('${state.exams.length} اختبار', style: theme.textTheme.labelMedium)),
@@ -78,9 +88,13 @@ class _Hero extends StatelessWidget {
         ),
         const SizedBox(width: 10),
         Container(
-          width: 70, height: 70,
-          decoration: BoxDecoration(shape: BoxShape.circle, border: Border.all(color: scheme.onPrimary.withValues(alpha: 0.5), width: 2)),
-          child: Icon(Icons.document_scanner_outlined, color: scheme.onPrimary, size: 32),
+          width: 74, height: 74,
+          decoration: BoxDecoration(
+            color: scheme.onPrimary.withValues(alpha: 0.95),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          padding: const EdgeInsets.all(6),
+          child: Image.asset(kLogoAsset, fit: BoxFit.contain),
         ),
       ]),
     );

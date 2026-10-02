@@ -1,5 +1,5 @@
 name: musahhih
-description: "مُصحِّح — تصحيح أوراق الاختبارات بالكاميرا (بدون إنترنت)"
+description: "مُصحِّح — Basem | تصحيح أوراق الاختبارات بالكاميرا (بدون إنترنت)"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -37,11 +37,26 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.13.1
+
+# أيقونة التطبيق تُولَّد من شعار المشروع:
+#   dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/branding/icon.png"
+  adaptive_icon_background: "#E8F5F4"
+  adaptive_icon_foreground: "assets/branding/icon_foreground.png"
+  web:
+    generate: true
+    image_path: "assets/branding/icon.png"
 
 flutter:
   uses-material-design: true
   assets:
     - assets/fonts/
+    - assets/branding/
   fonts:
     - family: Cairo
       fonts:

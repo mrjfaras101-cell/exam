@@ -57,6 +57,7 @@ body { display: flex; justify-content: center; min-height: 100vh; }
   padding: 14px 16px 10px; background: var(--surface); border-bottom: 1px solid var(--line);
 }
 .appbar h1 { font-size: 19px; margin: 0; flex: 1; font-weight: 700; }
+.brand { width: 30px; height: 30px; border-radius: 8px; background: #fff; }
 .icon-btn {
   width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--line);
   background: var(--surface-2); color: var(--text); font-size: 18px; cursor: pointer;
@@ -201,7 +202,7 @@ button { font-family: inherit; }
 .seg-btn.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
 .paper-wrap { display: flex; justify-content: center; }
 canvas.paper {
-  width: 100%; max-width: 340px; aspect-ratio: 210 / 297; background: #fff;
+  width: 100%; max-width: 300px; aspect-ratio: 148.5 / 210; background: #fff;
   border-radius: 6px; box-shadow: var(--shadow); border: 1px solid var(--line);
 }
 

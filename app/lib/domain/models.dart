@@ -2,6 +2,8 @@
 /// تُخزَّن القوالب الهندسية في `sheet/template.dart` لأنها ليست بيانات مستخدم بل هندسة.
 library;
 
+import 'dart:math' as math;
+
 import 'dart:convert';
 
 /// نوع السؤال: «ضع دائرة حول رمز الإجابة الصحيحة» أو «أجب بنعم أو لا».
@@ -10,6 +12,47 @@ enum QuestionType { choice, yesNo }
 extension QuestionTypeX on QuestionType {
   String get code => this == QuestionType.choice ? 'choice' : 'yesno';
   static QuestionType fromCode(String c) => c == 'yesno' ? QuestionType.yesNo : QuestionType.choice;
+}
+
+/// أقصى عدد أسئلة في ورقة نصف A4 (20 صفًا × عمودين).
+const int kMaxQuestionsPerExam = 40;
+
+/// نوع تخطيط الأسئلة عند إنشاء اختبار جديد.
+enum QuestionPlan { choiceOnly, mixed, yesNoOnly }
+
+/// يبني قائمة أسئلة مرتّبة ترتيبًا **مطبوعًا واضحًا**:
+///   • أسئلة «ضع دائرة» أولًا (كلها متتالية)
+///   • أسئلة «أجب بنعم أو لا» آخر الورقة (كلها متتالية)
+/// السبب: انتقال واحد بين نمطين يقلّل خطأ الطالب في التعبئة، ويسهّل المراجعة.
+List<Question> planQuestions({
+  required int count,
+  QuestionPlan plan = QuestionPlan.mixed,
+  int options = 4,
+  double marks = 1,
+}) {
+  final n = count.clamp(1, kMaxQuestionsPerExam);
+  final out = <Question>[];
+  switch (plan) {
+    case QuestionPlan.yesNoOnly:
+      for (var i = 0; i < n; i++) {
+        out.add(Question(type: QuestionType.yesNo, marks: marks));
+      }
+    case QuestionPlan.choiceOnly:
+      for (var i = 0; i < n; i++) {
+        out.add(Question(type: QuestionType.choice, options: options, marks: marks));
+      }
+    case QuestionPlan.mixed:
+      // ثلث الأسئلة تقريبًا نعم/لا (سؤال واحد على الأقل) وتأتي في النهاية.
+      final yesNo = math.max(1, math.min(n - 1, (n / 3).round()));
+      final choice = n - yesNo;
+      for (var i = 0; i < choice; i++) {
+        out.add(Question(type: QuestionType.choice, options: options, marks: marks));
+      }
+      for (var i = 0; i < yesNo; i++) {
+        out.add(Question(type: QuestionType.yesNo, marks: marks));
+      }
+  }
+  return out;
 }
 
 class Question {
@@ -107,6 +150,12 @@ class Exam {
 
   int get answeredKeyCount => questions.where((q) => q.correctOption != null).length;
   bool get keyComplete => questions.every((q) => q.correctOption != null);
+
+  int get yesNoCount => questions.where((q) => q.type == QuestionType.yesNo).length;
+  int get choiceCount => questions.length - yesNoCount;
+
+  /// اختبار «مزيج» = فيه النوعان معًا (ونعم/لا في آخر الورقة ومتتالية).
+  bool get isMixed => yesNoCount > 0 && choiceCount > 0;
 
   Map<String, dynamic> toJson() => {
         'id': id,

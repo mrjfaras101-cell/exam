@@ -19,70 +19,78 @@ export const SCHEMA_VERSION = 1;
 /* ------------------------------------------------------------------ */
 
 export const GEO = {
-  paper: { w: 210, h: 297 },
+  // نصف ورقة A4: A5 طولي (يُطبع اثنان في صفحة A4 أفقية ثم تُقصّ الورقة)
+  paper: { w: 148.5, h: 210 },
 
   // علامات التسجيل: 3 مربعات مصمتة + مربع حلقي (لتمييز الاتجاه حتى مع دوران 180°)
   fiducial: {
     size: 10,        // ضلع المربع (مم)
     ringHole: 6,     // ضلع الفراغ الأبيض في المربع الحلقي (مم)
     centers: {
-      TL: [13, 13], TR: [197, 13], BL: [13, 284], BR: [197, 284],
+      TL: [10, 10], TR: [138.5, 10], BL: [10, 200], BR: [138.5, 200],
     },
     kinds: { TL: 'solid', TR: 'solid', BL: 'solid', BR: 'ring' },
   },
 
   // المنطقة الآمنة للطباعة
-  content: { x0: 24, y0: 24, x1: 186, y1: 272 },
+  content: { x0: 18, y0: 18, x1: 130.5, y1: 192 },
 
-  // ترويسة
-  header: { y0: 24, y1: 86 },
-  titleBlock: { x0: 90, x1: 186 },
-  idBlock: { x0: 24, x1: 86 },
+  // ترويسة مضغوطة: كتلة العنوان يمينًا، وشبكة رقم الجلوس يسارًا
+  header: { y0: 18, y1: 70.5, dividerY: 70.5, dividerX0: 18, dividerX1: 130.5 },
+  titleBlock: { x0: 72, x1: 130.5 },
+  idBlock: { x0: 18, x1: 70 },
 
   // رمز الورقة: 6 فقاعات، 5 بتات لرقم الاختبار + بتة لنوع الورقة
   code: {
     count: 6,
     bits: 5,
     keyBit: 5,          // البتة رقم 5 = 1 تعني "ورقة مفتاح إجابة"
-    r: 2.2,
-    pitchX: 5.2,
-    firstX: 148,        // مركز البتة 0 (أقصى اليمين)
-    y: 76,
-    labelX: 186,        // نص العنوان محاذى لليمين
+    r: 2.0,
+    pitchX: 4.8,
+    firstX: 128.5,      // مركز البتة 0 (أقصى اليمين)
+    y: 45,
+    labelX: 100,        // نص العنوان محاذى لليمين (يسار الفقاعات)
+    labelY: 46.2,
   },
 
   // شبكة رقم الجلوس
   idGrid: {
     rows: 10,           // الأرقام 0..9
     maxCols: 8,         // حتى 8 منازل
-    colPitch: 7.0,
-    rowPitch: 4.7,
-    bubbleR: 1.9,
-    firstColX: 27.2,
-    firstRowY: 41,
-    boxW: 6.4,          // مستطيل الكتابة اليدوية
-    boxH: 6.0,
-    boxY0: 31,
-    captionBaseline: 29,
+    colPitch: 6.2,
+    rowPitch: 3.8,
+    bubbleR: 1.7,
+    firstColX: 21.5,
+    firstRowY: 31,
+    boxW: 6.0,          // مستطيل الكتابة اليدوية
+    boxH: 5.2,
+    boxY0: 23.5,
+    captionBaseline: 21,
+    captionX: 70,
+    hintX: 18,
+    hintY: 68,
   },
 
-  // منطقة الأسئلة
+  // منطقة الأسئلة: عمودان يملأان الورقة (حتى 40 سؤالًا = 20 صفًا × عمودين)
   questions: {
-    y0: 90,
-    y1: 264,
-    rowsPerCol: 10,
-    colRightRight: 186,   // العمود الأول (يمينًا)
-    colRightLeft: 106,
-    colLeftRight: 104,    // العمود الثاني (يسارًا)
-    colLeftLeft: 24,
-    numberBoxW: 13,
-    choiceR: 3.5,
-    choiceMaxPitch: 14,
-    yesnoR: 4.0,
-    yesnoPitch: 20,
+    y0: 74,
+    y1: 190,
+    maxRowsPerCol: 20,
+    maxRowPitch: 14,
+    colRightRight: 130.5,   // العمود الأول (يمينًا)
+    colRightLeft: 77.5,
+    colLeftRight: 71,       // العمود الثاني (يسارًا)
+    colLeftLeft: 18,
+    numberBoxW: 9,
+    numberBoxGap: 2.5,
+    choiceMaxPitch: 9.3,
+    yesnoMaxPitch: 12,
+    minBubbleR: 2.2,
+    maxBubbleR: 3.2,
+    rowBubbleFactor: 0.42,  // نصف القطر = نسبة من ارتفاع الصف (لتفادي التلاصق)
   },
 
-  footer: { y: 268 },
+  footer: { y: 192 },
 
   // نصوص الواجهة المطبوعة
   texts: {
@@ -90,11 +98,11 @@ export const GEO = {
     idHint: 'اكتب رقمك في المستطيلات، ثم شبّك الرقم نفسه أسفل كل عمود',
     codeCaption: 'رمز الورقة',
     instructions: [
-      'ظلّل دائرة واحدة فقط لكل سؤال باستخدام قلم رصاص أو قلم جاف أسود/أزرق.',
-      'أجب بنعم أو لا: ظلّل (نعم) أو (لا). وللأسئلة الموضوعية ظلّل رمز الإجابة الصحيحة.',
-      'لا تكتب أو تُظلّل خارج الدوائر، واحرص على تعبئة الدائرة كاملة.',
+      'ظلّل دائرة واحدة لكل سؤال بقلم رصاص أو قلم جاف أسود/أزرق.',
+      'دائرة = رمز الإجابة الصحيحة، ونعم/لا كما هو مطلوب في السؤال.',
+      'لا تكتب خارج الدوائر، ولا تُظلّل أكثر من دائرة واحدة.',
     ],
-    footer: 'لا تكتب في هذا القسم — تُقرأ الورقة آليًا',
+    footer: 'نصف ورقة A4 · لا تكتب في هذا القسم — تُقرأ الورقة آليًا',
   },
 };
 
@@ -108,6 +116,32 @@ export const OPTION_LABELS_EN = ['A', 'B', 'C', 'D', 'E'];
 /* ------------------------------------------------------------------ */
 
 export const round2 = (v) => Math.round(v * 100) / 100;
+
+/**
+ * يبني قائمة الأسئلة بترتيب مطبوع واضح:
+ *   • أسئلة «ضع دائرة» أولًا (كلها متتالية)
+ *   • أسئلة «نعم أو لا» آخر الورقة (كلها متتالية)
+ * سبب الترتيب: ذاكرة الطالب تنتقل مرة واحدة من نمط إلى آخر، ويقلّ الخطأ في
+ * تعبئة الورقة؛ كما يسهل على المعلم تصحيح النوعين بصريًا عند المراجعة.
+ */
+export function planQuestions({ count, kind = 'choice', options = 4 }) {
+  const n = Math.max(1, Math.min(GEO.questions.maxRowsPerCol * 2, count | 0));
+  const out = [];
+  if (kind === 'yesno') {
+    for (let i = 0; i < n; i++) out.push({ type: 'yesno', options: 2, marks: 1 });
+    return out;
+  }
+  if (kind === 'mix') {
+    // عدد أسئلة نعم/لا = ثلث العدد تقريبًا (سؤال واحد لكل ثلاثة على الأقل)
+    const yesNo = Math.max(1, Math.min(n - 1, Math.round(n / 3)));
+    const choice = n - yesNo;
+    for (let i = 0; i < choice; i++) out.push({ type: 'choice', options, marks: 1 });
+    for (let i = 0; i < yesNo; i++) out.push({ type: 'yesno', options: 2, marks: 1 });
+    return out;
+  }
+  for (let i = 0; i < n; i++) out.push({ type: 'choice', options, marks: 1 });
+  return out;
+}
 
 /** قيمة رمز الورقة: رقم الاختبار (0..31) + بتة النوع */
 export function codeValue(serial, isKey) {
@@ -201,27 +235,39 @@ export function buildTemplate(spec) {
     });
   }
 
-  /* --- 4) الأسئلة --- */
-  const rowPitch = (q.y1 - q.y0) / q.rowsPerCol;
+  /* --- 4) الأسئلة: عدد الصفوف والأعمدة يُحسب من عدد الأسئلة --- */
+  const total = Math.max(1, n);
+  const availH = q.y1 - q.y0;
+  const rowsPerCol = Math.max(1, Math.min(q.maxRowsPerCol, Math.ceil(total / 2)));
+  const rowPitch = Math.min(q.maxRowPitch, availH / rowsPerCol);
+  // نُوسّط كتلة الأسئلة رأسيًا حين لا تملأ الورقة
+  const yStart = round2(q.y0 + Math.max(0, (availH - rowsPerCol * rowPitch) / 2));
+  const bubbleR = round2(Math.max(q.minBubbleR, Math.min(q.maxBubbleR, rowPitch * q.rowBubbleFactor)));
+  t.layout.rowsPerCol = rowsPerCol;
   t.layout.rowPitch = round2(rowPitch);
+  t.layout.yStart = yStart;
+  t.layout.bubbleR = bubbleR;
+  t.layout.columns = 2;
+
   for (let i = 0; i < n; i++) {
-    const col = Math.floor(i / q.rowsPerCol);          // 0 = العمود اليمين
-    const row = i % q.rowsPerCol;
+    const col = Math.floor(i / rowsPerCol);          // 0 = العمود اليمين
+    const row = i % rowsPerCol;
     const colRight = col === 0 ? q.colRightRight : q.colLeftRight;
     const colLeft = col === 0 ? q.colRightLeft : q.colLeftLeft;
-    const y = round2(q.y0 + rowPitch * (row + 0.5));
+    const y = round2(yStart + rowPitch * (row + 0.5));
     const item = questions[i];
     const isYesNo = item.type === 'yesno';
     const k = isYesNo ? 2 : Math.max(2, Math.min(5, item.options || 4));
-    const r = isYesNo ? q.yesnoR : q.choiceR;
-    const maxPitch = isYesNo ? q.yesnoPitch : q.choiceMaxPitch;
-    const avail = (colRight - colLeft) - 19 - 2 * r - 1;   // 19 = رقم السؤال + هامش
+    const r = isYesNo ? bubbleR : bubbleR;
+    const xFirst = round2(colRight - (q.numberBoxW + q.numberBoxGap) - r);
+    const maxPitch = isYesNo ? q.yesnoMaxPitch : q.choiceMaxPitch;
+    const avail = Math.max(4, (xFirst - r) - colLeft - 1.5);
     const pitch = Math.min(maxPitch, avail / (k - 1));
 
     const bubbles = [];
     for (let o = 0; o < k; o++) {
       bubbles.push({
-        x: round2(colRight - 19 - o * pitch),
+        x: round2(xFirst - o * pitch),
         y, r, option: o,
         label: isYesNo ? (o === 0 ? 'نعم' : 'لا')
                        : (t.meta.optionLabels === 'en' ? OPTION_LABELS_EN[o] : OPTION_LABELS_AR[o]),
@@ -231,7 +277,12 @@ export function buildTemplate(spec) {
     t.questions.push({
       index: i, col, row, type: isYesNo ? 'yesno' : 'choice',
       options: k, marks: item.marks ?? 1,
-      numberBox: { x: colRight - q.numberBoxW, y: round2(y - 6), w: q.numberBoxW, h: 12 },
+      numberBox: {
+        x: round2(colRight - q.numberBoxW),
+        y: round2(y - rowPitch * 0.42),
+        w: q.numberBoxW,
+        h: round2(rowPitch * 0.84),
+      },
       bubbles,
     });
   }
@@ -256,7 +307,7 @@ export function validateSpec(spec) {
   const n = (spec.questions || []).length;
   if (!spec.title || !spec.title.trim()) errors.push('اسم الاختبار مطلوب');
   if (n < 1) errors.push('أضف سؤالًا واحدًا على الأقل');
-  if (n > GEO.questions.rowsPerCol * 2) errors.push(`الحدّ الأقصى ${GEO.questions.rowsPerCol * 2} سؤالًا في ورقة واحدة`);
+  if (n > GEO.questions.maxRowsPerCol * 2) errors.push(`الحدّ الأقصى ${GEO.questions.maxRowsPerCol * 2} سؤالًا في ورقة واحدة`);
   (spec.questions || []).forEach((it, i) => {
     if (it.type === 'choice' && (it.options < 2 || it.options > 5)) {
       errors.push(`السؤال ${i + 1}: عدد الخيارات يجب أن يكون بين 2 و5`);
@@ -267,5 +318,5 @@ export function validateSpec(spec) {
 
 /** عدد الشرائح المطلوبة لعدد أسئلة (للتوافق المستقبلي: أكثر من ورقة) */
 export function sheetCount(questionCount) {
-  return Math.max(1, Math.ceil(questionCount / (GEO.questions.rowsPerCol * 2)));
+  return Math.max(1, Math.ceil(questionCount / (GEO.questions.maxRowsPerCol * 2)));
 }

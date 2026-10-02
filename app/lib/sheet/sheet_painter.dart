@@ -29,11 +29,12 @@ class SheetPainter extends CustomPainter {
     final s = pxPerMm;
     Offset mm(double x, double y) => Offset(x * s, y * s);
 
-    canvas.drawRect(Rect.fromLTWH(0, 0, 210 * s, 297 * s), Paint()..color = Colors.white);
+    final pw = template.paperW, ph = template.paperH;
+    canvas.drawRect(Rect.fromLTWH(0, 0, pw * s, ph * s), Paint()..color = Colors.white);
 
     // إطار خفيف يساعد على التأكد من حدود الطباعة
     canvas.drawRect(
-      Rect.fromLTWH(0.5, 0.5, 210 * s - 1, 297 * s - 1),
+      Rect.fromLTWH(0.5, 0.5, pw * s - 1, ph * s - 1),
       Paint()..color = const Color(0xFFC9D3D2)..style = PaintingStyle.stroke..strokeWidth = math.max(0.5, s * 0.15),
     );
 
@@ -46,25 +47,24 @@ class SheetPainter extends CustomPainter {
 
     if (showDebugGrid) {
       final p = Paint()..color = const Color(0x33FF0000)..strokeWidth = 0.5;
-      for (var x = 0; x <= 210; x += 10) {
-        canvas.drawLine(mm(x.toDouble(), 0), mm(x.toDouble(), 297), p);
+      for (var x = 0.0; x <= pw; x += 10) {
+        canvas.drawLine(mm(x, 0), mm(x, ph), p);
       }
-      for (var y = 0; y <= 297; y += 10) {
-        canvas.drawLine(mm(0, y.toDouble()), mm(210, y.toDouble()), p);
+      for (var y = 0.0; y <= ph; y += 10) {
+        canvas.drawLine(mm(0, y), mm(pw, y), p);
       }
     }
   }
 
   void _paintFiducials(Canvas canvas, double s) {
-    for (var i = 0; i < kFiducialCenters.length; i++) {
-      final c = kFiducialCenters[i];
+    for (final f in template.fiducials) {
       final rect = Rect.fromCenter(
-        center: Offset(c[0] * s, c[1] * s),
+        center: Offset(f.x * s, f.y * s),
         width: kFiducialSize * s,
         height: kFiducialSize * s,
       );
       canvas.drawRect(rect, Paint()..color = Colors.black);
-      if (i == kRingIndex) {
+      if (f.role == 'ring') {
         final hole = Rect.fromCenter(
           center: rect.center,
           width: kFiducialHole * s,
@@ -103,36 +103,39 @@ class SheetPainter extends CustomPainter {
   }
 
   void _paintHeader(Canvas canvas, double s) {
-    final right = 186 * s;
-    _text(canvas, template.title.isEmpty ? 'اختبار' : template.title, Offset(right, 35 * s), sizeMm: 5.4, s: s, bold: true, right: true);
+    final right = kHeaderRight * s;
+    _text(canvas, template.title.isEmpty ? 'اختبار' : template.title, Offset(right, 26 * s), sizeMm: 4.6, s: s, bold: true, right: true);
     final line2 = [template.subject, template.gradeLabel].where((e) => e.isNotEmpty).join('  —  ');
     if (line2.isNotEmpty) {
-      _text(canvas, line2, Offset(right, 43 * s), sizeMm: 3.9, s: s, right: true);
+      _text(canvas, line2, Offset(right, 33.5 * s), sizeMm: 3.3, s: s, right: true);
     }
     _text(canvas, 'التاريخ: ${template.examDate.isEmpty ? '—' : template.examDate}     المعلم: ${template.teacher.isEmpty ? '—' : template.teacher}',
-        Offset(right, 49.5 * s), sizeMm: 3.0, s: s, right: true, color: const Color(0xFF333333));
+        Offset(right, 38.5 * s), sizeMm: 2.6, s: s, right: true, color: const Color(0xFF333333));
+
+    _text(canvas, kCodeCaption, Offset(SheetGeometry.codeLabelX * s, SheetGeometry.codeLabelY * s),
+        sizeMm: 2.2, s: s, right: true, color: const Color(0xFF555555));
 
     for (var i = 0; i < kSheetInstructions.length; i++) {
-      _text(canvas, kSheetInstructions[i], Offset(right, (55.6 + i * 5.2) * s), sizeMm: 2.6, s: s, right: true, color: const Color(0xFF444444));
+      _text(canvas, kSheetInstructions[i], Offset(right, (55.5 + i * 4.5) * s), sizeMm: 2.2, s: s, right: true, color: const Color(0xFF444444));
     }
 
+    // خط الفصل بين الترويسة وبقية الورقة
     canvas.drawLine(
-      Offset(90 * s, 69 * s), Offset(186 * s, 69 * s),
+      Offset(kHeaderLeft * s, kHeaderDividerY * s), Offset(kHeaderRight * s, kHeaderDividerY * s),
       Paint()..color = const Color(0xFF999999)..strokeWidth = math.max(0.5, 0.15 * s),
     );
-    _text(canvas, kCodeCaption, Offset(186 * s, 77 * s), sizeMm: 2.4, s: s, right: true, color: const Color(0xFF555555));
-    _text(canvas, kIdCaption, Offset(86 * s, 34 * s), sizeMm: 3.2, s: s, bold: true, right: true);
-    _text(canvas, kIdHint, Offset(24 * s, 34 * s), sizeMm: 2.3, s: s, color: const Color(0xFF555555));
+    _text(canvas, kIdCaption, Offset(SheetGeometry.idCaptionX * s, SheetGeometry.idCaptionY * s), sizeMm: 2.9, s: s, bold: true, right: true);
+    _text(canvas, kIdHint, Offset(SheetGeometry.idHintX * s, SheetGeometry.idHintY * s), sizeMm: 1.9, s: s, color: const Color(0xFF555555));
   }
 
   void _paintQuestions(Canvas canvas, double s) {
     for (final q in template.questions) {
-      final rect = Rect.fromLTWH(q.numberX * s, q.numberY * s, SheetGeometry.numberBoxW * s, 12 * s);
+      final rect = Rect.fromLTWH(q.numberX * s, q.numberY * s, SheetGeometry.numberBoxW * s, q.numberH * s);
       canvas.drawRect(
         rect,
         Paint()..color = const Color(0xFF8A9A98)..style = PaintingStyle.stroke..strokeWidth = math.max(0.5, 0.15 * s),
       );
-      _text(canvas, '${q.index + 1}', rect.center, sizeMm: 3.4, s: s, bold: true, center: true);
+      _text(canvas, '${q.index + 1}', rect.center, sizeMm: math.min(3.0, q.numberH * 0.55), s: s, bold: true, center: true);
 
       for (final b in q.bubbles) {
         final c = Offset(b.x * s, b.y * s);
@@ -140,7 +143,7 @@ class SheetPainter extends CustomPainter {
           c, b.r * s,
           Paint()..color = const Color(0xFF222222)..style = PaintingStyle.stroke..strokeWidth = math.max(0.8, 0.30 * s),
         );
-        _text(canvas, b.label, c + Offset(0, 0.05 * s), sizeMm: q.type == 'yesno' ? 3.0 : 2.9, s: s,
+        _text(canvas, b.label, c + Offset(0, 0.05 * s), sizeMm: math.min(q.type == 'yesno' ? 2.6 : 2.5, b.r * 0.95), s: s,
             color: const Color(0xFF333333), center: true);
       }
     }
@@ -150,7 +153,7 @@ class SheetPainter extends CustomPainter {
     _text(
       canvas,
       '$kFooterNote  ·  رمز الورقة ${template.serial}${template.isKey ? ' (مفتاح)' : ''}',
-      Offset(105 * s, SheetGeometry.footerY * s),
+      Offset(template.paperW / 2 * s, SheetGeometry.footerY * s),
       sizeMm: 2.3, s: s, color: const Color(0xFF666666), center: true,
     );
   }
@@ -192,8 +195,8 @@ class SheetPainter extends CustomPainter {
 
 /// يحوّل الرسم إلى صورة نقطية بدقة الطباعة (تُستخدم لتصدير PDF ومشاركة صورة الورقة).
 Future<ui.Image> renderSheetToImage(SheetTemplate template, {double pxPerMm = SheetPainter.printPxPerMm, bool debug = false}) async {
-  final w = (210 * pxPerMm).round();
-  final h = (297 * pxPerMm).round();
+  final w = (template.paperW * pxPerMm).round();
+  final h = (template.paperH * pxPerMm).round();
   final recorder = ui.PictureRecorder();
   final canvas = Canvas(recorder);
   SheetPainter(template: template, pxPerMm: pxPerMm, showDebugGrid: debug).paint(canvas, Size(w.toDouble(), h.toDouble()));

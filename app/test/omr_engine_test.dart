@@ -20,8 +20,8 @@ import 'package:musahhih/vision/template.dart';
 
 // 6 بكسل/مم: أعلى من حدّ «الدقة المنخفضة» (5.2) كي لا تُوسَم الأوراق السليمة.
 const double pxPerMm = 6.0;
-final int imgW = (210 * pxPerMm).round();
-final int imgH = (297 * pxPerMm).round();
+final int imgW = (kPaperW * pxPerMm).round();   // ورقة نصف A4: 148.5 × 210 مم
+final int imgH = (kPaperH * pxPerMm).round();
 
 /// ورقة اصطناعية: نرسم الفقاعات والعلامات فقط (لا نحتاج خطوطًا للاختبار).
 class TestSheet {

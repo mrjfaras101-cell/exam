@@ -168,8 +168,31 @@ export function connectedComponents(mask, w, h, minArea = 12) {
 /* ------------------------------------------------------------------ */
 /* 5) إيجاد علامات التسجيل الأربع                                      */
 /* ------------------------------------------------------------------ */
-const PAPER_W_MM = 184;   // المسافة بين مراكز علامات التسجيل أفقيًا (197-13)
-const PAPER_H_MM = 271;   // ورأسيًا (284-13)
+/**
+ * هندسة الورقة تُقرأ من القالب نفسه (لا ثوابت A4 صلبة):
+ *  - src: إحداثيات مراكز علامات التسجيل بالمليمتر بترتيب [TL, TR, BR, BL]
+ *  - pitchX/pitchY: المسافة بين المراكز أفقيًا/رأسيًا (لحساب بكسل/مم)
+ *  - fid[0..3]: كائنات العلامات (لقياس حِدّة الحواف)
+ * بهذا يعمل المحرّك نفسه على أي مقاس ورقة (A4، نصف A4، أي قالب مستقبلي).
+ */
+function templateGeo(template) {
+  const list = template && template.fiducials ? template.fiducials : null;
+  if (!list || list.length < 4) return null;
+  const byId = {};
+  for (const f of list) byId[f.id] = f;
+  const order = ['TL', 'TR', 'BR', 'BL'];
+  const fid = order.map((id) => byId[id]);
+  if (fid.some((f) => !f)) return null;
+  const pitchX = Math.abs(fid[1].x - fid[0].x);
+  const pitchY = Math.abs(fid[3].y - fid[0].y);
+  if (!(pitchX > 10) || !(pitchY > 10)) return null;
+  return {
+    fid,
+    src: fid.map((f) => [f.x, f.y]),
+    pitchX, pitchY,
+    size: fid[0].size || 10,
+  };
+}
 
 /** مساحة shoelace الموجبة = دوران باتجاه عقارب الساعة في إحداثيات y-للأسفل.
  *  تقبل النقاط بصيغة [x,y] أو كائنات مكوّنات لها cx/cy. */
@@ -183,7 +206,7 @@ function shoelace(pts) {
   return s / 2;
 }
 
-export function findFiducials(comps, mask, w, h, opts = DEFAULTS, gray = null) {
+export function findFiducials(comps, mask, w, h, opts = DEFAULTS, gray = null, geo = null) {
   const imgArea = w * h;
   const cand = comps.filter((c) => {
     if (c.area > opts.maxComponentArea * imgArea) return false;
@@ -195,9 +218,10 @@ export function findFiducials(comps, mask, w, h, opts = DEFAULTS, gray = null) {
   }).sort((a, b) => b.area - a.area).slice(0, 18);
 
   if (cand.length < 4) return { ok: false, reason: 'لم أجد علامات التسجيل — تأكّد من ظهور أركان الورقة الأربعة' };
+  if (!geo) return { ok: false, reason: 'قالب الورقة غير معروف — أعد توليد القالب' };
 
-  const ideal = PAPER_W_MM / PAPER_H_MM;
-  const src = [[13, 13], [197, 13], [197, 284], [13, 284]];
+  const ideal = geo.pitchX / geo.pitchY;
+  const src = geo.src;
   let best = null;
 
   for (let i = 0; i < cand.length; i++) {
@@ -230,7 +254,7 @@ export function findFiducials(comps, mask, w, h, opts = DEFAULTS, gray = null) {
           for (const asg of [[A, B, C, D], [C, D, A, B], [B, A, D, C]]) {
             const H = solveHomography(src, asg.map((q) => [q.cx, q.cy]));
             if (!H) continue;
-            const app = probeAppearance(mask, w, h, H);
+            const app = probeAppearance(mask, w, h, H, geo);
             const score = quadArea * Math.pow(app, 2);     // تفضيل واضح للاتجاه المؤكّد
             if (!best || score > best.score) {
               best = { score, appearance: app, corners: asg, H, quadArea };
@@ -250,16 +274,15 @@ export function findFiducials(comps, mask, w, h, opts = DEFAULTS, gray = null) {
   let appearance = best.appearance;
   // تحسين مراكز العلامات وإعادة حساب التجانس (يرفع دقة رسم الفقاعات على الورقة)
   if (gray) {
-    const pxPerMm0 = Math.hypot(TL.cx - TR.cx, TL.cy - TR.cy) / PAPER_W_MM;
+    const pxPerMm0 = Math.hypot(TL.cx - TR.cx, TL.cy - TR.cy) / geo.pitchX;
     if (pxPerMm0 > 2) {
       const refined = [TL, TR, BR, BL].map((c) => {
         const [nx, ny] = refineCenter(gray, w, h, c.cx, c.cy, c.kind === 'ring' ? 5.0 : 6.0, pxPerMm0);
         return { ...c, cx: nx, cy: ny };
       });
-      const src = [[13, 13], [197, 13], [197, 284], [13, 284]];
-      const H2 = solveHomography(src, refined.map((c) => [c.cx, c.cy]));
+      const H2 = solveHomography(geo.src, refined.map((c) => [c.cx, c.cy]));
       if (H2) {
-        const app2 = probeAppearance(mask, w, h, H2);
+        const app2 = probeAppearance(mask, w, h, H2, geo);
         if (app2 >= appearance - 0.08) { H = H2; appearance = app2; [TL, TR, BR, BL] = refined; }
       }
     }
@@ -277,7 +300,7 @@ export function findFiducials(comps, mask, w, h, opts = DEFAULTS, gray = null) {
  * ثلاثة مربعات مصمتة (مركز أسود) + مربع حلقي (مركز أبيض وحلقة سوداء).
  * هذا هو الفحص الذي يحدّد الاتجاه الصحيح للورقة ويرفض الأركان الخاطئة.
  */
-function probeAppearance(mask, w, h, H) {
+function probeAppearance(mask, w, h, H, geo) {
   const darkRatioIn = (mmX, mmY, rMm) => {
     const [cx, cy] = applyH(H, mmX, mmY);
     const [ex, ey] = applyH(H, mmX + 1, mmY);
@@ -301,8 +324,10 @@ function probeAppearance(mask, w, h, H) {
     const inBand = darkRatioIn(x, y, 3.0) - darkRatioIn(x, y, 2.2);  // الحلقة السوداء (فرق قرصين)
     return Math.max(0, Math.min(1, innerWhite)) * Math.max(0, Math.min(1, inBand * 2.2));
   };
+  const pos = geo.src;                                  // [TL, TR, BR, BL]
   const probes = [
-    solid(13, 13), solid(197, 13), solid(13, 284), ring(197, 284),
+    solid(pos[0][0], pos[0][1]), solid(pos[1][0], pos[1][1]),
+    solid(pos[3][0], pos[3][1]), ring(pos[2][0], pos[2][1]),
   ];
   return probes.reduce((s, v) => s + v, 0) / probes.length;
 }
@@ -413,9 +438,10 @@ function laplacianVariance(gray, w, h, x0, y0, x1, y1, step = 2) {
  * قياس "حِدّة" الصورة بمقياس مرتبط بالمهمّة: عرض الانتقال بين الحبر والورق
  * على حافة مربّع التسجيل (بالمليمتر). المطلوب: ≤ 0.8مم لتُقرأ فقاعات القطر 3.8مم.
  */
-function measureEdgeWidthMm(corrected, w, h, H, pxPerMm, opts) {
+function measureEdgeWidthMm(corrected, w, h, H, pxPerMm, opts, geo) {
   const widths = [];
-  const cxMm = 13, cyMm = 13, size = 10;
+  const f0 = geo.fid[0];
+  const cxMm = f0.x, cyMm = f0.y, size = f0.size || 10;
   for (const dy of [-0.25, 0, 0.25]) {
     const yMm = cyMm + dy * size;
     const p0 = applyH(H, cxMm - size / 2 - 2.5, yMm);
@@ -534,12 +560,14 @@ export function detectSheet(rgba, w, h, template, opts = DEFAULTS, mode = {}) {
   diag.otsuThreshold = thr;
 
   /* 4) مكوّنات متّصلة */
+  const geo = templateGeo(template);
+  if (!geo) return fail('قالب الورقة غير معروف — أعد توليد القالب (fiducials ناقصة)');
   const comps = connectedComponents(mask, w, h, 14);
   diag.components = comps.length;
   diag.timings.components = Date.now() - t0;
 
   /* 5) علامات التسجيل */
-  const fid = findFiducials(comps, mask, w, h, opts, gray);
+  const fid = findFiducials(comps, mask, w, h, opts, gray, geo);
   if (!fid.ok) return fail(fid.reason, { quality: {} });
   const [TL, TR, BR, BL] = fid.corners;
   diag.timings.fiducials = Date.now() - t0;
@@ -553,7 +581,7 @@ export function detectSheet(rgba, w, h, template, opts = DEFAULTS, mode = {}) {
   const cornersPx = dst;
   const dTop = Math.hypot(cornersPx[0][0] - cornersPx[1][0], cornersPx[0][1] - cornersPx[1][1]);
   const dLeft = Math.hypot(cornersPx[0][0] - cornersPx[3][0], cornersPx[0][1] - cornersPx[3][1]);
-  const pxPerMm = (dTop / PAPER_W_MM + dLeft / PAPER_H_MM) / 2;
+  const pxPerMm = (dTop / geo.pitchX + dLeft / geo.pitchY) / 2;
   const bbox = {
     x0: Math.max(0, Math.floor(Math.min(...cornersPx.map((p) => p[0])))),
     x1: Math.min(w - 1, Math.ceil(Math.max(...cornersPx.map((p) => p[0])))),
@@ -561,7 +589,7 @@ export function detectSheet(rgba, w, h, template, opts = DEFAULTS, mode = {}) {
     y1: Math.min(h - 1, Math.ceil(Math.max(...cornersPx.map((p) => p[1])))),
   };
   const sharpness = laplacianVariance(gray, w, h, bbox.x0, bbox.y0, bbox.x1, bbox.y1, 2);
-  const edgeWidthMm = measureEdgeWidthMm(corrected, w, h, H, pxPerMm, opts);
+  const edgeWidthMm = measureEdgeWidthMm(corrected, w, h, H, pxPerMm, opts, geo);
   const quadArea = Math.abs(shoelace(cornersPx));
   const coverage = quadArea / (w * h);
 
@@ -617,7 +645,7 @@ export function detectSheet(rgba, w, h, template, opts = DEFAULTS, mode = {}) {
   codeBits.sort((a, b) => a.bit - b.bit);
   let codeVal = 0;
   for (const cb of codeBits) if (cb.on) codeVal |= (1 << cb.bit);
-  const serial = codeVal & ((1 << template.code.bubbles.length) - 1);
+  const serial = codeVal & ((1 << (template.code.bits ?? 5)) - 1);   // رقم الاختبار فقط (بلا بتّة المفتاح)
   const isKeySheet = ((codeVal >> 5) & 1) === 1;
   const codeMargin = codeBits.length
     ? Math.min(...codeBits.map((cb) => Math.abs(cb.fill - opts.codeThreshold)))

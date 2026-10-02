@@ -157,8 +157,7 @@ class _ExamWizardScreenState extends State<ExamWizardScreen> {
   final dateCtl = TextEditingController(text: DateTime.now().toIso8601String().substring(0, 10));
   int questionCount = 10;
   int optionCount = 4;
-  bool yesNoOnly = false;
-  bool mix = true;
+  QuestionPlan plan = QuestionPlan.mixed;
   String labels = 'ar';
 
   @override
@@ -199,12 +198,16 @@ class _ExamWizardScreenState extends State<ExamWizardScreen> {
             ),
           ]),
           const SizedBox(height: 18),
-          Text('عدد الأسئلة: $questionCount', style: const TextStyle(fontWeight: FontWeight.w700)),
+          Row(children: [
+            Text('عدد الأسئلة: $questionCount', style: const TextStyle(fontWeight: FontWeight.w700)),
+            const Spacer(),
+            Text('الحد الأقصى $kMaxQuestionsPerExam (ورقة واحدة)', style: Theme.of(context).textTheme.bodySmall),
+          ]),
           Slider(
             value: questionCount.toDouble(),
             min: 1,
-            max: 20,
-            divisions: 19,
+            max: kMaxQuestionsPerExam.toDouble(),
+            divisions: kMaxQuestionsPerExam - 1,
             label: '$questionCount',
             onChanged: (v) => setState(() => questionCount = v.round()),
           ),
@@ -216,13 +219,16 @@ class _ExamWizardScreenState extends State<ExamWizardScreen> {
               ButtonSegment<String>(value: 'mix', label: Text('مزيج')),
               ButtonSegment<String>(value: 'yesno', label: Text('نعم/لا')),
             ],
-            selected: {yesNoOnly ? 'yesno' : (mix ? 'mix' : 'choice')},
+            selected: {
+              plan == QuestionPlan.yesNoOnly ? 'yesno' : (plan == QuestionPlan.mixed ? 'mix' : 'choice'),
+            },
             onSelectionChanged: (s) => setState(() {
               final v = s.first;
-              yesNoOnly = v == 'yesno';
-              mix = v == 'mix';
+              plan = v == 'yesno' ? QuestionPlan.yesNoOnly : (v == 'mix' ? QuestionPlan.mixed : QuestionPlan.choiceOnly);
             }),
           ),
+          const SizedBox(height: 8),
+          _PlanPreview(count: questionCount, plan: plan, optionCount: optionCount),
           const SizedBox(height: 14),
           Row(children: [
             Expanded(
@@ -251,14 +257,11 @@ class _ExamWizardScreenState extends State<ExamWizardScreen> {
           const SizedBox(height: 22),
           FilledButton.icon(
             onPressed: () async {
-              final questions = <Question>[];
-              for (var i = 0; i < questionCount; i++) {
-                final isYesNo = yesNoOnly || (mix && i % 3 == 2);
-                questions.add(Question(
-                  type: isYesNo ? QuestionType.yesNo : QuestionType.choice,
-                  options: isYesNo ? 2 : optionCount,
-                ));
-              }
+              final questions = planQuestions(
+                count: questionCount,
+                plan: plan,
+                options: optionCount,
+              );
               final serial = (state.exams.length + 3) % 32;
               final exam = Exam(
                 name: nameCtl.text.trim().isEmpty ? 'اختبار' : nameCtl.text.trim(),
@@ -283,10 +286,55 @@ class _ExamWizardScreenState extends State<ExamWizardScreen> {
           ),
           const SizedBox(height: 10),
           const Text(
-            'ملاحظة: يُطبع على الورقة «رمز الورقة» (من 0 إلى 31) ليتعرّف التطبيق على الاختبار آليًا عند المسح.',
+            'ملاحظة 1: الورقة بنصف A4 — تُطبع نسختان في كل صفحة A4 (اقصص ووزّع). '
+            'ملاحظة 2: أسئلة «نعم أو لا» تُرتَّب دائمًا في آخر الورقة ومتتالية. '
+            'ملاحظة 3: يُطبع «رمز الورقة» (0–31) ليتعرّف التطبيق على الاختبار آليًا.',
             style: TextStyle(fontSize: 12, height: 1.7),
           ),
         ],
+      ),
+    );
+  }
+}
+
+
+/// معاينة تخطيط الأسئلة قبل الإنشاء: كم سؤال «دائرة» وكم «نعم/لا» وترتيبها.
+class _PlanPreview extends StatelessWidget {
+  const _PlanPreview({required this.count, required this.plan, required this.optionCount});
+  final int count;
+  final QuestionPlan plan;
+  final int optionCount;
+
+  @override
+  Widget build(BuildContext context) {
+    final questions = planQuestions(count: count, plan: plan, options: optionCount);
+    final yesNo = questions.where((q) => q.type == QuestionType.yesNo).length;
+    final choice = questions.length - yesNo;
+    final theme = Theme.of(context);
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Row(children: [
+            Icon(Icons.grid_view_rounded, size: 18, color: theme.colorScheme.primary),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                '$choice سؤال «ضع دائرة»  +  $yesNo سؤال «نعم أو لا»',
+                style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+              ),
+            ),
+          ]),
+          const SizedBox(height: 6),
+          Text(
+            yesNo == 0
+                ? 'كل الأسئلة دائرة — تُوزَّع على عمودين: الرقم 1 أعلى اليمين ثم نزولًا، ثم العمود الأيسر.'
+                : 'أسئلة «نعم أو لا» (${questions.length - yesNo + 1}–${questions.length}) في آخر الورقة ومتتالية — '
+                    'تُوزَّع على عمودين، $count سؤالًا في ورقة واحدة.',
+            style: theme.textTheme.bodySmall?.copyWith(height: 1.7),
+          ),
+        ]),
       ),
     );
   }

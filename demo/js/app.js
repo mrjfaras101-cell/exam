@@ -3,7 +3,7 @@
  * تشغيل كامل: إنشاء اختبار → طباعة الورقة → مفتاح الإجابة → تصحيح بالكاميرا → النتائج والتحليل.
  * كل القراءة تتم على الجهاز بمحرّك engine.js (نفس خوارزمية تطبيق Flutter).
  */
-import { buildTemplate, validateSpec } from './template.js';
+import { buildTemplate, validateSpec, planQuestions } from './template.js';
 import { detectSheet, composeNumber, DEFAULTS } from './engine.js';
 import { renderSheet, printSheet, downloadSheet, ensureFonts } from './sheet.js';
 import { SAMPLE_EXAM, SAMPLE_KEY } from './sample_exam.js';
@@ -601,19 +601,14 @@ function newExamDialog() {
   const name = prompt('اسم الاختبار:', 'اختبار جديد');
   if (!name) return;
   const gradeLabel = prompt('الصف / الشعبة:', 'الصف السابع / أ') || '';
-  const countStr = prompt('عدد الأسئلة (1–20):', '10');
-  const count = Math.max(1, Math.min(20, parseInt(countStr, 10) || 10));
+  const countStr = prompt('عدد الأسئلة (1–40):', '12');
+  const count = Math.max(1, Math.min(40, parseInt(countStr, 10) || 12));
   const mix = prompt('نوع الأسئلة: اكتب «دائرة» أو «نعم-لا» أو «مزيج»', 'مزيج') || 'مزيج';
   const optsStr = prompt('عدد خيارات أسئلة الدائرة (2–5):', '4');
   const options = Math.max(2, Math.min(5, parseInt(optsStr, 10) || 4));
 
-  const questions = [];
-  for (let i = 0; i < count; i++) {
-    let type = 'choice';
-    if (mix.includes('نعم')) type = 'yesno';
-    else if (mix.includes('مزيج')) type = i % 3 === 2 ? 'yesno' : 'choice';
-    questions.push({ type, options: type === 'yesno' ? 2 : options, marks: 1 });
-  }
+  const kind = mix.includes('نعم') ? 'yesno' : (mix.includes('مزيج') ? 'mix' : 'choice');
+  const questions = planQuestions({ count, kind, options });
   const serial = (state.exams.length + 3) % 32;
   const ex = {
     id: 'ex' + Date.now(), name, subject: '', gradeLabel, teacher: '', examDate: new Date().toISOString().slice(0, 10),

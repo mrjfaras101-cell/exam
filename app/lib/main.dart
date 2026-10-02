@@ -21,6 +21,9 @@ Future<void> main() async {
   runApp(MusahhihApp(state: state));
 }
 
+/// شعار التطبيق (موجود في assets/branding) — يُستخدم في شاشة البداية والترويسة.
+const String kLogoAsset = 'assets/branding/logo.png';
+
 class MusahhihApp extends StatelessWidget {
   const MusahhihApp({super.key, required this.state});
   final AppState state;
@@ -30,7 +33,7 @@ class MusahhihApp extends StatelessWidget {
     return ChangeNotifierProvider<AppState>.value(
       value: state,
       child: MaterialApp(
-        title: 'مُصحِّح',
+        title: 'مُصحِّح — Basem',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light(),
         darkTheme: AppTheme.dark(),

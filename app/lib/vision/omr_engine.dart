@@ -188,7 +188,7 @@ class SheetReader {
     }
 
     final comps = _connectedComponents(mask, width, height, 14);
-    final fid = _findFiducials(comps, mask, gray, width, height, th);
+    final fid = _findFiducials(comps, mask, gray, width, height, th, template);
     if (!fid.ok) return SheetReading.fail(fid.reason ?? 'لم أتعرّف على الورقة');
 
     final H = fid.homography!;
@@ -197,7 +197,7 @@ class SheetReader {
     // فحوص الجودة
     final dTop = _dist(dst[0], dst[1]);
     final dLeft = _dist(dst[0], dst[3]);
-    final pxPerMm = (dTop / kFiducialPitchXMm + dLeft / kFiducialPitchYMm) / 2;
+    final pxPerMm = (dTop / template.pitchX + dLeft / template.pitchY) / 2;
 
     var minX = double.infinity, minY = double.infinity, maxX = 0.0, maxY = 0.0;
     for (final p in dst) {
@@ -208,7 +208,7 @@ class SheetReader {
     final y0 = math.max(0, minY.floor()), y1 = math.min(height - 1, maxY.ceil());
 
     final sharpness = _laplacianVariance(gray, width, height, x0, y0, x1, y1);
-    final edgeWidthMm = _measureEdgeWidthMm(corrected, width, height, H, pxPerMm);
+    final edgeWidthMm = _measureEdgeWidthMm(corrected, width, height, H, pxPerMm, template.fiducialsOrdered[0]);
     final coverage = _polygonArea(dst) / (width * height);
 
     // بياض الورق المحلي (المئين 90)
@@ -597,8 +597,9 @@ _FidResult _findFiducials(
     return _FidResult(ok: false, reason: 'لم أجد علامات التسجيل — تأكّد من ظهور أركان الورقة الأربعة');
   }
 
-  const ideal = kFiducialPitchXMm / kFiducialPitchYMm;
-  final src = <List<double>>[kFiducialCenters[0], kFiducialCenters[1], kFiducialCenters[2], kFiducialCenters[3]];
+  final ordered = template.fiducialsOrdered;                       // [TL, TR, BR, BL]
+  final ideal = template.pitchX / template.pitchY;
+  final src = <List<double>>[for (final f in ordered) [f.x, f.y]];
   _BestFid? best;
 
   for (var i = 0; i < list.length; i++) {
@@ -640,7 +641,7 @@ _FidResult _findFiducials(
           for (final asg in assignments) {
             final hom = solveHomography(src, asg.map((c) => [c.cx, c.cy]).toList());
             if (hom == null) continue;
-            final app = _probeAppearance(mask, w, h, hom);
+            final app = _probeAppearance(mask, w, h, hom, ordered);
             final score = quadArea * app * app;
             if (best == null || score > best.score) {
               best = _BestFid(score, app, asg, hom, quadArea);
@@ -661,18 +662,18 @@ _FidResult _findFiducials(
   var appearance = best.appearance;
 
   // تحسين المراكز على الصورة الخام (يتجنّب هالة تصحيح الإضاءة) ثم إعادة حساب التجانس
-  final pxPerMm0 = _dist([corners[0].cx, corners[0].cy], [corners[1].cx, corners[1].cy]) / kFiducialPitchXMm;
+  final pxPerMm0 = _dist([corners[0].cx, corners[0].cy], [corners[1].cx, corners[1].cy]) / template.pitchX;
   if (pxPerMm0 > 2) {
     final refined = <_Component>[];
     for (var i = 0; i < 4; i++) {
       final c = corners[i];
-      final win = i == kRingIndex ? 5.0 : 6.0;
+      final win = ordered[i].role == 'ring' ? 5.0 : 6.0;
       final p = _refineCenter(gray, w, h, c.cx, c.cy, win, pxPerMm0);
       refined.add(_Component(c.id, c.area, c.minX, c.maxX, c.minY, c.maxY, c.fill, p[0], p[1]));
     }
     final hom2 = solveHomography(src, refined.map((c) => [c.cx, c.cy]).toList());
     if (hom2 != null) {
-      final app2 = _probeAppearance(mask, w, h, hom2);
+      final app2 = _probeAppearance(mask, w, h, hom2, ordered);
       if (app2 >= appearance - 0.08) {
         hom = hom2; appearance = app2; corners = refined;
       }
@@ -730,7 +731,7 @@ List<double> _refineCenter(Uint8List img, int w, int h, double cx, double cy, do
 
 /// يفحص مظهر العلامات: ثلاثة أسود مصمتة + مربع حلقي (مركز أبيض وحلقة سوداء).
 /// هذا الفحص هو ما يمنع قراءة الورقة مقلوبة وما يرفض الأركان الخاطئة.
-double _probeAppearance(Uint8List mask, int w, int h, List<double> hom) {
+double _probeAppearance(Uint8List mask, int w, int h, List<double> hom, List<Bubble> ordered) {
   double darkRatioIn(double mmX, double mmY, double rMm) {
     final p = applyH(hom, mmX, mmY);
     final e = applyH(hom, mmX + 1, mmY);
@@ -756,7 +757,10 @@ double _probeAppearance(Uint8List mask, int w, int h, List<double> hom) {
     return innerWhite * (inBand * 2.2).clamp(0.0, 1.0);
   }
 
-  final probes = [solid(13, 13), solid(197, 13), solid(13, 284), ring(197, 284)];
+  final probes = [
+    solid(ordered[0].x, ordered[0].y), solid(ordered[1].x, ordered[1].y),
+    solid(ordered[3].x, ordered[3].y), ring(ordered[2].x, ordered[2].y),
+  ];
   return probes.reduce((a, b) => a + b) / probes.length;
 }
 
@@ -876,12 +880,13 @@ double _laplacianVariance(Uint8List gray, int w, int h, int x0, int y0, int x1, 
 }
 
 /// عرض انتقال حبر→ورق على حافة مربّع التسجيل (بالمليمتر) — مقياس وضوح مرتبط بالمهمّة.
-double _measureEdgeWidthMm(Uint8List corrected, int w, int h, List<double> hom, double pxPerMm) {
+double _measureEdgeWidthMm(Uint8List corrected, int w, int h, List<double> hom, double pxPerMm, Bubble fid0) {
   final widths = <double>[];
-  for (final dy in [-2.5, 0.0, 2.5]) {
-    final yMm = kFiducialCenters[0][1] + dy;
-    final p0 = applyH(hom, kFiducialCenters[0][0] - kFiducialSize / 2 - 2.5, yMm);
-    final p1 = applyH(hom, kFiducialCenters[0][0] + kFiducialSize / 2 + 2.5, yMm);
+  final halfSize = (fid0.r * 2) / 2;          // نصف ضلع مربّع التسجيل
+  for (final dy in [-halfSize * 0.25, 0.0, halfSize * 0.25]) {
+    final yMm = fid0.y + dy;
+    final p0 = applyH(hom, fid0.x - halfSize - 2.5, yMm);
+    final p1 = applyH(hom, fid0.x + halfSize + 2.5, yMm);
     final len = math.sqrt((p1[0] - p0[0]) * (p1[0] - p0[0]) + (p1[1] - p0[1]) * (p1[1] - p0[1]));
     final n = math.max(12, len.round());
     final vals = <int>[];

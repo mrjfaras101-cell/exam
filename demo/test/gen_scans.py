@@ -18,8 +18,23 @@ OUT = os.path.join(HERE, 'out')
 FONTS = os.path.join(HERE, '..', 'assets', 'fonts')
 
 PPMM = 8.0          # بكسل لكل مم في الرسم المسطّح
-PAGE_W, PAGE_H = 210, 297
+TEMPLATE_PATH = os.path.join(OUT, 'template.json')
+
+# مقاس الورقة يُقرأ من القالب نفسه (يعمل مع A4 أو نصف A4 أو أي قالب مستقبلي)
+if os.path.exists(TEMPLATE_PATH):
+    with open(TEMPLATE_PATH, encoding='utf-8') as _f:
+        _TPL_HEAD = json.load(_f)
+    PAGE_W = _TPL_HEAD['paper']['w']
+    PAGE_H = _TPL_HEAD['paper']['h']
+else:
+    PAGE_W, PAGE_H = 148.5, 210   # الافتراضي: نصف ورقة A4 (A5 طولي)
 FLAT_W, FLAT_H = int(PAGE_W * PPMM), int(PAGE_H * PPMM)
+
+
+def template_fiducial_centers(tpl):
+    """مراكز علامات التسجيل بترتيب محرّك الكشف: [TL, TR, BR, BL]."""
+    by_id = {f['id']: f for f in tpl['fiducials']}
+    return [(by_id[k]['x'], by_id[k]['y']) for k in ('TL', 'TR', 'BR', 'BL')]
 
 
 # ------------------------------------------------------------------ #
@@ -52,6 +67,16 @@ class SheetRenderer:
 
     def mm(self, v):
         return v * PPMM
+
+    _font_cache = {}
+
+    def font_cached(self, px):
+        """خط بحجم بكسل محدّد مع تخزين مؤقت (تُقاس أحجام الخطوط من نصف قطر الفقاعة)."""
+        px = int(px)
+        if px not in self._font_cache:
+            self._font_cache[px] = ImageFont.truetype(
+                os.path.join(FONTS, 'Cairo-Regular.ttf'), px)
+        return self._font_cache[px]
 
     def draw_all(self):
         self.draw_fiducials()
@@ -99,22 +124,26 @@ class SheetRenderer:
     def draw_header_text(self):
         t = self.t
         m = t['meta']
-        # العنوان (يمين ترويسة العنوان)
-        self.d.text((self.mm(186), self.mm(33)), m['title'], font=self.font_bold, fill=0, anchor='ra')
+        g = t['layout']
+        right = 130.5      # حافة كتلة العنوان (يمينًا)
+        cx = t['paper']['w'] / 2
+        # العنوان (يمين كتلة العنوان)
+        self.d.text((self.mm(right), self.mm(26)), m['title'], font=self.font_bold, fill=0, anchor='ra')
         line2 = f"{m['subject']}  —  {m['gradeLabel']}"
-        self.d.text((self.mm(186), self.mm(41)), line2, font=self.font_reg, fill=0, anchor='ra')
+        self.d.text((self.mm(right), self.mm(33.5)), line2, font=self.font_reg, fill=0, anchor='ra')
         line3 = f"التاريخ: {m['examDate']}    المعلم: {m['teacher']}"
-        self.d.text((self.mm(186), self.mm(47)), line3, font=self.font_small, fill=0, anchor='ra')
+        self.d.text((self.mm(right), self.mm(38.5)), line3, font=self.font_small, fill=0, anchor='ra')
+        # رمز الورقة (الفقاعات مرسومة في draw_code) + عنوانه يسار الفقاعات
+        self.d.text((self.mm(100), self.mm(46.2)), m['texts']['codeCaption'], font=self.font_tiny, fill=50, anchor='rm')
         for i, txt in enumerate(m['texts']['instructions'][:3]):
-            self.d.text((self.mm(186), self.mm(55 + i * 5.5)), txt, font=self.font_tiny, fill=50, anchor='ra')
-        # رمز الورقة
-        self.d.line([self.mm(90), self.mm(69), self.mm(186), self.mm(69)], fill=120, width=2)
-        self.d.text((self.mm(186), self.mm(76)), m['texts']['codeCaption'], font=self.font_tiny, fill=50, anchor='rm')
+            self.d.text((self.mm(right), self.mm(55.5 + i * 4.5)), txt, font=self.font_tiny, fill=50, anchor='ra')
+        # خط الفصل بين الترويسة والأسئلة
+        self.d.line([self.mm(18), self.mm(70.5), self.mm(130.5), self.mm(70.5)], fill=120, width=2)
         # رقم الجلوس
-        self.d.text((self.mm(86), self.mm(29)), m['texts']['idCaption'], font=self.font_small, fill=0, anchor='ra')
-        self.d.text((self.mm(24), self.mm(28.6)), m['texts']['idHint'], font=self.font_digit, fill=60, anchor='ls')
+        self.d.text((self.mm(70), self.mm(21)), m['texts']['idCaption'], font=self.font_small, fill=0, anchor='ra')
+        self.d.text((self.mm(18), self.mm(68)), m['texts']['idHint'], font=self.font_digit, fill=60, anchor='ls')
         # تذييل
-        self.d.text((self.mm(105), self.mm(268)), m['texts']['footer'], font=self.font_tiny, fill=70, anchor='ma')
+        self.d.text((self.mm(cx), self.mm(192)), m['texts']['footer'], font=self.font_tiny, fill=70, anchor='ma')
 
     def draw_questions(self):
         for q in self.t['questions']:
@@ -125,12 +154,14 @@ class SheetRenderer:
             cx = self.mm(nb['x'] + nb['w'] / 2)
             cy = self.mm(nb['y'] + nb['h'] / 2)
             self.d.text((cx, cy), str(q['index'] + 1), font=self.font_reg, fill=0, anchor='mm')
+            label_px = max(9, int(q['bubbles'][0]['r'] * 0.95 * PPMM))
+            font_label = self.font_cached(label_px)
             for b in q['bubbles']:
                 box = [self.mm(b['x'] - b['r']), self.mm(b['y'] - b['r']),
                        self.mm(b['x'] + b['r']), self.mm(b['y'] + b['r'])]
                 self.d.ellipse(box, outline=0, width=3)
                 self.d.text((self.mm(b['x']), self.mm(b['y'])), b['label'],
-                            font=self.font_bubble, fill=95, anchor='mm')
+                            font=font_label, fill=95, anchor='mm')
 
     # ---- تظليل إجابات الطالب ----
     def shade(self, rng, bubble, kind='pen'):
@@ -168,7 +199,7 @@ def desk_background(rng, w, h):
     return base
 
 
-def simulate_photo(flat: Image.Image, rng, out_w=1100, out_h=1450, hard=False):
+def simulate_photo(flat: Image.Image, rng, out_w=1100, out_h=1450, hard=False, fid_mm=None):
     """يحوّل ورقة مسطّحة إلى "صورة جوال": منظور + إضاءة + ظل + ضبابية + ضوضاء + JPEG."""
     # 1) أبعاد الورقة في الإطار (تُغطّي 72%–88% من العرض)
     cover = rng.uniform(0.72, 0.88) if not hard else rng.uniform(0.62, 0.80)
@@ -230,8 +261,8 @@ def simulate_photo(flat: Image.Image, rng, out_w=1100, out_h=1450, hard=False):
     img = Image.open(tmp).convert('RGB')
     arr = np.array(img, dtype=np.float32)
 
-    # المواضع الحقيقية لمراكز علامات التسجيل (لقياس خطأ التعرّف)
-    fids = [(13, 13), (197, 13), (197, 284), (13, 284)]  # TL,TR,BR,BL (نفس ترتيب محرّك الكشف)
+    # المواضع الحقيقية لمراكز علامات التسجيل (لقياس خطأ التعرّف) — TL,TR,BR,BL
+    fids = fid_mm or [(13, 13), (197, 13), (197, 284), (13, 284)]
     true_centers = []
     for (mx, my) in fids:
         x, y = H[0, 0] * mx * PPMM + H[0, 1] * my * PPMM + H[0, 2], H[1, 0] * mx * PPMM + H[1, 1] * my * PPMM + H[1, 2]
@@ -310,6 +341,7 @@ def main():
     with open(os.path.join(OUT, 'students.json'), encoding='utf-8') as f:
         students = json.load(f)
 
+    fid_mm = template_fiducial_centers(tpl)
     rot = {int(v) for v in args.rotate180.split(',') if v.strip().isdigit()}
     manifest = []
     for i in range(min(args.count, len(students))):
@@ -317,7 +349,7 @@ def main():
         flat = build_sheet(tpl, st, rng)
         if i in rot:
             flat = flat.rotate(180)
-        photo, true_centers = simulate_photo(flat, rng, hard=args.hard)
+        photo, true_centers = simulate_photo(flat, rng, hard=args.hard, fid_mm=fid_mm)
         gray = np.array(Image.fromarray(photo, 'RGB').convert('L'), dtype=np.uint8)
         name = f"{args.prefix}_{i:02d}"
         write_pgm(os.path.join(OUT, name + '.pgm'), gray)

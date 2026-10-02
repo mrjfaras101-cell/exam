@@ -19,6 +19,8 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 CAMERA_PERMISSION = '    <uses-permission android:name="android.permission.CAMERA" />'
 CAMERA_FEATURE = '    <uses-feature android:name="android.hardware.camera" android:required="false" />'
 
+APP_LABEL_AR = 'مُصحِّح Basem'
+
 IOS_KEYS = [
     ("NSCameraUsageDescription", "يحتاج التطبيق إلى الكاميرا لقراءة أوراق الإجابة وتصحيحها."),
     ("NSPhotoLibraryUsageDescription", "يحتاج التطبيق إلى الوصول لصورك لتصحيح أوراق سبق تصويرها."),
@@ -32,19 +34,25 @@ def patch_android() -> bool:
         print("• أندرويد: لم أجد AndroidManifest.xml — شغّل `flutter create .` أولًا.")
         return False
     text = manifest.read_text(encoding="utf-8")
-    if "android.permission.CAMERA" in text:
-        print("• أندرويد: صلاحية الكاميرا موجودة أصلًا ✓")
-        return True
+    changed = []
 
-    anchor = "    <application"
-    if anchor not in text:
-        print("• أندرويد: بنية الملف غير متوقعة — أضف الصلاحية يدويًا فوق <application>.")
-        return False
+    if "android.permission.CAMERA" not in text:
+        anchor = "    <application"
+        if anchor in text:
+            text = text.replace(anchor, f"{CAMERA_PERMISSION}\n{CAMERA_FEATURE}\n\n" + anchor, 1)
+            changed.append("صلاحية CAMERA + uses-feature")
+    else:
+        changed.append("الصلاحية موجودة أصلًا")
 
-    addition = f"{CAMERA_PERMISSION}\n{CAMERA_FEATURE}\n\n"
-    text = text.replace(anchor, addition + anchor, 1)
+    # اسم التطبيق الظاهر على الشاشة
+    if f'android:label="{APP_LABEL_AR}"' not in text:
+        import re as _re
+        text, n = _re.subn(r'android:label="[^"]*"', f'android:label="{APP_LABEL_AR}"', text, count=1)
+        if n:
+            changed.append(f'اسم التطبيق «{APP_LABEL_AR}»')
+
     manifest.write_text(text, encoding="utf-8")
-    print("• أندرويد: أُضيفت صلاحية CAMERA + uses-feature ✓")
+    print("• أندرويد: " + " · ".join(changed) + " ✓")
     return True
 
 
@@ -66,8 +74,12 @@ def patch_ios() -> bool:
 
     block = "".join(f"\t<key>{k}</key>\n\t<string>{v}</string>\n" for k, v in missing)
     text = text.replace(close, block + close, 1)
+
+    # اسم التطبيق الظاهر على الشاشة (العربي أو الإنجليزي حسب لغة الجهاز)
+    if "<key>CFBundleDisplayName</key>" not in text:
+        text = text.replace(close, f"\t<key>CFBundleDisplayName</key>\n\t<string>{APP_LABEL_AR}</string>\n" + close, 1)
     plist.write_text(text, encoding="utf-8")
-    print(f"• iOS: أُضيفت {len(missing)} مفاتيح وصف استخدام ✓")
+    print(f"• iOS: أوصاف الاستخدام ({len(missing)}) + اسم التطبيق ✓")
     return True
 
 

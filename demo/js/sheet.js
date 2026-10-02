@@ -12,7 +12,9 @@ const AR_FONT = "'Cairo', sans-serif";
  * @param {number} pxPerMm دقة الرسم (مثلاً 3.2 للمعاينة)
  */
 export function renderSheet(canvas, template, pxPerMm = 3.2) {
-  const W = Math.round(210 * pxPerMm), H = Math.round(297 * pxPerMm);
+  const paperW = template.paper?.w ?? 148.5;
+  const paperH = template.paper?.h ?? 210;
+  const W = Math.round(paperW * pxPerMm), H = Math.round(paperH * pxPerMm);
   canvas.width = W; canvas.height = H;
   const c = canvas.getContext('2d');
   const mm = (v) => v * pxPerMm;
@@ -55,34 +57,35 @@ export function renderSheet(canvas, template, pxPerMm = 3.2) {
     c.fillText(String(b.digit), mm(b.x), mm(b.y) + mm(0.1));
   }
 
-  /* --- نصوص الترويسة --- */
+  /* --- نصوص الترويسة (كتلة عنوان يمين + شبكة الجلوس يسار) --- */
   const m = template.meta;
-  const right = mm(186), left = mm(24);
+  const right = mm(130.5);
   c.textAlign = 'right'; c.textBaseline = 'alphabetic';
   c.fillStyle = '#0b1a18';
-  c.font = `700 ${mm(5.6)}px ${AR_FONT}`;
-  c.fillText(m.title || 'اختبار', right, mm(35));
-  c.font = `400 ${mm(4)}px ${AR_FONT}`;
-  c.fillText([m.subject, m.gradeLabel].filter(Boolean).join('  —  '), right, mm(43));
-  c.font = `400 ${mm(3.1)}px ${AR_FONT}`;
+  c.font = `700 ${mm(4.6)}px ${AR_FONT}`;
+  c.fillText(m.title || 'اختبار', right, mm(27));
+  c.font = `400 ${mm(3.3)}px ${AR_FONT}`;
+  c.fillText([m.subject, m.gradeLabel].filter(Boolean).join('  —  '), right, mm(35));
+  c.font = `400 ${mm(2.6)}px ${AR_FONT}`;
   c.fillStyle = '#333';
-  c.fillText(`التاريخ: ${m.examDate || '—'}    المعلم: ${m.teacher || '—'}`, right, mm(49.5));
+  c.fillText(`التاريخ: ${m.examDate || '—'}    المعلم: ${m.teacher || '—'}`, right, mm(39.5));
 
-  c.fillStyle = '#444'; c.font = `400 ${mm(2.7)}px ${AR_FONT}`;
-  m.texts.instructions.forEach((t, i) => c.fillText(t, right, mm(56 + i * 5.2)));
+  c.fillStyle = '#444'; c.font = `400 ${mm(2.2)}px ${AR_FONT}`;
+  m.texts.instructions.forEach((t, i) => c.fillText(t, right, mm(55.5 + i * 4.5)));
 
   c.strokeStyle = '#999'; c.lineWidth = 1;
-  c.beginPath(); c.moveTo(mm(90), mm(69)); c.lineTo(mm(186), mm(69)); c.stroke();
-  c.fillStyle = '#555'; c.font = `400 ${mm(2.5)}px ${AR_FONT}`;
-  c.fillText(m.texts.codeCaption, mm(186), mm(77));
+  c.beginPath(); c.moveTo(mm(18), mm(70.5)); c.lineTo(mm(130.5), mm(70.5)); c.stroke();
+  c.fillStyle = '#555'; c.font = `400 ${mm(2.2)}px ${AR_FONT}`;
+  c.textAlign = 'right';
+  c.fillText(m.texts.codeCaption, mm(100), mm(46.2));
 
   // رقم الجلوس: العنوان + التلميح
-  c.fillStyle = '#0b1a18'; c.font = `700 ${mm(3.2)}px ${AR_FONT}`;
+  c.fillStyle = '#0b1a18'; c.font = `700 ${mm(2.9)}px ${AR_FONT}`;
   c.textAlign = 'right';
-  c.fillText(m.texts.idCaption, mm(86), mm(34));
-  c.fillStyle = '#555'; c.font = `400 ${mm(2.4)}px ${AR_FONT}`;
+  c.fillText(m.texts.idCaption, mm(70), mm(21));
+  c.fillStyle = '#555'; c.font = `400 ${mm(1.9)}px ${AR_FONT}`;
   c.textAlign = 'left';
-  c.fillText(m.texts.idHint, mm(24), mm(37.5));
+  c.fillText(m.texts.idHint, mm(18), mm(68));
 
   /* --- الأسئلة --- */
   c.textAlign = 'center';
@@ -90,14 +93,14 @@ export function renderSheet(canvas, template, pxPerMm = 3.2) {
     const nb = q.numberBox;
     c.strokeStyle = '#8a9a98'; c.lineWidth = 1;
     c.strokeRect(mm(nb.x), mm(nb.y), mm(nb.w), mm(nb.h));
-    c.fillStyle = '#0b1a18'; c.font = `700 ${mm(3.6)}px ${AR_FONT}`;
+    c.fillStyle = '#0b1a18'; c.font = `700 ${mm(Math.min(3.0, nb.h * 0.55))}px ${AR_FONT}`;
     c.fillText(String(q.index + 1), mm(nb.x + nb.w / 2), mm(nb.y + nb.h / 2) + mm(0.2));
 
     for (const b of q.bubbles) {
       c.beginPath(); c.arc(mm(b.x), mm(b.y), mm(b.r), 0, Math.PI * 2);
       c.strokeStyle = '#222'; c.lineWidth = Math.max(1, mm(0.3)); c.stroke();
       c.fillStyle = '#333';
-      c.font = `400 ${mm(q.type === 'yesno' ? 3.0 : 2.9)}px ${AR_FONT}`;
+      c.font = `400 ${mm(Math.min(q.type === 'yesno' ? 2.6 : 2.5, b.r * 0.95))}px ${AR_FONT}`;
       c.fillText(b.label, mm(b.x), mm(b.y) + mm(0.15));
     }
   }
@@ -105,12 +108,12 @@ export function renderSheet(canvas, template, pxPerMm = 3.2) {
   /* --- التذييل --- */
   c.fillStyle = '#666'; c.font = `400 ${mm(2.4)}px ${AR_FONT}`;
   c.textAlign = 'center';
-  c.fillText(`${m.texts.footer}  ·  رمز الورقة ${m.serial}${m.isKey ? ' (مفتاح)' : ''}`, mm(105), mm(270));
+  c.fillText(`${m.texts.footer}  ·  رمز الورقة ${m.serial}${m.isKey ? ' (مفتاح)' : ''}`, mm(paperW / 2), mm(192));
 
   return canvas;
 }
 
-/** طباعة الورقة بمقياس 100% على A4 */
+/** طباعة الورقة بمقياس 100% — **نسختان في كل صفحة A4 أفقية** مع خط قصّ في المنتصف */
 export function printSheet(canvas, title = 'ورقة الإجابة') {
   const w = window.open('', '_blank');
   if (!w) { alert('المتصفح منع نافذة الطباعة — اسمح بالنوافذ المنبثقة.'); return; }
@@ -118,17 +121,25 @@ export function printSheet(canvas, title = 'ورقة الإجابة') {
   w.document.write(`<!DOCTYPE html><html dir="rtl" lang="ar"><head><meta charset="utf-8">
   <title>${title}</title>
   <style>
-    @page { size: A4 portrait; margin: 0; }
+    @page { size: A4 landscape; margin: 0; }
     html,body { margin:0; padding:0; background:#fff; }
-    img { width: 210mm; height: 297mm; display: block; }
-    .noprint { font-family: sans-serif; padding: 10mm; direction: rtl; }
+    .sheet { width: 148.5mm; height: 210mm; display: block; }
+    .spread { display: flex; flex-direction: row; }
+    .cut { width: 0.2mm; height: 210mm; background: #bbb; }
+    .noprint { font-family: sans-serif; padding: 8mm; direction: rtl; font-size: 3.4mm; line-height: 1.6 }
     @media print { .noprint { display: none } }
   </style></head><body>
   <div class="noprint">
     <b>تعليمات:</b> اختر مقياس <b>100%</b> (أو «الحجم الفعلي») — لا تستخدم «ملاءمة الصفحة».
-    ثم اطبع. يجب أن يظهر المربّعان السوداوان في الأركان الأربعة كاملين.
+    الصفحة تحتوي <b>نسختين</b> من ورقة نصف A4: اقصصها من الخط الرمادي في المنتصف.
+    تأكّد من ظهور المربّعات السوداء في الأركان الأربعة كاملة قبل التوزيع.
   </div>
-  <img src="${data}" onload="window.print()">
+  <div class="spread">
+    <img class="sheet" src="${data}">
+    <div class="cut"></div>
+    <img class="sheet" src="${data}">
+  </div>
+  <script>window.addEventListener('load', () => window.print());</script>
   </body></html>`);
   w.document.close();
 }
@@ -136,7 +147,7 @@ export function printSheet(canvas, title = 'ورقة الإجابة') {
 /** تنزيل الورقة كصورة PNG عالية الدقة */
 export function downloadSheet(template, filename = 'answer-sheet.png') {
   const cv = document.createElement('canvas');
-  renderSheet(cv, template, 12);      // ~2520×3564 بكسل
+  renderSheet(cv, template, 12);      // دقة عالية (12 بكسل/مم)
   const a = document.createElement('a');
   a.href = cv.toDataURL('image/png');
   a.download = filename;
