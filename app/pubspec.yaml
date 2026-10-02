@@ -1,0 +1,50 @@
+name: musahhih
+description: "مُصحِّح — تصحيح أوراق الاختبارات بالكاميرا (بدون إنترنت)"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.6.0 <4.0.0'   # يتطلّب Flutter 3.27+ (WidgetStateProperty / withValues)
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # الكاميرا والمعالجة
+  camera: ^0.10.5+9
+  image_picker: ^1.1.2
+
+  # الورقة والطباعة
+  pdf: ^3.10.8
+  printing: ^5.12.0
+
+  # التخزين والملفات
+  sqflite: ^2.3.3
+  path_provider: ^2.1.4
+  path: ^1.9.0
+  share_plus: ^9.0.0
+  csv: ^6.0.0
+
+  # الأدوات
+  provider: ^6.1.2
+  wakelock_plus: ^1.2.5
+  # ملاحظة: لا نضمّن حزمة intl صراحةً — flutter_localizations يثبّت النسخة المناسبة تلقائيًا،
+  # وهذا يتفادى تعارض الإصدارات بين إصدارات Flutter المختلفة.
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/fonts/
+  fonts:
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo-Regular.ttf
+        - asset: assets/fonts/Cairo-Bold.ttf
+          weight: 700

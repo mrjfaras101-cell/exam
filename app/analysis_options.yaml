@@ -1,0 +1,8 @@
+# قواعد التحليل القياسية لـ Flutter — بلا قواعد إضافية صارمة كي يمرّ «flutter analyze» بسلاسة
+# في أول تشغيل. المعلومات (info) عن العناصر المُهمَلة لا توقف البناء.
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    deprecated_member_use: info
+    deprecated_member_use_from_same_package: ignore

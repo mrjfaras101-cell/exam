@@ -1,0 +1,6 @@
+{
+  "name": "musahhih-demo",
+  "private": true,
+  "type": "module",
+  "description": "نموذج حي لمحرّك قراءة أوراق الإجابة (نفس خوارزمية تطبيق Flutter)"
+}
