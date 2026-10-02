@@ -58,7 +58,10 @@ jobs:
 
       - name: أيقونة التطبيق من الشعار
         working-directory: app
-        run: dart run flutter_launcher_icons
+        run: |
+          # الأيقونات مُولَّدة مسبقًا ومُلتزمة في assets/branding/icons
+          # (لا نعتمد على أداة خارجية أثناء البناء)
+          python3 tool/install_app_icons.py
 
       - name: فحوصات محرّك القراءة (Node + Python)
         run: |
@@ -74,10 +77,12 @@ jobs:
           cp tool/android-init.gradle "$HOME/.gradle/init.d/compile-sdk.gradle"
 
       - name: التحليل (flutter analyze)
+        id: analyze
         working-directory: app
         run: flutter analyze
 
       - name: الاختبارات (flutter test)
+        id: test
         working-directory: app
         run: flutter test --reporter expanded
 

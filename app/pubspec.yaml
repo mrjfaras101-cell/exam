@@ -37,10 +37,14 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.13.1   # اختياري: لإعادة توليد الأيقونات على جهازك
 
-# أيقونة التطبيق تُولَّد من شعار المشروع:
-#   dart run flutter_launcher_icons
+# أيقونات التطبيق جاهزة ومُلتزمة في assets/branding/icons (أندرويد + iOS)،
+# والسكربت tool/install_app_icons.py ينسخها لمجلدات المنصّات عند البناء.
+# لتحديثها بعد تغيير الشعار:
+#   python3 tool/make_app_icons.py      # يتطلّب Pillow
+#   python3 tool/install_app_icons.py
+# بديل اختياري (على جهاز فيه مجلد ios/):  dart run flutter_launcher_icons
 flutter_launcher_icons:
   android: true
   ios: true
