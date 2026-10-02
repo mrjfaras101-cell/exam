@@ -1,0 +1,93 @@
+name: بناء APK (أندرويد)
+
+on:
+  push:
+    branches: [arena/01a0fc3b-exam]
+    paths:
+      - 'app/**'
+      - '.github/workflows/android-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    name: بناء ملف APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: جلب المستودع
+        uses: actions/checkout@v4
+
+      - name: تهيئة Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: تهيئة Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: معلومات البيئة
+        run: flutter --version && dart --version
+
+      - name: توليد مجلد أندرويد
+        working-directory: app
+        run: |
+          flutter create . --platforms=android --project-name musahhih --org com.musahhih
+          # لا نسمح لأي ملف من مصادرنا أن يُستبدل
+          git checkout -- pubspec.yaml lib test analysis_options.yaml 2>/dev/null || true
+          rm -f test/widget_test.dart
+          python3 tool/apply_platform_config.py || true
+          echo "--- pubspec (أول 40 سطرًا) ---"
+          head -40 pubspec.yaml
+          echo "--- AndroidManifest ---"
+          cat android/app/src/main/AndroidManifest.xml
+          echo "--- build.gradle ---"
+          ls android/app/ && cat android/app/build.gradle* | head -60
+
+      - name: التبعيات (flutter pub get)
+        working-directory: app
+        run: flutter pub get
+
+      - name: التحليل (تنبيهي)
+        id: analyze
+        continue-on-error: true
+        working-directory: app
+        run: flutter analyze
+
+      - name: الاختبارات (تنبيهي)
+        id: test
+        continue-on-error: true
+        working-directory: app
+        run: flutter test --reporter expanded
+
+      - name: بناء APK
+        working-directory: app
+        run: flutter build apk --release --no-tree-shake-icons
+
+      - name: تجهيز المخرجات
+        run: |
+          mkdir -p dist
+          cp app/build/app/outputs/flutter-apk/app-release.apk dist/musahhih-1.0.0.apk
+          ls -lh dist/
+          sha256sum dist/musahhih-1.0.0.apk | tee dist/musahhih-1.0.0.apk.sha256
+
+      - name: رفع APK كأثر للتنزيل
+        uses: actions/upload-artifact@v4
+        with:
+          name: musahhih-apk
+          path: dist/*
+          retention-days: 30
+
+      - name: ملخص النتيجة
+        if: always()
+        run: |
+          echo "### نتيجة البناء" >> $GITHUB_STEP_SUMMARY
+          echo "- التحليل: ${{ steps.analyze.outcome }}" >> $GITHUB_STEP_SUMMARY
+          echo "- الاختبارات: ${{ steps.test.outcome }}" >> $GITHUB_STEP_SUMMARY
