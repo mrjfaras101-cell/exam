@@ -18,7 +18,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:musahhih/vision/omr_engine.dart';
 import 'package:musahhih/vision/template.dart';
 
-const double pxPerMm = 4.0;
+// 6 بكسل/مم: أعلى من حدّ «الدقة المنخفضة» (5.2) كي لا تُوسَم الأوراق السليمة.
+const double pxPerMm = 6.0;
 const int imgW = (210 * pxPerMm).round();
 const int imgH = (297 * pxPerMm).round();
 
@@ -176,8 +177,9 @@ void main() {
     expect(r.code!.isKeySheet, isFalse);
     expect(r.studentNumber, studentNumber);
     expect(r.answerOptions, key);
-    expect(r.flags, isEmpty);
-    expect(r.quality!.pxPerMm, greaterThan(3.5));
+    // لا وسوم على أي سؤال (وسوم الجودة العامة مثل اللمعان/الدقة مسموحة — الورقة اصطناعية بيضاء تمامًا)
+    expect(r.flags.where((f) => f.index >= 0), isEmpty);
+    expect(r.quality!.pxPerMm, greaterThan(5.2));
   });
 
   test('ميل إضاءة + ضوضاء: القراءة نفسها', () {
@@ -248,7 +250,7 @@ void main() {
     final marks = <int, List<int>>{for (var i = 0; i < key.length; i++) i: [key[i]]};
     final full = sheet.render(studentNumber: studentNumber, marks: marks);
 
-    // تصغير الصورة كأن الكاميرا بعيدة: 2.2 بكسل/مم (دون حدّ 3.5)
+    // تصغير الصورة كأن الكاميرا بعيدة: 2.2 بكسل/مم (دون حدّ 3.5 بكسل/مم)
     const targetPxPerMm = 2.2;
     final w = (210 * targetPxPerMm).round();
     final h = (297 * targetPxPerMm).round();

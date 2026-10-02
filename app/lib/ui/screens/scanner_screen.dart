@@ -458,7 +458,9 @@ class _OverlayPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // تحويل إحداثيات الإطار المعالج إلى أبعاد العرض (BoxFit.cover)
+    if (!summary.ok || summary.corners.length != 4) return;
+
+    // تحويل إحداثيات إطار المعالجة إلى أبعاد العرض (نفس أسلوب BoxFit.cover)
     final scale = (size.width / frameW) > (size.height / frameH)
         ? size.width / frameW
         : size.height / frameH;
@@ -466,39 +468,51 @@ class _OverlayPainter extends CustomPainter {
     final dy = (size.height - frameH * scale) / 2;
     Offset map(List<double> p) => Offset(p[0] * scale + dx, p[1] * scale + dy);
 
+    final questionFlags = summary.flags.where((f) => f.$1 >= 0).length;
+    final good = questionFlags == 0;
+
     final quad = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 3
-      ..color = const Color(0xFF34D399);
-    if (summary.corners.length == 4) {
-      final path = Path()..moveTo(map(summary.corners[0]).dx, map(summary.corners[0]).dy);
-      for (var i = 1; i < 4; i++) {
-        final p = map(summary.corners[i]);
-        path.lineTo(p.dx, p.dy);
-      }
-      path.close();
-      canvas.drawPath(path, quad);
+      ..color = good ? const Color(0xFF34D399) : const Color(0xFFF59E0B);
+
+    final path = Path()..moveTo(map(summary.corners[0]).dx, map(summary.corners[0]).dy);
+    for (var i = 1; i < 4; i++) {
+      final p = map(summary.corners[i]);
+      path.lineTo(p.dx, p.dy);
+    }
+    path.close();
+    canvas.drawPath(path, quad);
+
+    // نقاط الأركان الأربعة — تأكيد بصري على أن الورقة «مقفلة»
+    for (final c in summary.corners) {
+      final p = map(c);
+      canvas.drawCircle(p, 5, Paint()..color = quad.color);
+      canvas.drawCircle(p, 5, Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..color = const Color(0xCC000000));
     }
 
-    // فقاعات: أخضر = مظلّلة، أصفر = خفيفة، رمادي = فارغة
-    for (var i = 0; i < summary.answers.length; i++) {
-      final status = summary.flags.any((f) => f.$1 == i) ? 1 : 0;
-      final paint = Paint()
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2.5;
-      if (status == 1) {
-        paint.color = const Color(0xFFF59E0B);
-      } else {
-        paint.color = const Color(0x66FFFFFF);
-      }
-      // نقطة صغيرة عند موضع السؤال (لا نملك إحداثيات الفقاعة في الملخّص الاقتصادي)
-      final q = summary.corners.isEmpty ? Offset.zero : map(summary.corners[1]);
-      canvas.drawCircle(q, 2, paint);
+    // شارة عدد المواضع التي تحتاج مراجعة
+    if (!good) {
+      final tp = TextPainter(
+        text: TextSpan(
+          text: '⚠ $questionFlags',
+          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w700, fontSize: 15),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+      final o = map(summary.corners[0]);
+      final rect = Rect.fromLTWH(o.dx - tp.width / 2 - 8, o.dy - 34, tp.width + 16, 26);
+      canvas.drawRRect(RRect.fromRectAndRadius(rect, const Radius.circular(13)), Paint()..color = const Color(0xFFF59E0B));
+      tp.paint(canvas, Offset(rect.left + 8, rect.top + 4));
     }
   }
 
   @override
-  bool shouldRepaint(covariant _OverlayPainter old) => old.summary != summary;
+  bool shouldRepaint(covariant _OverlayPainter old) =>
+      old.summary != summary || old.frameW != frameW || old.frameH != frameH;
 }
 
 /// بطاقة نتيجة الورقة: الدرجة، الحالة، ولمس أي سؤال لتعديل إجابته يدويًا.
