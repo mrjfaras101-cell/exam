@@ -581,6 +581,7 @@ class _FidResult {
 
 _FidResult _findFiducials(
   List<_Component> comps, Uint8List mask, Uint8List gray, int w, int h, EngineThresholds th,
+  SheetTemplate template,
 ) {
   // ملاحظة: علامة «الحلقة» تُطابق بالفحص البصري لا بالشكل، لأن تظليل الطالب الكثيف يشبهها.
   final imgArea = w * h;
@@ -882,7 +883,7 @@ double _laplacianVariance(Uint8List gray, int w, int h, int x0, int y0, int x1, 
 /// عرض انتقال حبر→ورق على حافة مربّع التسجيل (بالمليمتر) — مقياس وضوح مرتبط بالمهمّة.
 double _measureEdgeWidthMm(Uint8List corrected, int w, int h, List<double> hom, double pxPerMm, Bubble fid0) {
   final widths = <double>[];
-  final halfSize = (fid0.r * 2) / 2;          // نصف ضلع مربّع التسجيل
+  final halfSize = fid0.r;                    // نصف ضلع مربّع التسجيل (= 5 مم)
   for (final dy in [-halfSize * 0.25, 0.0, halfSize * 0.25]) {
     final yMm = fid0.y + dy;
     final p0 = applyH(hom, fid0.x - halfSize - 2.5, yMm);
