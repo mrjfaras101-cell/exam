@@ -7,10 +7,43 @@
 
 ---
 
+## 📍 أولًا: أين أضع مجلد المشروع على جهازي؟
+
+**المكان المقترح: `C:\dev\exam`** — وأفتح منه `C:\dev\exam\app` في Android Studio.
+
+| المكان | التقييم | السبب |
+|---|---|---|
+| `C:\dev\exam` | ✅ **الأفضل** | مسار قصير بالإنجليزية، بلا مزامنة، ويقلّل مشاكل بناء أندرويد |
+| `C:\Users\<اسمك>\Documents\exam` | ✅ جيد | مقبول إن كان `Documents` **غير** مرتبط بـ OneDrive |
+| `سطح المكتب` أو `التنزيلات` | ⚠️ يعمل | قد يُنظَّف تلقائيًا، وبطء في الفهرسة |
+| داخل `OneDrive` | ❌ تجنّبه | المزامنة تُفسد مخرجات البناء (آلاف الملفات المؤقتة) وتُعرقل Gradle |
+| مسار فيه **حروف عربية** أو **مسافات** | ❌ تجنّبه | مشاكل معروفة في أدوات أندرويد/Gradle على ويندوز |
+
+> ⚠️ **تنبيه مهم:** الكود في المستودع موجود على فرع اسمه **`arena/01a0fc3b-exam`**،
+> وفرع `main` فيه ملف واحد فقط (البداية). لذلك استخدم دائمًا أمر النسخ مع `-b`:
+> `git clone -b arena/01a0fc3b-exam https://github.com/mrjfaras101-cell/exam.git`
+> (أو من GitHub: بدّل الفرع من قائمة الفروع أعلى الصفحة قبل تنزيل ZIP).
+
+**للتجديد لاحقًا (جلب أحدث التعديلات) داخل مجلد المشروع:**
+
+```bash
+cd /d C:\dev\exam
+git status                 # تأكّد أن شجرتك نظيفة (بلا تعديلات مهمّة غير محفوظة)
+git pull                   # يجلب أحدث ما نُشر على فرع العمل
+```
+
+- إن كانت لديك تعديلات محلية ولا تريد فقدانها: `git stash` ← `git pull` ← `git stash pop`.
+- وإن أردت نسخة **مطابقة تمامًا** لما على GitHub (تمحو تعديلاتك المحلية):
+  `git fetch --all` ثم `git reset --hard origin/arena/01a0fc3b-exam`.
+
+---
+
 ## ⚡ أسرع مسار (لو أردت الاختصار)
 
 ```bash
-git clone https://github.com/mrjfaras101-cell/exam.git
+mkdir C:\dev
+cd /d C:\dev
+git clone -b arena/01a0fc3b-exam https://github.com/mrjfaras101-cell/exam.git
 cd exam\app
 flutter create . --platforms=android --project-name musahhih --org com.musahhih
 flutter pub get
@@ -79,16 +112,54 @@ flutter config --android-sdk "C:\Users\<اسمك>\AppData\Local\Android\Sdk"
 
 ## 3) اجلب المشروع من GitHub
 
-**الطريقة الأفضل (طرفية):**
+### الطريقة أ — بالطرفية (موصى بها)
 
 ```bash
-cd %USERPROFILE%\Documents
-git clone https://github.com/mrjfaras101-cell/exam.git
+git --version                 # تأكّد من وجود Git (وإن لم يوجد: انظر الطريقة ب)
+mkdir C:\dev
+cd /d C:\dev
+git clone -b arena/01a0fc3b-exam https://github.com/mrjfaras101-cell/exam.git
 ```
 
-**أو من داخل Android Studio:** الشاشة الترحيبية → **Get from VCS** →
-`https://github.com/mrjfaras101-cell/exam.git` → **Clone**
-(Android Studio يستخدم Git المدمج معه إن لم يكن مثبّتًا على جهازك).
+**لماذا `-b`؟** لأن فرع `main` في هذا المستودع فيه ملف واحد فقط، وكل كود التطبيق على فرع
+`arena/01a0fc3b-exam`. بدون `-b` ستحصل على مجلد شبه فارغ.
+
+**تحقّق أن المجلد سليم:** يجب أن ترى داخل `C:\dev\exam`:
+مجلدات `app` · `demo` · `docs` · `.github`، وأن يوجد الملف `app\lib\main.dart`.
+
+```bash
+cd /d C:\dev\exam
+git branch                    # يجب أن يظهر فرع arena/01a0fc3b-exam بعلامة *
+dir                           # على ماك/لينكس: ls
+```
+
+### الطريقة ب — بلا Git إطلاقًا (تنزيل ZIP)
+
+**اتبع هذا الرابط المباشر (نسخة فرع العمل):**
+
+> <https://github.com/mrjfaras101-cell/exam/archive/refs/heads/arena/01a0fc3b-exam.zip>
+
+1. سيُنزّل ملف `exam-arena-01a0fc3b-exam.zip`.
+2. أنشئ مجلدًا `C:\dev` ثم فكّ الضغط داخله.
+3. سيظهر مجلد باسم طويل — **أعد تسميته إلى `exam`** فيكون المسار `C:\dev\exam`.
+
+> ملاحظة: مع ZIP لا يوجد `git pull` للتجديد — عليك تنزيل ZIP جديد عند وجود تحديثات.
+> لذلك الطريقة (أ) أفضل إن كنت ستستخدم Git.
+
+### الطريقة ج — من داخل Android Studio
+
+الشاشة الترحيبية → **Get from VCS** → الصق `https://github.com/mrjfaras101-cell/exam.git`
+→ في خانة **Directory** اختر `C:\dev\exam` → **Clone**.
+
+⚠️ Android Studio ينسخ الفرع الافتراضي (`main`) تلقائيًا، لذا **بدّل الفرع بعده**:
+- من الطرفية داخل Android Studio: `git checkout arena/01a0fc3b-exam`
+- أو من الواجهة: نافذة **Git** أسفل الشاشة → **Branches** → `Remote` →
+  `origin/arena/01a0fc3b-exam` → **Checkout**.
+
+**نصيحة اختيارية (يملكها صاحب المستودع):** يمكنك من GitHub جعل
+`arena/01a0fc3b-exam` هو الفرع الافتراضي:
+**Settings → General → Default branch → بدّل إلى `arena/01a0fc3b-exam` → Update**،
+فيصبح التنزيل والنسخ يجلب الكود الصحيح تلقائيًا بلا `-b`.
 
 ---
 
