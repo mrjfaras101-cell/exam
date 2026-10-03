@@ -483,6 +483,21 @@ adb push demo\assets\samples\app_test\. /sdcard/Pictures/musahhih/
 
 ## 11) بناء ملف APK من داخل Android Studio
 
+### أين أجد ملف APK؟ (ثلاث حالات)
+
+| الحالة | مكان الملف |
+|---|---|
+| **جاهز للتثبيت الآن (بُني على GitHub)** | الرابط الثابت: <https://github.com/mrjfaras101-cell/exam/releases/download/apk-demo/musahhih-1.0.0.apk> — وحجمه ≈ 59 م.ب. ورمز QR له في `docs/apk-qr.png` (امسحه من الجوال) |
+| **بعد `flutter build apk --release` على جهازك** | `C:\dev\exam\app\build\app\outputs\flutter-apk\app-release.apk` |
+| **نسخة التشغيل السريعة (Debug) أثناء الضغط على ▶** | `C:\dev\exam\app\build\app\outputs\flutter-apk\app-debug.apk` — وهي التي تُثبَّت على الجوال تلقائيًا عند التشغيل |
+| **عند التقسيم حسب نوع المعالج** (`--split-per-abi`) | `app-armeabi-v7a-release.apk` · `app-arm64-v8a-release.apk` · `app-x86_64-release.apk` في المجلد نفسه |
+
+> 💡 لفتح المجلد بسرعة من الطرفية: `explorer C:\dev\exam\app\build\app\outputs\flutter-apk`
+> أو من Android Studio: بعد **Build → Flutter → Build APK** تظهر رسالة أسفل الشاشة فيها رابط
+> **locate** يفتح المجلد مباشرة.
+> ⚠️ مجلد `build` مُستثنى في `.gitignore` ولا يُرفع إلى GitHub — ولذلك ينشر سير العمل ملف APK
+> على «الإصدارات» (Releases) حتى يكون رابط تنزيل دائم.
+
 **الطريقة الأسهل (طرفية):**
 
 ```bash
