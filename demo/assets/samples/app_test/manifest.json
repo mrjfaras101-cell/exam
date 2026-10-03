@@ -1,0 +1,76 @@
+{
+ "note": "أوراق تجريبية تُطابق ما يُنشئه التطبيق: 10 أسئلة · نوع «مزيج» · 4 خيارات · رمز الورقة 3 — للتجربة من «صور من المعرض» بلا طابعة.",
+ "exam": {
+  "questions": 10,
+  "plan": "mix (7 دائرة + 3 نعم/لا)",
+  "options": 4,
+  "serial": 3,
+  "idDigits": 8
+ },
+ "key": [
+  2,
+  0,
+  1,
+  3,
+  0,
+  1,
+  1,
+  0,
+  1,
+  0
+ ],
+ "keySheet": "keysheet.jpg (رمز الورقة 35 = 3 + بتّة المفتاح)",
+ "expected": [
+  {
+   "file": "appscan_00.jpg",
+   "studentId": "20260101",
+   "score": 10,
+   "total": 10,
+   "notes": "—"
+  },
+  {
+   "file": "appscan_01.jpg",
+   "studentId": "20260102",
+   "score": 8,
+   "total": 10,
+   "notes": "س5:light"
+  },
+  {
+   "file": "appscan_02.jpg",
+   "studentId": "20260103",
+   "score": 7,
+   "total": 10,
+   "notes": "س7:ambiguous"
+  },
+  {
+   "file": "appscan_03.jpg",
+   "studentId": "20260104",
+   "score": 7,
+   "total": 10,
+   "notes": "س10:blank"
+  },
+  {
+   "file": "appscan_04.jpg",
+   "studentId": "20260105",
+   "score": 7,
+   "total": 10,
+   "notes": "—"
+  },
+  {
+   "file": "appscan_05.jpg",
+   "studentId": "20260106",
+   "score": 7,
+   "total": 10,
+   "notes": "—"
+  }
+ ],
+ "files": [
+  "appscan_00.jpg",
+  "appscan_01.jpg",
+  "appscan_02.jpg",
+  "appscan_03.jpg",
+  "appscan_04.jpg",
+  "appscan_05.jpg",
+  "keysheet.jpg"
+ ]
+}
