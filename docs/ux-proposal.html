@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مُصحِّح — نماذج تحسين الواجهة (قبل / بعد)</title>
+<style>
+  @font-face{font-family:'Cairo';src:url('../app/assets/fonts/Cairo-Regular.ttf') format('truetype');font-weight:400}
+  @font-face{font-family:'Cairo';src:url('../app/assets/fonts/Cairo-Bold.ttf') format('truetype');font-weight:700}
+  :root{
+    --primary:#0E7C66; --primary-soft:#E4F1EE; --warn:#F59E0B; --warn-soft:#FEF3C7;
+    --err:#DC2626; --err-soft:#FEE2E2; --ink:#10231F; --muted:#6B7C79;
+    --line:#DCE5E3; --surface:#FFFFFF; --bg:#F1F5F4; --surface2:#F7FAF9;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Cairo',system-ui,sans-serif;line-height:1.7}
+  header.top{background:linear-gradient(135deg,#0E7C66,#0a5a4a);color:#fff;padding:26px 20px}
+  header.top h1{margin:0 0 6px;font-size:24px}
+  header.top p{margin:0;opacity:.92;font-size:14px;max-width:820px}
+  .wrap{max-width:1180px;margin:0 auto;padding:20px}
+  h2.sec{font-size:19px;margin:34px 0 6px;padding-right:12px;border-right:5px solid var(--primary)}
+  p.note{margin:0 0 16px;color:var(--muted);font-size:13.5px}
+  .pair{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+  .col{flex:0 0 auto}
+  .tag{display:inline-block;font-size:12px;font-weight:700;padding:3px 12px;border-radius:999px;margin-bottom:8px}
+  .tag.before{background:var(--err-soft);color:#991B1B}
+  .tag.after{background:var(--primary-soft);color:#0a5a4a}
+  .phone{width:330px;background:var(--surface);border:1px solid var(--line);border-radius:26px;
+         padding:10px;box-shadow:0 10px 26px rgba(16,35,31,.10);position:relative}
+  .screen{border-radius:20px;overflow:hidden;background:var(--surface);min-height:640px;display:flex;flex-direction:column}
+  .bar{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line);background:var(--surface)}
+  .bar .logo{width:24px;height:24px;border-radius:6px;object-fit:cover}
+  .bar b{font-size:14px}
+  .bar .sp{flex:1}
+  .bar small{color:var(--muted);font-size:11px}
+  .body{padding:12px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .card{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:12px}
+  .card.tight{padding:9px 11px}
+  .hero{background:linear-gradient(135deg,var(--primary),#0a5a4a);color:#fff;border-radius:16px;padding:14px;display:flex;gap:10px;align-items:center}
+  .hero b{font-size:16px;display:block}
+  .hero span{font-size:12px;opacity:.95}
+  .hero img{width:56px;height:56px;border-radius:12px;background:#fff;padding:3px}
+  .chip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;background:#EDF2F1;color:#4A5C58;
+        border-radius:999px;padding:5px 10px}
+  .chip.ok{background:var(--primary-soft);color:#0a5a4a}
+  .chip.warn{background:var(--warn-soft);color:#8a5a05}
+  .chip.err{background:var(--err-soft);color:#991B1B}
+  .row{display:flex;gap:8px;align-items:center}
+  .row > .grow{flex:1}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .tile{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:12px 8px;text-align:center}
+  .tile.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+  .tile .ic{font-size:22px}
+  .tile small{display:block;font-size:11.5px;font-weight:700;margin-top:4px}
+  .btn{border-radius:13px;padding:12px;text-align:center;font-weight:700;font-size:13.5px;border:1px solid var(--line);background:var(--surface)}
+  .btn.primary{background:var(--primary);border-color:var(--primary);color:#fff}
+  .btn.ghost{background:transparent}
+  .btn.danger{color:var(--err);border-color:#f3c9c9}
+  .steps{display:flex;gap:6px;align-items:center}
+  .step{flex:1;text-align:center;font-size:10.5px;font-weight:700;color:var(--muted)}
+  .step .dot{height:6px;border-radius:999px;background:#E2E9E8;margin-bottom:6px}
+  .step.done .dot{background:var(--primary)}
+  .step.now .dot{background:var(--warn)}
+  .step.now{color:#8a5a05}
+  .progress{height:7px;border-radius:999px;background:#E2E9E8;overflow:hidden}
+  .progress > i{display:block;height:100%;background:var(--primary)}
+  .camera{position:relative;background:#0d1512;border-radius:16px;height:300px;overflow:hidden;flex:1}
+  .camera .paper{position:absolute;inset:34px 30px 60px;border:2px dashed rgba(255,255,255,.75);border-radius:10px}
+  .camera .corner{position:absolute;width:16px;height:16px;border:3px solid #34D399;border-radius:4px}
+  .camera .hud{position:absolute;right:10px;left:10px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;
+               border-radius:10px;padding:8px 10px;font-size:12.5px}
+  .camera .hud.big{font-size:16px;font-weight:700;text-align:center;bottom:70px;background:rgba(0,0,0,.42)}
+  .quality{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.55);border-radius:999px;padding:5px 10px;
+           color:#fff;font-size:11px;display:flex;gap:5px;align-items:center}
+  .qbar{display:inline-block;width:6px;border-radius:2px;background:#4ADE80}
+  .float{position:absolute;top:56px;left:10px;right:10px;background:#fff;border-radius:14px;padding:10px 12px;
+         box-shadow:0 8px 20px rgba(0,0,0,.25);display:flex;gap:10px;align-items:center;font-size:12.5px}
+  .float .score{width:42px;height:42px;border-radius:50%;background:var(--primary-soft);color:#0a5a4a;
+                display:grid;place-items:center;font-weight:700;font-size:12px}
+  .strips{display:flex;gap:3px}
+  .strips i{width:8px;height:18px;border-radius:3px;background:var(--primary)}
+  .strips i.off{background:#D7E0DE}
+  .hero .strips i{background:#A7EEDC}
+  .hero .strips i.off{background:rgba(255,255,255,.32)}
+  .list{display:flex;flex-direction:column;gap:8px}
+  .item{display:flex;align-items:center;gap:9px;background:var(--surface2);border:1px solid var(--line);
+        border-radius:12px;padding:9px 11px;font-size:12.5px}
+  .item .num{width:28px;height:28px;border-radius:50%;background:var(--primary-soft);color:#0a5a4a;
+             display:grid;place-items:center;font-weight:700;font-size:12px;flex:0 0 auto}
+  .item .num.warn{background:var(--warn-soft);color:#8a5a05}
+  .item .num.err{background:var(--err-soft);color:#991B1B}
+  .item .grow{flex:1}
+  .item .v{font-weight:700}
+  .muted{color:var(--muted);font-size:11.5px}
+  .sheet{position:absolute;left:10px;right:10px;bottom:10px;background:#fff;border-radius:18px 18px 14px 14px;
+         border:1px solid var(--line);box-shadow:0 -6px 22px rgba(16,35,31,.18);padding:12px}
+  .answers{display:flex;flex-wrap:wrap;gap:6px}
+  .ans{font-size:11.5px;font-weight:700;border-radius:9px;padding:5px 8px;background:#EDF2F1;color:#41524F}
+  .ans.ok{background:var(--primary-soft);color:#0a5a4a}
+  .ans.bad{background:var(--err-soft);color:#991B1B}
+  .ans.warn{background:var(--warn-soft);color:#8a5a05}
+  .toast{position:absolute;bottom:14px;left:14px;right:14px;background:#10231F;color:#fff;border-radius:12px;
+         padding:10px 12px;font-size:12.5px;display:flex;align-items:center;gap:10px}
+  .toast b{color:#8EE3CD}
+  .big{font-size:26px;font-weight:700}
+  .bars{display:flex;align-items:flex-end;gap:5px;height:64px}
+  .bars i{flex:1;border-radius:4px 4px 0 0;background:var(--primary);opacity:.85}
+  .bars i.low{background:var(--err)}
+  footer.end{color:var(--muted);font-size:12.5px;text-align:center;padding:26px 20px 40px}
+  ul.plain{margin:6px 0 0;padding-right:18px;font-size:13px}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>مُصحِّح Basem — نماذج تحسين الواجهة (قبل / بعد)</h1>
+  <p>نماذج بصرية للشاشات الأربع الأكثر تأثيرًا على تجربة المعلم. النماذج «قبل» مرسومة من الكود
+     الحالي فعليًا، والنماذج «بعد» تجسّد بنود الموجة الأولى والثانية في
+     <b>docs/02-ux-improvements-ar.md</b>. الألوان والخط (Cairo) والشعار هي نفسها المستخدمة في التطبيق.</p>
+</header>
+
+<div class="wrap">
+
+  <!-- ═══════════ 1) شاشة الاختبار ═══════════ -->
+  <h2 class="sec">1. شاشة الاختبار — «ماذا أفعل الآن؟»</h2>
+  <p class="note">اليوم: أربع بطاقات متساوية بلا ترتيب ولا حالة. المقترح: شريط خطوات + زر واحد للخطوة التالية،
+     وحالة المفتاح ظاهرة، والتصحيح لا يُفتح بمفتاح ناقص.</p>
+  <div class="pair">
+
+    <div class="col">
+      <span class="tag before">الآن</span>
+      <div class="phone"><div class="screen">
+        <div class="bar"><img class="logo" src="../app/assets/branding/logo.png"><b>مُصحِّح</b><span class="sp"></span><small>3 اختبار</small></div>
+        <div class="body">
+          <div class="card tight">
+            <div class="muted">رياضيات · الصف السابع / أ · 2026-10-05</div>
+            <div class="row" style="margin-top:8px;text-align:center">
+              <div class="grow" style="flex:1"><b>20</b><div class="muted">سؤال</div></div>
+              <div style="flex:1"><b>6</b><div class="muted">مفتاح مُدخل</div></div>
+              <div style="flex:1"><b>—</b><div class="muted">متوسط الصف</div></div>
+              <div style="flex:1"><b>رمز 3</b><div class="muted">الورقة</div></div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="tile"><div class="ic">🔑</div><small>مفتاح الإجابة</small></div>
+            <div class="tile"><div class="ic">🖨️</div><small>الورقة والطباعة</small></div>
+            <div class="tile primary"><div class="ic">📷</div><small>ابدأ التصحيح</small></div>
+            <div class="tile"><div class="ic">📊</div><small>النتائج والتحليل</small></div>
+          </div>
+          <div class="card tight"><b style="font-size:13px">الأسئلة</b>
+            <div class="item" style="margin-top:8px"><div class="num">1</div><div class="grow">ضع دائرة (4 خيارات)</div><span class="muted">لم يُحدَّد</span></div>
+            <div class="item" style="margin-top:6px"><div class="num">2</div><div class="grow">ضع دائرة (4 خيارات)</div><span class="muted">لم يُحدَّد</span></div>
+            <div class="item" style="margin-top:6px"><div class="num">3</div><div class="grow">أجب بنعم أو لا</div><b>نعم</b></div>
+          </div>
+          <div class="muted">↑ لا مؤشر لترتيب العمل، ولا تحذير أن المفتاح ناقص (6 من 20).</div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="col">
+      <span class="tag after">المقترح</span>
+      <div class="phone"><div class="screen">
+        <div class="bar"><img class="logo" src="../app/assets/branding/logo.png"><b>رياضيات — سابع/أ</b><span class="sp"></span><small>32/40 ✓</small></div>
+        <div class="body">
+          <div class="card tight">
+            <div class="steps">
+              <div class="step done"><div class="dot"></div>إنشاء</div>
+              <div class="step now"><div class="dot"></div>المفتاح</div>
+              <div class="step"><div class="dot"></div>الطباعة</div>
+              <div class="step"><div class="dot"></div>التصحيح</div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <div class="chip warn">⚠ المفتاح ناقص: 6 من 20</div>
+            </div>
+            <div class="progress" style="margin-top:10px"><i style="width:30%"></i></div>
+          </div>
+          <div class="btn primary">الخطوة التالية: أكمل مفتاح الإجابة ←</div>
+          <div class="grid2">
+            <div class="tile"><div class="ic">🖨️</div><small>طباعة 20 صفحة</small></div>
+            <div class="tile" style="opacity:.55"><div class="ic">📷</div><small>التصحيح (يتطلب المفتاح)</small></div>
+          </div>
+          <div class="card">
+            <div class="row"><b style="font-size:13.5px">أوراق الصف</b><span class="sp"></span><span class="chip ok">32 من 40</span></div>
+            <div class="progress" style="margin-top:8px"><i style="width:80%"></i></div>
+            <div class="chip warn" style="margin-top:9px">لم تُصحَّح ورقات: 5 · 11 · 18 · 24 · 31 · 33 · 37 · 39</div>
+          </div>
+          <div class="card tight">
+            <b style="font-size:12.5px">آخر النتائج</b>
+            <div class="item" style="margin-top:7px"><div class="num">12</div><div class="grow">خالد أحمد</div><span class="v">8/10</span></div>
+            <div class="item" style="margin-top:6px"><div class="num warn">13</div><div class="grow">راجع 2 أسئلة</div><span class="v">—</span></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 2) شاشة التصحيح ═══════════ -->
+  <h2 class="sec">2. شاشة التصحيح — القلب النابض للتطبيق</h2>
+  <p class="note">اليوم: كاميرا صغيرة أعلى قائمة + نص تقني + نافذة مقاطعة بعد كل ورقة ولا تراجع.
+     المقترح: كاميرا ملء الشاشة + إرشاد بلغة معلّم + عدّاد كبير + بطاقة عائمة + زر تراجع + مقياس وضوح.</p>
+  <div class="pair">
+
+    <div class="col">
+      <span class="tag before">الآن</span>
+      <div class="phone"><div class="screen">
+        <div class="bar"><b>التصحيح بالكاميرا</b><span class="sp"></span><small>🖼️</small></div>
+        <div class="body">
+          <div class="camera" style="height:270px">
+            <div class="paper"></div>
+            <div class="hud">رقم 12 · 3 موضع للمراجعة ⚠ · دقة 5.8 بكسل/مم</div>
+          </div>
+          <div class="row">
+            <div class="btn" style="flex:1">⏸ إيقاف</div>
+            <div class="btn" style="width:48px">🔦</div>
+            <div class="btn primary" style="flex:1.2">📷 التقاط يدوي</div>
+          </div>
+          <div class="card tight"><div class="row"><b style="font-size:13px">تحتاج مراجعة</b>
+            <span class="chip err">4</span><span class="sp"></span><span class="muted">12 ورقة</span></div></div>
+          <div class="item"><div class="num err">!</div><div class="grow">الطالب 12</div><span class="v">8/10</span></div>
+          <div class="sheet">
+            <div class="row"><div class="score" style="width:46px;height:46px">8.0<br>/10</div>
+              <div class="grow"><b>طالب — 12</b><div class="muted">النسبة 80% · ثقة القراءة 91%</div></div></div>
+            <div class="chip warn" style="margin-top:8px">⚠ محاذاة قريبة من الحد</div>
+            <div class="muted" style="margin-top:8px">↑ نافذة تغطي الكاميرا بعد كل ورقة: 40 مقاطعة لكل صف.</div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="col">
+      <span class="tag after">المقترح</span>
+      <div class="phone"><div class="screen" style="min-height:640px">
+        <div class="camera" style="height:640px;border-radius:20px">
+          <div class="paper" style="inset:52px 34px 150px;border-color:rgba(255,255,255,.35)"></div>
+          <div class="corner" style="top:44px;right:26px;border-color:#34D399;border-left:none;border-bottom:none"></div>
+          <div class="corner" style="top:44px;left:26px;border-color:#34D399;border-right:none;border-bottom:none"></div>
+          <div class="corner" style="bottom:142px;right:26px;border-color:#34D399;border-left:none;border-top:none"></div>
+          <div class="corner" style="bottom:142px;left:26px;border-color:#34D399;border-right:none;border-top:none"></div>
+          <div class="quality"><span>الوضوح</span><i class="qbar" style="height:9px"></i><i class="qbar" style="height:13px"></i><i class="qbar" style="height:17px"></i></div>
+          <div class="float">
+            <div class="score">8.0<br>/10</div>
+            <div class="grow"><b>رقم 12 ✓ قرأتها</b><div class="muted">80% · ارفع الورقة وضع التالية</div></div>
+            <div class="btn ghost" style="padding:6px 10px">التفاصيل</div>
+          </div>
+          <div class="hud big">ضع الورقة داخل الإطار</div>
+          <div style="position:absolute;top:16px;right:12px;left:12px" class="row">
+            <span class="chip" style="background:rgba(0,0,0,.55);color:#fff">✕ إيقاف</span>
+            <span class="sp" style="flex:1"></span>
+            <span class="chip" style="background:rgba(0,0,0,.55);color:#fff">7 / 40</span>
+            <span class="chip" style="background:rgba(0,0,0,.55);color:#fff">🔦 الإضاءة</span>
+            <span class="chip" style="background:rgba(0,0,0,.55);color:#fff">🔇 الصوت</span>
+          </div>
+          <div class="toast"><span>✓</span><span class="grow">سُجّلت الورقة رقم 12 — 8/10</span><b>تراجع</b></div>
+        </div>
+      </div></div>
+      <ul class="plain">
+        <li>صفر مقاطعة: البطاقة العائمة تختفي وحدها، والتفاصيل عند الطلب.</li>
+        <li>«تراجع» يمحو آخر ورقة خلال 6 ثوان — حماية من خطأ واحد.</li>
+        <li>الأصوات: نقرة = سليمة · نقرتان = راجع · طنين = لم أتعرّف.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ═══════════ 3) بطاقة النتيجة ═══════════ -->
+  <h2 class="sec">3. بطاقة النتيجة — «ماذا قرأتَ عنّي؟»</h2>
+  <p class="note">اليوم: شرائح «1: أ» لا تُفرّق إجابة الطالب من الصحيحة، واللمس يُدوّر الخيارات خيارًا خيارًا.
+     المقترح: سطر واضح لكل سؤال (إجابتك مقابل الصحيح) + لمسة واحدة للتصحيح.</p>
+  <div class="pair">
+    <div class="col">
+      <span class="tag before">الآن</span>
+      <div class="phone" style="width:330px"><div class="screen" style="min-height:250px;padding:14px">
+        <div class="row"><div class="score" style="width:56px;height:56px;border-radius:50%;background:var(--primary-soft);color:#0a5a4a;display:grid;place-items:center;font-weight:700">8.0<br>/10</div>
+          <div><b>طالب — 12</b><div class="muted">النسبة 80%</div></div></div>
+        <div class="answers" style="margin-top:12px">
+          <span class="ans ok">1: أ</span><span class="ans ok">2: ج</span><span class="ans bad">3: ب</span>
+          <span class="ans warn">4: — ⚠</span><span class="ans ok">5: د</span><span class="ans bad">6: أ</span>
+        </div>
+        <div class="muted" style="margin-top:12px">المس أي سؤال لتغيير إجابته يدويًا — تُعاد الدرجة فورًا.</div>
+      </div></div>
+    </div>
+    <div class="col">
+      <span class="tag after">المقترح</span>
+      <div class="phone" style="width:330px"><div class="screen" style="min-height:250px;padding:14px">
+        <div class="row"><div style="width:60px;height:60px;border-radius:50%;background:var(--primary-soft);color:#0a5a4a;display:grid;place-items:center;font-weight:700">8.0<br>/10</div>
+          <div class="grow"><b>خالد أحمد — 12</b><div class="muted">80% · ثقة القراءة عالية</div></div>
+          <span class="chip ok">ناجح</span></div>
+        <div class="list" style="margin-top:12px">
+          <div class="item"><div class="num">3</div><div class="grow">إجابتك: <b>ب</b> <span class="muted">(الصحيح: ج)</span></div><span class="chip err">خطأ</span></div>
+          <div class="item"><div class="num warn">4</div><div class="grow">لم أتأكّد من قراءتها</div><span class="chip warn">راجع</span></div>
+          <div class="item"><div class="num">7</div><div class="grow">إجابتك: <b>أ</b></div><span class="chip ok">صحيح</span></div>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <div class="btn" style="flex:1">✎ تعديل رقم الجلوس/الاسم</div>
+          <div class="btn primary" style="flex:1">التالي ←</div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ 4) النتائج ═══════════ -->
+  <h2 class="sec">4. النتائج والتحليل — «ماذا أفعل بهذه الأرقام؟»</h2>
+  <p class="note">اليوم: ست بطاقات أرقام + توزيع + قائمة مجرّدة + بطاقات فيها p و D. المقترح: ملخص بلغة معلّم،
+     أسماء، «من لم تُصحَّح ورقته»، ترتيب، وتقارير جاهزة للطباعة والمشاركة.</p>
+  <div class="pair">
+    <div class="col">
+      <span class="tag before">الآن</span>
+      <div class="phone"><div class="screen">
+        <div class="bar"><b>النتائج والتحليل</b><span class="sp"></span><small>📊 CSV</small></div>
+        <div class="body">
+          <div class="grid2">
+            <div class="tile"><b>32</b><div class="muted">ورقة</div></div>
+            <div class="tile"><b>72.4%</b><div class="muted">المتوسط</div></div>
+          </div>
+          <div class="grid2">
+            <div class="tile"><b>96%</b><div class="muted">الأعلى</div></div>
+            <div class="tile"><b>38%</b><div class="muted">الأدنى</div></div>
+          </div>
+          <div class="card tight"><b style="font-size:12.5px">توزيع الدرجات</b>
+            <div class="bars" style="height:52px;margin-top:8px">
+              <i class="low" style="height:20%"></i><i class="low" style="height:34%"></i><i class="low" style="height:48%"></i>
+              <i class="low" style="height:62%"></i><i style="height:80%"></i><i style="height:96%"></i>
+              <i style="height:70%"></i><i style="height:44%"></i><i style="height:28%"></i><i style="height:16%"></i>
+            </div>
+          </div>
+          <div class="item"><div class="num">12</div><div class="grow">12</div><span class="v">8.0/10 (80%)</span></div>
+          <div class="item"><div class="num">13</div><div class="grow">13</div><span class="v">6.0/10 (60%)</span></div>
+          <div class="card tight"><b style="font-size:12.5px">سؤال 7</b>
+            <div class="muted">صعوبة p = 0.12 · تمييز D = 0.05 · توزيع: 3/2/4/1</div></div>
+          <div class="muted">↑ لا أسماء · لا ترتيب · لا «من لم تُصحَّح ورقته» · تحليل يحتاج مترجمًا.</div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="col">
+      <span class="tag after">المقترح</span>
+      <div class="phone"><div class="screen">
+        <div class="bar"><b>رياضيات — سابع/أ</b><span class="sp"></span><small>تصدير ⤓</small></div>
+        <div class="body">
+          <div class="hero" style="align-items:flex-start">
+            <div class="grow" style="flex:1">
+              <b style="font-size:22px">72%</b><span>متوسط الصف · 32 ورقة</span>
+              <div class="strips" style="margin-top:8px"><i></i><i></i><i></i><i class="off"></i></div>
+              <span style="font-size:11.5px">نجح 26 من 32</span>
+            </div>
+            <div style="text-align:center"><b style="font-size:18px">5:32</b><span style="font-size:11px">زمن التصحيح</span></div>
+          </div>
+          <div class="card tight"><span class="chip warn">لم تُصحَّح ورقات: 5 · 11 · 18 · 24 · 31 · 33 · 37 · 39</span></div>
+          <div class="row">
+            <div class="btn" style="flex:1">⇅ ترتيب</div>
+            <div class="btn" style="flex:1">🔎 بحث</div>
+            <div class="btn" style="flex:1">⤓ تقارير</div>
+          </div>
+          <div class="item"><div class="num">12</div><div class="grow">خالد أحمد<br><span class="muted">10 أسئلة · لا مراجعة</span></div><span class="v">8.0/10</span></div>
+          <div class="item"><div class="num warn">13</div><div class="grow">سامر يوسف<br><span class="muted">2 بانتظار تأكيدك</span></div><span class="v">6.0/10</span></div>
+          <div class="item"><div class="num err">18</div><div class="grow">لم تُصحَّح ورقته بعد</div><span class="chip err">إضافة يدوية</span></div>
+          <div class="card tight"><b style="font-size:12.5px">🔴 سؤال 7 — صعب جدًا</b>
+            <div class="muted">12% فقط أجابوا صحيحًا · يُستحسن إعادة تدريس المهارة</div>
+            <div style="margin-top:6px"><span class="chip">تفاصيل فنية: p · D · التوزيع</span></div>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════ ما لا يظهر في النماذج ═══════════ -->
+  <h2 class="sec">5. تحسينات متفق عليها لا تظهر في النماذج</h2>
+  <p class="note">لأنها سلوك ونصوص لا صور.</p>
+  <div class="pair">
+    <div class="card" style="max-width:560px">
+      <b>أصوات واهتزازات متمايزة</b>
+      <ul class="plain">
+        <li>نقرة قصيرة + اهتزاز خفيف = ورقة سليمة.</li>
+        <li>نقرتان منخفضتان = تحتاج مراجعة.</li>
+        <li>طنين = لم أتعرّف على الورقة (ثبّت الجوال).</li>
+        <li>مفتاح كتم واضح في شريط التصحيح، ويُحفظ بين الجلسات.</li>
+      </ul>
+    </div>
+    <div class="card" style="max-width:560px">
+      <b>حماية من الأخطاء الصامتة</b>
+      <ul class="plain">
+        <li>رقم جلوس مكرر ⇒ سؤال: تحديث / إضافة كنسخة / إلغاء.</li>
+        <li>«تراجع» بعد كل تسجيل + قائمة «آخر 5 أوراق».</li>
+        <li>الأوراق بلا رقم جلوس لم تكن تُدمج أصلًا (علة SQL) — تُصلح مع ميزة الدمج.</li>
+        <li>نسخة احتياطية تلقائية قبل أي حذف جماعي.</li>
+      </ul>
+    </div>
+    <div class="card" style="max-width:560px">
+      <b>لغة معلّم لا لغة مهندس</b>
+      <ul class="plain">
+        <li>«حساسية القراءة: متوسطة» بدل «عتبة مظلّلة 0.45».</li>
+        <li>«وضع المعايرة»: امسح ورقة، أرِه ما قرأه، صحّحه بلمسة، فيتعلّم.</li>
+        <li>«ضع الورقة داخل الإطار» بدل «وجّه الكاميرا نحو الورقة».</li>
+        <li>التحليل: «سؤال صعب جدًا» قبل p و D.</li>
+      </ul>
+    </div>
+    <div class="card" style="max-width:560px">
+      <b>تجربة أول 60 ثانية</b>
+      <ul class="plain">
+        <li>«جرّبه الآن»: اختبار جاهز + 5 أوراق مصوّرة داخل التطبيق، بلا طباعة ولا كاميرا.</li>
+        <li>شاشة ختام الجلسة: ملخص + مشاركة + «جلسة جديدة».</li>
+        <li>قفل التطبيق (PIN/بصمة) للخصوصية، ووضع ليلي للتصحيح المسائي.</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="end">
+    مُصحِّح Basem · نماذج مقترحة — التفاصيل الكاملة والمواصفات وخطة التنفيذ في
+    <b>docs/02-ux-improvements-ar.md</b>
+  </footer>
+</div>
+</body>
+</html>
