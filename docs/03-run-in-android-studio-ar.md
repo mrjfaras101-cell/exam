@@ -46,12 +46,110 @@ cd /d C:\dev
 git clone -b arena/01a0fc3b-exam https://github.com/mrjfaras101-cell/exam.git
 cd exam\app
 flutter create . --platforms=android --project-name musahhih --org com.musahhih
+git checkout -- pubspec.yaml lib test analysis_options.yaml    ← حماية ملفاتنا (إن كان git متاحًا)
 flutter pub get
 python tool\apply_platform_config.py
 python tool\install_app_icons.py
 ```
 
 ثم من Android Studio: **File → Open → مجلد `exam\app`** → اختر الجهاز → زر **▶**.
+
+## 🚀 فتحتُ المشروع في Android Studio — كيف أشغّله الآن؟
+
+### قائمة تحقّق سريعة (بالترتيب)
+
+| # | الخطوة | كيف أتأكّد أنها تمّت |
+|---|---|---|
+| 0 | أنت تفتح مجلد **`app`** لا `exam` | `pubspec.yaml` ظاهر في جذر شجرة الملفات · اسم النافذة ينتهي بـ `\exam\app` |
+| 1 | مجلد `android` موجود | ترى مجلد `android` في شجرة الملفات (إن لم يكن: الخطوة 5) |
+| 2 | التبعيات نُزّلت | `flutter pub get` بلا أخطاء · لا خطوط حمراء تحت الاستيرادات في `lib/` |
+| 3 | الصلاحيات والأيقونة | `python tool\apply_platform_config.py` و `python tool\install_app_icons.py` |
+| 4 | جهاز جاهز | اسم الجوال أو المحاكي يظهر في القائمة أعلى النافذة |
+| 5 | إعداد تشغيل موجود | القائمة المنسدلة بجانب ▶ تعرض **main.dart** |
+| 6 | اضغط ▶ | نافذة **Run** أسفل الشاشة تبدأ البناء |
+
+### 1) تأكّد من المجلد المفتوح
+
+في شجرة الملفات اليسرى يجب أن ترى مباشرة: `lib` · `test` · `assets` · `tool` · `pubspec.yaml`.
+- ✅ صحيح: أنت في `C:\dev\exam\app`
+- ❌ خطأ (ترى `app` و`demo` و`docs` كمجلدات فرعية): أنت في `exam` —
+  **File → Open → `C:\dev\exam\app`**، وإلا لن يعمل زر التشغيل.
+
+### 2) ولّد مجلد أندرويد (إن لم تكن فعلت)
+
+افتح الطرفية داخل Android Studio: **View → Tool Windows → Terminal** (`Alt+F12`).
+تأكّد أن المسار ينتهي بـ `\exam\app` ثم:
+
+```bash
+flutter create . --platforms=android --project-name musahhih --org com.musahhih
+git checkout -- pubspec.yaml lib test analysis_options.yaml
+flutter pub get
+python tool\apply_platform_config.py
+python tool\install_app_icons.py
+```
+
+راقب: بعد `flutter create` يجب أن يظهر مجلد `android` في شجرة الملفات.
+وعند اكتمال `flutter pub get` ستختفي الخطوط الحمراء من ملفات `lib/`.
+قد يظهر شريط علوي في Android Studio باسم **Sync Now** أو **Get dependencies** — اضغطه.
+
+### 3) جهّز جهاز التشغيل
+
+**جوال حقيقي (الأفضل):** الإعدادات → حول الجوال → اضغط «رقم الإصدار» 7 مرات →
+خيارات المطوّر → فعّل **تصحيح أخطاء USB** → وصّل الكابل → **السماح** بالرسالة التي تظهر على الجوال.
+
+**أو محاكي:** **Tools → Device Manager** → **Create Virtual Device** → Pixel 7 →
+نظام **Android 14 (API 34)** (نزّله بـ ⤓ إن لزم) → **Finish** → ثم **▶** بجانب الجهاز لتشغيله.
+
+**تحقّق من الطرفية:**
+
+```bash
+flutter devices
+```
+
+يجب أن يظهر جهازك في القائمة (اسم الجوال أو `emulator-5554`).
+وإن أردت التأكد عبر أندرويد: `adb devices` (المسار الكامل إن لم يُعرَف الأمر:
+`"%LOCALAPPDATA%\Android\Sdk\platform-tools\adb.exe" devices`).
+
+### 4) اختر الجهاز وإعداد التشغيل ثم اضغط ▶
+
+1. من القائمة المنسدلة أعلى النافذة اختر **جهازك** (وليس `No Devices`).
+2. من القائمة المنسدلة الصغيرة بجانبها اختر إعداد **`main.dart`**.
+   - إن لم يظهر: **Add Configuration → Flutter** → خانة **Dart entrypoint** اكتب
+     `lib/main.dart` → **OK**.
+3. افتح `lib/main.dart` من الشجرة اليسرى (يساعد المكوّن الإضافي على تجهيز الإعداد).
+4. اضغط **▶ Run** (أو `Shift+F10`).
+
+**ما سيحدث:** نافذة **Run** أسفل الشاشة تُظهر مراحل Gradle، ثم `Installing...`، ثم
+`Syncing files to device...`. **أول بناء: 3–10 دقائق** (يُنزّل Gradle والتبعيات)؛ ما بعده ثوانٍ.
+التطبيق سيفتح على الجهاز ويعرض الشاشة الرئيسية **«مُصحِّح — Basem»** مع زر **«اختبار جديد»**.
+
+### 5) أثناء العمل: التعديل الفوري
+
+| الإجراء | الطريقة |
+|---|---|
+| **Hot Reload** (يطبّق تعديلك فورًا مع بقاء البيانات) | عدّل ملفًا في `lib/` ثم `Ctrl+S` |
+| **Hot Restart** (يعيد التطبيق من البداية) | الزر **↻** في نافذة Run |
+| إيقاف | الزر **⬛** |
+| قراءة أخطاء التطبيق | نافذة **Logcat** (View → Tool Windows → Logcat) → فلتر باسم التطبيق |
+
+### أخطاء هذه المرحلة بالضبط
+
+| ما تراه | المعنى | الحل |
+|---|---|---|
+| `No application found for TargetPlatform.android` | مجلد `android` غير موجود | نفّذ خطوة 2 |
+| `No Devices` في القائمة | لا يوجد جوال موصول أو محاكي يعمل | شغّل المحاكي أو فعّل تصحيح USB، ثم `flutter devices` |
+| الجهاز يظهر وبداخله `unauthorized` | لم تقبل رسالة السماح على الجوال | افصل الكابل وأعد وصله ثم اضغط **السماح** |
+| `INSTALL_FAILED_UPDATE_INCOMPATIBLE` | على الجوال نسخة سابقة بتوقيع مختلف (ملف APK من الإصدار التجريبي) | احذف التطبيق من الجوال، أو `adb uninstall com.musahhih.musahhih` |
+| كل ملفات `lib/` تحتها خطوط حمراء | التبعيات لم تُنزَّل | `flutter pub get` ثم **File → Invalidate Caches / Restart** |
+| `Unsupported class file major version` أو خطأ Java | نسخة Java غير مناسبة | Settings → Build, Execution, Deployment → Build Tools → Gradle → **Gradle JDK = Embedded JDK (jbr-17)** |
+| `requires libraries ... compile against version 36 or later` | تعارض `compileSdk` في حزمة | `python tool\fix_pub_cache_compile_sdk.py --sdk 36 --min-sdk 24` + انسخ `tool\android-init.gradle` إلى `%USERPROFILE%\.gradle\init.d` (تفصيله في الخطوة 12) |
+| `Waiting for another flutter command to release the startup lock` | أمر Flutter آخر يعمل | أغلق الطرفيات الأخرى أو احذف `C:\src\flutter\bin\cache\lockfile` |
+| البناء ينجح والتطبيق يقفل فورًا | صلاحية الكاميرا غير مضافة (بعد `flutter create` جديد) | أعد تنفيذ `python tool\apply_platform_config.py` ثم ▶ |
+
+**بعد أن يعمل التطبيق:** انتقل إلى **الخطوة 8** أعلاه لتجربة دورة تصحيح كاملة بالصور الجاهزة
+في `demo\assets\samples\app_test\` — بلا طابعة وبلا كاميرا.
+
+---
 
 <details>
 <summary>تفصيل كل خطوة ولماذا (اضغط للتوسّع)</summary>
