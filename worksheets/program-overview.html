@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دليل البرنامج والمشروع</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top"><div class="badge"><div class="n">00</div><div class="l">دليل البرنامج</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — البرنامج التدريبي العملي</div><h1>دليل البرنامج والمشروع</h1><div class="sub">Programme &amp; Project Handbook — class-team-hub</div></div></div><div class="meta"><div><span class="k">عدد الجلسات / Sessions</span><span class="v">5 جلسات</span></div><div><span class="k">المدة الكلية / Total time</span><span class="v">7.5 ساعة تدريب موجّه</span></div><div><span class="k">المشروع / Project</span><span class="v">class-team-hub — موقع فريق الصف</span></div><div><span class="k">المخرجات / Deliverables</span><span class="v">5 أوراق عمل + موقع منشور</span></div><div><span class="k">الدرجة الكلية / Total points</span><span class="v">500 نقطة</span></div><div><span class="k">المتطلبات / Requirements</span><span class="v">حاسوب + إنترنت + حساب GitHub</span></div></div></div>
+
+<div class="identity">
+  <div class="fld"><span class="k">اسم الطالب / Student</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">اسم المستخدم / GitHub username</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">المجموعة / Group</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">التاريخ / Date</span><span class="dots"></span></div>
+</div>
+<div class="band "><span class="ar">ماذا سنبني معاً؟</span><span class="en">What are we building together?</span></div>
+
+<figure class="dia"><img src="../assets/cover-hero.png" alt="ورشة Git وGitHub — التعاون على مستودع واحد"><figcaption>مشروع واحد · فريق واحد · تاريخ واحد — يديره Git <span class="en">/ one repository, one team, one history</span></figcaption></figure>
+
+<div class="bi "><div class="ar"><p>سنبني معاً <strong>موقعاً حقيقياً على الإنترنت</strong> اسمه «دليل فريق الصف» (<code>class-team-hub</code>).
+كل طالب سيضيف بطاقة تعريفية له بنفسه، وسنرى البطاقات تتراكم واحداً بعد آخر حتى يصبح
+الموقع — الذي بدأ فارغاً — لوحةً كاملة لفريق الصف، منشورة على رابط عام يفتحه أي شخص.
+المشروع مكتوب بلغات الويب الأساسية (HTML وCSS وJavaScript) ولا يحتاج تثبيت أي برامج
+أو بيئات تطوير معقّدة.</p></div><div class="eng"><p>Together we build a real website — “Class Team Hub” — where every student adds their own
+profile card, and we watch the cards accumulate until the empty site becomes a complete team
+board, published publicly on the internet.</p></div></div>
+
+<h2>فكرة المشروع في سطر واحد</h2>
+<table>
+<thead>
+<tr>
+<th>السؤال</th>
+<th>الجواب</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ما هو المشروع؟</td>
+<td>موقع ويب بسيط يعرض بطاقة تعريفية لكل طالب في الفريق</td>
+</tr>
+<tr>
+<td>ما نوعه تقنياً؟</td>
+<td>موقع ثابت: HTML + CSS + JavaScript + ملفات بيانات JSON</td>
+</tr>
+<tr>
+<td>كيف يعمل؟</td>
+<td><code>js/app.js</code> يقرأ بطاقات الطلبة من <code>data/members/</code> ويبني الصفحة منها</td>
+</tr>
+<tr>
+<td>لماذا مناسب لتعلم Git؟</td>
+<td>لأن كل طالب يضيف ملفاً خاصاً به (لا تعارض) والملف المشترك الوحيد مُولَّد آلياً — فيتعلّم الفريق الدمج بلا فوضى ثم يتدرب على التعارض بوعي</td>
+</tr>
+<tr>
+<td>ما المطلوب تثبيته؟</td>
+<td>Git + VS Code فقط (والمتصفح موجود)</td>
+</tr>
+<tr>
+<td>ماذا سنتعلّم منه؟</td>
+<td>الفروع · الالتزامات · طلبات السحب · المراجعة · الدمج · التعارضات · النشر</td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">لماذا اخترنا موقعاً بلا تبعيات؟<span class="en">Why a zero-dependency site?</span></div><p>لأن أهم ما قد يعطّل ورشة Git هو <strong>مشاكل تثبيت بيئات التشغيل</strong> (<code>npm install</code>، إصدارات
+Node، حزم مفقودة). اخترنا موقعاً ثابتاً ليكون تركيز الجلسات كلها على Git وGitHub —
+وليس على إصلاح بيئة التطوير. هذا يكسبك 40% من وقت الورشة.</p></div>
+
+<div class="band alt"><span class="ar">خريطة البرنامج</span><span class="en">Programme map</span></div>
+
+<figure class="dia"><img src="../assets/img/flow-stages.svg" alt="المناطق الثلاث"><figcaption>من جهازك إلى GitHub: add → commit → push → pull <span class="en">— the daily cycle</span></figcaption></figure>
+
+<table>
+<thead>
+<tr>
+<th>الورقة</th>
+<th>موضوعها</th>
+<th>ماذا ستفعل فيها؟</th>
+<th>مخرجاتها</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>01</strong></td>
+<td>التهيئة والتعريف</td>
+<td>تثبيت Git، حساب GitHub، مفتاح SSH أو PAT، أول مستودع شخصي</td>
+<td>بيئة عمل جاهزة ومؤمَّنة</td>
+</tr>
+<tr>
+<td><strong>02</strong></td>
+<td>الاستنساخ والاستكشاف</td>
+<td>نسخ مستودع الفريق، قراءة بنيته، تشغيل الموقع محلياً</td>
+<td>الموقع يعمل على جهازك</td>
+</tr>
+<tr>
+<td><strong>03</strong></td>
+<td>الفرع وطلب السحب</td>
+<td>إنشاء فرع، كتابة بطاقتك، الالتزام، الرفع، فتح طلب سحب، مراجعة زميل</td>
+<td>بطاقتك + مراجعة مكتوبة</td>
+</tr>
+<tr>
+<td><strong>04</strong></td>
+<td>المزامنة والدمج</td>
+<td>جلب تعديلات الزملاء، استراتيجيات الدمج، فحص التاريخ، التراجع الآمن</td>
+<td>فهم كامل لـ merge + تقرير الفريق</td>
+</tr>
+<tr>
+<td><strong>05</strong></td>
+<td>التعارضات والنشر</td>
+<td>صنع تعارض عن قصد وحلّه، rebase والدفع الآمن، النشر على GitHub Pages</td>
+<td>موقع منشور + تسليم نهائي</td>
+</tr>
+</tbody>
+</table>
+<div class="band "><span class="ar">قواعد العمل في الفريق</span><span class="en">Team ground rules</span></div>
+
+<div class="box rule"><div class="h">دستور الفريق المختصر — يُعلَّق على الحائط<span class="en">The short team constitution</span></div><ol>
+<li><strong>لا عمل مباشر على <code>main</code> أبداً.</strong> كل تعديل عبر فرع، ثم طلب سحب، ثم مراجعة، ثم دمج.</li>
+<li><strong>مزامنة قبل العمل:</strong> <code>git switch main &amp;&amp; git pull --ff-only</code> قبل إنشاء أي فرع جديد.</li>
+<li><strong>فرع واحد = مهمة واحدة.</strong> اسم الفرع: <code>type/username-topic</code> (بالإنجليزية والحروف الصغيرة).</li>
+<li><strong>رسالة التزام ذات معنى:</strong> <code>type(scope): وصف قصير</code> — لا <code>update</code> ولا <code>changes</code>.</li>
+<li><strong>لا دمج بلا مراجعة</strong> — ويكون للمراجع تعليق مكتوب محدد، لا «موافق».</li>
+<li><strong>لا تعدّل ملف زميل ولا تحذف عمله.</strong></li>
+<li><strong>لا أسرار في المستودع:</strong> لا كلمات مرور، ولا رموز وصول، ولا بيانات شخصية حساسة.</li>
+<li><strong>افحص قبل أن ترفع:</strong> <code>node tests/validate-members.mjs</code> ثم <code>git diff --check</code>.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>القاعدة</th>
+<th>الأمر الذي يفرضها</th>
+<th>إن خالفتها</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>لا عمل على <code>main</code></td>
+<td>حماية الفرع على GitHub (Protected branch)</td>
+<td>الدفع يُرفض تلقائياً</td>
+</tr>
+<tr>
+<td>رسالة التزام واضحة</td>
+<td><code>git commit -m "…"</code> والمراجعة البشرية</td>
+<td>خصم في تقييم الورقة</td>
+</tr>
+<tr>
+<td>بيانات سليمة</td>
+<td><code>node tests/validate-members.mjs</code></td>
+<td>فشل الفحص = إعادة العمل</td>
+</tr>
+<tr>
+<td>لا أسرار</td>
+<td><code>.gitignore</code> + الفحص اليدوي</td>
+<td>خصم أمني مباشر</td>
+</tr>
+<tr>
+<td>مراجعة قبل الدمج</td>
+<td>إعداد <code>Require pull request before merging</code></td>
+<td>لا يُدمج الطلب</td>
+</tr>
+</tbody>
+</table></div>
+<div class="band violet"><span class="ar">أدوار الفريق (وزّعها في الجلسة الأولى)</span><span class="en">Team roles</span></div>
+
+<table>
+<thead>
+<tr>
+<th>الدور</th>
+<th>المسؤولية</th>
+<th>من يستفيد منه؟</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>قائد الفريق</strong> (1–2 لكل صف)</td>
+<td>يدير الترتيب، يوافق على الدمج، يحلّ الخلافات التقنية</td>
+<td>الطالب الأسرع — ليتعلّم القيادة لا الأداء فقط</td>
+</tr>
+<tr>
+<td><strong>مطوّر</strong></td>
+<td>يضيف ميزة (تحسين البحث، فلترة بالوسوم، بطاقات أنيقة)</td>
+<td>من يميل للكود</td>
+</tr>
+<tr>
+<td><strong>مصمّم</strong></td>
+<td>يحسّن الألوان والتخطيط بملف <code>css/style.css</code></td>
+<td>من يحب الواجهات</td>
+</tr>
+<tr>
+<td><strong>مختبر QA</strong></td>
+<td>يشغّل <code>validate-members</code> ويتحقق من ظهور البطاقات والصفحة</td>
+<td>من يميل للتفاصيل والنقد</td>
+</tr>
+<tr>
+<td><strong>كاتب توثيق</strong></td>
+<td>يحدّث <code>README.md</code> و<code>docs/</code> وأدلة الاستخدام</td>
+<td>من يجيد الشرح بالكتابة</td>
+</tr>
+<tr>
+<td><strong>مراجع (Reviewer)</strong></td>
+<td>يقرأ طلبات السحب ويكتب ملاحظات محددة</td>
+<td><strong>الجميع</strong> — ولو مرة واحدة على الأقل</td>
+</tr>
+</tbody>
+</table>
+<div class="box warn"><div class="h">توزيع الأدوار ليس «تقسيم عمل» فقط<span class="en">Roles are not just division of labour</span></div><p>اجعل كل طالب يجرّب <strong>دورين مختلفين</strong> خلال البرنامج (مثل: مصمّم ثم مراجع، مختبر ثم كاتب)
+حتى لا يُحصر في تخصص واحد. المهارة المستهدفة هي الفهم الكامل لدورة العمل، لا الإتقان
+في زاوية واحدة منها.</p></div>
+
+<div class="band green"><span class="ar">ما ستُقيَّم عليه</span><span class="en">How you will be assessed</span></div>
+
+<table>
+<thead>
+<tr>
+<th>المكوّن</th>
+<th>الوزن</th>
+<th>تفصيله</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>المخرجات العملية (أدلة الأوامر)</td>
+<td>40%</td>
+<td>مخرجات حقيقية من جهازك لكل مهمة، لا نسخاً من الورقة</td>
+</tr>
+<tr>
+<td>بطاقتك مدموجة ومراجعة زميل</td>
+<td>20%</td>
+<td>وجود بطاقتك على <code>main</code> مع مراجعة مكتوبة وموثقة</td>
+</tr>
+<tr>
+<td>حل التعارضات والنشر</td>
+<td>20%</td>
+<td>دليل حل تعارضين + رابط الموقع المنشور يعمل</td>
+</tr>
+<tr>
+<td>الفهم (أسئلة التحقق وتقرير الفريق)</td>
+<td>15%</td>
+<td>إجابات بفهمك، وتقرير بأرقام حقيقية من المستودع</td>
+</tr>
+<tr>
+<td>التعاون والاحتراف</td>
+<td>5%</td>
+<td>الالتزام بالاتفاقيات، جودة المراجعة، أمان بيانات الفريق</td>
+</tr>
+</tbody>
+</table>
+<h2>ماذا تحتاج تجهّزه قبل الجلسة الأولى؟</h2>
+<div class="write"><strong>قائمة التحضير الشخصي<span class="muted tiny"> / Your preparation checklist</span></strong><ul class="checklist">
+<li>[ ] حاسوب تستطيع تثبيت البرامج عليه (لا يعمل هذا البرنامج على الجهاز اللوحي فقط)</li>
+<li>[ ] اتصال إنترنت مستقر في القاعة</li>
+<li>[ ] بريد إلكتروني فعّال (ستحتاجه لتأكيد حساب GitHub)</li>
+<li>[ ] مساحة 2 جيجابايت فارغة على القرص للتثبيت والمشاريع</li>
+<li>[ ] دفتر ملاحظات صغير — ستدوّن فيه «كل أمر جديد تعلمته وماذا يفعل»</li>
+<li>[ ] هذا الدليل + أوراق العمل الخمس</li>
+</ul></div>
+
+<div class="box info"><div class="h">مسار مقترح لمن يريد التقدّم<span class="en">Optional advanced path</span></div><ol>
+<li><strong>إضافة ميزة للموقع</strong>: بحث بالوسوم (<code>tags</code>) أو ترتيب البطاقات أو وضع ليلي — عبر فرع وطلب سحب.</li>
+<li><strong>التحقق التلقائي (CI)</strong>: أضف ملف GitHub Actions يشغّل <code>node tests/validate-members.mjs</code>
+   على كل طلب سحب، فيُرفض الطلب الخطأ قبل وصوله للمراجع البشري.</li>
+<li><strong>المساهمة في مشروع مفتوح</strong>: مستودع <code>first-contributions</code> أو ترجمة توثيق مشروع تحبه —
+   بنفس الدورة التي أتقنتها: fork ← فرع ← التزام ← طلب سحب.</li>
+</ol></div>
+
+<p class="center"><span class="stamp navy">أهلاً بك في الفريق — لنبدأ من الورقة 01</span></p>
+<div class="footer-note"><span>ورشة Git وGitHub · دليل البرنامج والمشروع</span><span class="en">Git &amp; GitHub Workshop · Programme handbook</span></div>
+</div>
+</body>
+</html>

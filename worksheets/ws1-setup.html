@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>التهيئة والتعريف بـ Git وGitHub</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top"><div class="badge"><div class="n">01</div><div class="l">ورقة عمل</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — البرنامج التدريبي العملي</div><h1>التهيئة والتعريف بـ Git وGitHub</h1><div class="sub">Workshop 1 · Setup &amp; Orientation — Git vs. GitHub</div></div></div><div class="meta"><div><span class="k">المدة / Duration</span><span class="v">90 دقيقة</span></div><div><span class="k">المستوى / Level</span><span class="v">مبتدئ — لا يشترط خبرة سابقة</span></div><div><span class="k">المتطلبات / Prerequisites</span><span class="v">جهاز حاسوب + اتصال إنترنت</span></div><div><span class="k">المخرجات / Deliverable</span><span class="v">حساب GitHub + Git مثبّت ومُعدّ</span></div><div><span class="k">المهام / Tasks</span><span class="v">6 مهام</span></div><div><span class="k">الدرجة / Points</span><span class="v">100 نقطة</span></div></div></div>
+
+<div class="identity">
+  <div class="fld"><span class="k">اسم الطالب / Student</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">اسم المستخدم / GitHub username</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">المجموعة / Group</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">التاريخ / Date</span><span class="dots"></span></div>
+</div>
+<div class="band "><span class="ar">كيف تعمل هذه الورقة؟</span><span class="en">How this worksheet works</span></div>
+
+<div class="bi "><div class="ar"><p>هذه الورقة <strong>عملية بالكامل</strong>: لا تُقرأ فقط، بل تُنفَّذ خطوة بخطوة على جهازك. كل مهمة
+تحتوي على: هدف واضح، أوامر جاهزة للنسخ، ومكاناً مخصّصاً تلصق فيه مخرجات الأوامر
+(نسمّيها <strong>الأدلة</strong>)، ثم قائمة فحص قبل التسليم. عند إكمال كل المهام ستملك حساباً
+جاهزاً على GitHub ومستودعاً يعمل على جهازك — وهما أساس كل الجلسات التالية.</p></div><div class="eng"><p>This worksheet is <strong>hands-on</strong>: you do every step on your own machine. Each task gives you
+a clear objective, copy-ready commands, and a space to paste your command output as
+<strong>evidence</strong>, followed by a checklist. By the end you will have a working GitHub account and
+a local repository — the foundation for every later session.</p></div></div>
+
+<div class="goal-list"><strong>أهداف التعلّم<span class="muted tiny"> / Learning objectives</span></strong><ul>
+<li>التمييز بوضوح بين <strong>Git</strong> (أداة على جهازك) و<strong>GitHub</strong> (خدمة على الإنترنت).</li>
+<li>تثبيت Git والتحقق من نجاح التثبيت وضبط الهوية (الاسم والبريد) بشكل صحيح.</li>
+<li>إنشاء حساب GitHub مهني وتأمينه بالتحقق بخطوتين ومفتاح SSH أو رمز وصول.</li>
+<li>فهم المناطق الثلاث: مجلد العمل ← منطقة الانتظار ← المستودع، وعلاقتها بـ GitHub.</li>
+<li>إنشاء أول مستودع شخصي وتنفيذ أول <code>commit</code> وأول <code>push</code> بنجاح.</li>
+<li>قراءة حالة المستودع بالأوامر <code>git status</code> و<code>git log</code> وربطها بالواجهة الرسومية.</li>
+</ul></div>
+
+<div class="box tip"><div class="h">قاعدتان قبل أن نبدأ<span class="en">Two ground rules</span></div><ol>
+<li><strong>اكتب الأوامر بيدك، لا تنسخها فقط.</strong> الخطأ في الأمر وإصلاحه هو أسرع طريقة للتعلّم.</li>
+<li><strong>لا تخف من الخطأ.</strong> كل مستودع محلي نسخة مستقلة، وأي تجربة خاطئة يمكن التراجع عنها
+   لاحقاً بأمر واحد — وستتعلّم هذه الأوامر في ورقة العمل 04.</li>
+</ol></div>
+
+<div class="band alt"><span class="ar">الجزء الأول · المفاهيم الأساسية</span><span class="en">Part 1 · Core concepts</span></div>
+
+<h2>ما هو Git؟ وما هو GitHub؟</h2>
+<div class="bi "><div class="ar"><p><strong>Git</strong> برنامج مجاني مفتوح المصدر يعمل على جهازك، يتتبّع كل تعديل تجريه على ملفات
+المشروع، ويحفظ التاريخ بشكل نقاط تحقّق (Commits) يمكن الرجوع إليها في أي وقت.
+أما <strong>GitHub</strong> فهو موقع إلكتروني يستضيف مستودعات Git على الإنترنت، ويضيف فوقها طبقة
+تعاون: طلبات السحب (Pull Requests)، المراجعة (Review)، المشكلات (Issues)، والصلاحيات.</p></div><div class="eng"><p><strong>Git</strong> is a free, open-source tool that runs on your computer. It tracks every change you
+make and stores history as checkpoints called commits. <strong>GitHub</strong> is a website that hosts Git
+repositories online and adds a collaboration layer on top: pull requests, code review,
+issues, and permissions.</p></div></div>
+
+<figure class="dia"><img src="../assets/img/git-vs-github.svg" alt="الفرق بين Git وGitHub"><figcaption>شكل 1: Git أداة محلية، وGitHub خدمة سحابية للتعاون <span class="en">— local tool vs. online service</span></figcaption></figure>
+
+<div class="bi "><div class="ar"><p>دليل سريع: إذا كان الأمر يبدأ بـ <code>git</code> فهو يعمل على جهازك؛ وإذا كان يتطلب فتح الموقع
+أو يتضمن كلمة <code>origin</code> فهو يتعامل مع GitHub. وبدون Git مثبّتاً على جهازك لن تستطيع
+التعامل مع GitHub من سطر الأوامر إطلاقاً.</p></div><div class="eng"><p>Quick test: a command that starts with <code>git</code> works on your machine; anything that needs the
+website or mentions <code>origin</code> talks to GitHub. Without Git installed locally you cannot work
+with GitHub from the command line at all.</p></div></div>
+
+<h2>المناطق الثلاث في Git</h2>
+<div class="bi "><div class="ar"><p>كل ملف تمرّ عليه ينتقل بين ثلاث مناطق. فهم هذه الصورة يوفّر عليك ساعات من الحيرة لاحقاً،
+لأن 90% من رسائل Git الغامضة تعني ببساطة: «هذا الملف في منطقة، وأنت تحاول تنفيذ أمر
+يخصّ منطقة أخرى».</p></div><div class="eng"><p>Every file moves through three areas. Understanding this picture saves hours of confusion
+later, because most cryptic Git messages simply mean: “this file is in one area, and you are
+running a command that belongs to another.”</p></div></div>
+
+<figure class="dia"><img src="../assets/img/flow-stages.svg" alt="المناطق الثلاث في Git"><figcaption>شكل 2: من مجلد العمل إلى GitHub عبر منطقة الانتظار <span class="en">— working directory → staging → local repo → remote</span></figcaption></figure>
+
+<table>
+<thead>
+<tr>
+<th>الأمر / Command</th>
+<th>المنطقة التي يعمل عليها</th>
+<th>التشبيه العملي</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>git status</code></td>
+<td>لا يعدّل شيئاً — يعرض الحالة</td>
+<td>لوحة القيادة</td>
+</tr>
+<tr>
+<td><code>git add</code></td>
+<td>ينقل من مجلد العمل إلى منطقة الانتظار</td>
+<td>تحضير الطلب</td>
+</tr>
+<tr>
+<td><code>git commit</code></td>
+<td>يحفظ من منطقة الانتظار إلى المستودع المحلي</td>
+<td>تسليم الطلب</td>
+</tr>
+<tr>
+<td><code>git push</code></td>
+<td>يرفع من المستودع المحلي إلى GitHub</td>
+<td>إرسال الطلب للفروع</td>
+</tr>
+<tr>
+<td><code>git pull</code></td>
+<td>يجلب من GitHub إلى جهازك</td>
+<td>استلام تحديثات الزملاء</td>
+</tr>
+</tbody>
+</table>
+<div class="box warn"><div class="h">انتباه<span class="en">Watch out</span></div><p><code>git push</code> وحده لا يرفع أي ملف لم تلتزمه بـ <code>git commit</code>، و<code>git commit</code> وحده لا يرفع
+شيئاً إلى GitHub. الترتيب الإلزامي دائماً: <code>add</code> ← <code>commit</code> ← <code>push</code>.</p></div>
+
+<div class="band "><span class="ar">مصطلحاتك الأولى</span><span class="en">Your first glossary</span></div>
+
+<table>
+<thead>
+<tr>
+<th>المصطلح</th>
+<th>النطق التقريبي</th>
+<th>المعنى بالعربية</th>
+<th>English gloss</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Repository</td>
+<td>ريپازِتوري</td>
+<td>مستودع: مجلد مشروع يتتبّعه Git</td>
+<td>A tracked project folder</td>
+</tr>
+<tr>
+<td>Commit</td>
+<td>كومِت</td>
+<td>التزام: نقطة تحقّق محفوظة برسالة</td>
+<td>A saved checkpoint with a message</td>
+</tr>
+<tr>
+<td>Branch</td>
+<td>برانش</td>
+<td>فرع: مسار عمل مستقل عن <code>main</code></td>
+<td>An independent line of work</td>
+</tr>
+<tr>
+<td>Main</td>
+<td>مين</td>
+<td>الفرع الرئيسي المستقر للمشروع</td>
+<td>The stable primary branch</td>
+</tr>
+<tr>
+<td>Remote</td>
+<td>ريموت</td>
+<td>مستودع بعيد على GitHub</td>
+<td>A repository hosted online</td>
+</tr>
+<tr>
+<td>Clone</td>
+<td>كلون</td>
+<td>نسخ المستودع كاملاً إلى جهازك</td>
+<td>Copy a repo to your machine</td>
+</tr>
+<tr>
+<td>Push / Pull</td>
+<td>پوش / پُل</td>
+<td>رفع تعديلاتك / جلب تعديلات الزملاء</td>
+<td>Upload / download changes</td>
+</tr>
+<tr>
+<td>Pull Request</td>
+<td>پُل ريكوست</td>
+<td>طلب سحب: اقتراح دمج فرعك بعد المراجعة</td>
+<td>A merge proposal awaiting review</td>
+</tr>
+<tr>
+<td>Merge</td>
+<td>ميرج</td>
+<td>دمج تعديلات فرع داخل فرع آخر</td>
+<td>Combine branches</td>
+</tr>
+<tr>
+<td>Conflict</td>
+<td>كونفليكت</td>
+<td>تعارض: تعديلان متضاربان على السطر نفسه</td>
+<td>Competing edits on the same line</td>
+</tr>
+<tr>
+<td>Staging</td>
+<td>ستينچنغ</td>
+<td>منطقة الانتظار قبل الالتزام</td>
+<td>The pre-commit area</td>
+</tr>
+<tr>
+<td>Issue</td>
+<td>إيشو</td>
+<td>مشكلة أو مهمة مسجّلة في المستودع</td>
+<td>A tracked task or bug</td>
+</tr>
+</tbody>
+</table>
+<div class="band alt"><span class="ar">الجزء الثاني · المهام العملية</span><span class="en">Part 2 · Hands-on tasks</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">تثبيت Git والتحقق منه</div><div class="en">Install Git and verify it</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 10 نقطة</span><span class="chip">Windows</span><span class="chip">macOS</span><span class="chip">Linux</span><span class="chip">Terminal</span></div><p><strong>الهدف:</strong> أن يتعرّف الجهاز على الأمر <code>git</code> ويُظهر رقم الإصدار.</p>
+<p><strong>1) التثبيت حسب نظامك:</strong></p>
+<table>
+<thead>
+<tr>
+<th>النظام</th>
+<th>الطريقة الأسهل</th>
+<th>ملاحظة مهمة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows</td>
+<td>حمّل من <a href="https://git-scm.com/download/win">git-scm.com</a> ثم التثبيت بالإعدادات الافتراضية</td>
+<td>سيُضاف <strong>Git Bash</strong> — استخدمه بدل موجّه الأوامر</td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>نفّذ <code>xcode-select --install</code> أو <code>brew install git</code></td>
+<td>الطرفية العادية تكفي</td>
+</tr>
+<tr>
+<td>Linux (Debian/Ubuntu)</td>
+<td><code>sudo apt update &amp;&amp; sudo apt install git</code></td>
+<td>الطرفية العادية تكفي</td>
+</tr>
+</tbody>
+</table>
+<p><strong>2) افتح الطرفية (Git Bash في Windows) وتحقق من التثبيت:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — التحقق / verify</span></div><pre><span class="p">$</span> <span class="k">git --version</span>
+<span class="o">git version 2.39.5</span></pre></div>
+
+<div class="box info"><div class="h">ملاحظة<span class="en">Note</span></div><p>رقم الإصدار عندك قد يختلف (2.4x أو أحدث) — المهم ألّا تظهر رسالة
+<code>command not found</code> أو <code>'git' is not recognized</code>.</p></div>
+
+<p><strong>3) افحص مكان التثبيت (اختياري لكن مفيد عند حل المشكلات):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — Windows / macOS / Linux</span></div><pre><span class="c"># Windows (Git Bash)</span>
+<span class="p">$</span> <span class="k">which git</span>
+<span class="o">/mingw64/bin/git</span>
+<span class="o"></span>
+<span class="c"># macOS / Linux</span>
+<span class="p">$</span> <span class="k">which git</span>
+<span class="o">/usr/bin/git</span></pre></div>
+
+<div class="evidence"><div class="h">دليل المطلوب لهذه المهمة<span class="en">/ Evidence for this task</span></div><p>الصق مخرجات الأمر <code>git --version</code> كما ظهرت على جهازك:</p>
+<pre class="plain"><span class="ph">$ git --version</span>
+</pre>
+
+<p>اذكر نظام التشغيل الذي تستخدمه: ……………………………</p></div>
+
+<div class="box warn"><div class="h">خطأ شائع<span class="en">Common mistake</span></div><p>إذا رأيت <code>command not found</code> فأغلق النافذة وافتح واحدة جديدة بعد التثبيت، ثم أعد المحاولة.
+في Windows تأكد أنك تستخدم <strong>Git Bash</strong> لا <code>cmd</code>.</p></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">ضبط هوية Git (الاسم والبريد)</div><div class="en">Configure your Git identity</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 10 دقائق</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 10 نقطة</span><span class="chip">git config</span></div><p><strong>الهدف:</strong> أن تُوقّع كل التزاماتك باسمك وبريدك الصحيحين، لأن هذه البيانات تظهر للفريق
+في سجل المشروع ولا يمكن تصحيحها لاحقاً بسهولة.</p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الإعداد لمرة واحدة</span></div><pre><span class="p">$</span> <span class="k">git config --global user.name &quot;سارة الحسن&quot;</span>
+<span class="p">$</span> <span class="k">git config --global user.email &quot;sara@example.com&quot;</span>
+<span class="p">$</span> <span class="k">git config --global init.defaultBranch main</span>
+<span class="p">$</span> <span class="k">git config --global pull.rebase true</span>
+<span class="p">$</span> <span class="k">git config --global core.editor &quot;code --wait&quot;</span></pre></div>
+
+<div class="box err"><div class="h">تحذير مهم جداً<span class="en">Critical</span></div><p>استخدم <strong>نفس البريد المسجَّل في حساب GitHub</strong>؛ فإن اختلف البريد فلن يرتبط التزامك
+بحسابك على GitHub، وقد يظهر باسم غريب بلا صورة ولا إحصاءات.</p></div>
+
+<p><strong>تحقّق من الإعدادات ثم اختبر قراءتها:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — التحقق من الإعدادات</span></div><pre><span class="p">$</span> <span class="k">git config --list</span>
+<span class="o">user.name=سارة الحسن</span>
+<span class="o">user.email=sara@example.com</span>
+<span class="o">init.defaultbranch=main</span>
+<span class="o">pull.rebase=true</span>
+<span class="o">core.editor=code --wait</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git config user.name</span>
+<span class="o">سارة الحسن</span></pre></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><p>الصق مخرجات <code>git config --list</code>:</p>
+<pre class="plain"><span class="ph">$ git config --list</span>
+</pre></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">إنشاء حساب GitHub مهني</div><div class="en">Create a professional GitHub account</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 15 نقطة</span><span class="chip">المتصفح</span><span class="chip">Browser</span></div><p><strong>الهدف:</strong> حساب جاهز للعمل الجماعي، باسم مستخدم واضح وتأمين جيد.</p>
+<p><strong>الخطوات:</strong></p>
+<ol>
+<li>افتح <a href="https://github.com">github.com</a> واضغط <strong>Sign up</strong>.</li>
+<li>أدخل البريد الإلكتروني (المدرسة أو الشخصي الموثوق) وكلمة مرور قوية
+   (12 حرفاً على الأقل: حروف كبيرة وصغيرة وأرقام ورمز).</li>
+<li>اختر <strong>اسم المستخدم</strong> بعناية — سيبقى معك في المشروع والمراجعات:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>✅ اسم جيد</th>
+<th>❌ اسم ضعيف</th>
+<th>السبب</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sara-alhassan</code></td>
+<td><code>sara2009xxx</code></td>
+<td>أرقام عشوائية توحي بعدم الجدية</td>
+</tr>
+<tr>
+<td><code>omar-qa-dev</code></td>
+<td><code>pro_gamer_99</code></td>
+<td>لا يوصف الدور المهني</td>
+</tr>
+<tr>
+<td><code>leen-haddad</code></td>
+<td><code>asdfgh</code></td>
+<td>لا يُقرأ ولا يُتذكَّر</td>
+</tr>
+</tbody>
+</table>
+<ol start="4">
+<li>أكمل التحقق من البريد واضغط الرابط في رسالة GitHub.</li>
+<li><strong>فعّل التحقق بخطوتين (2FA):</strong> الصورة الشخصية ← <code>Settings</code> ← <code>Password and authentication</code>
+   ← <code>Two-factor authentication</code> ← <code>Enable</code> (استخدم تطبيق مصادقة مثل Microsoft Authenticator
+   أو Google Authenticator). <strong>احفظ رموز الاستعادة في مكان آمن</strong> — بدونها قد تفقد حسابك.</li>
+<li>حسّن ملفك الشخصي: صورة أو رمز واضح، اسم حقيقي، ووصف مختصر (مثال: <code>طالب هندسة —
+   أتعلّم تطوير الويب</code>). هذه أول ما يراه المراجع في طلب سحبك.</li>
+</ol>
+<div class="box tip"><div class="h">لماذا 2FA إلزامية؟<span class="en">Why 2FA is mandatory</span></div><p>من 2023 صار GitHub يفرض التحقق بخطوتين على من ينشر على مستودعات عامة. في هذه الورشة
+كل الطلاب ينشرون على مستودع مشترك، لذا 2FA شرط تسليم لا اختيار.</p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>اسم المستخدم الذي اخترته: <code>………………………………</code></li>
+<li>رابط ملفك الشخصي (مثال: <code>https://github.com/sara-alhassan</code>): ………………………………</li>
+<li>ضع علامة على ما أتممت: ☐ تأكيد البريد  ☐ تفعيل 2FA  ☐ صورة ووصف</li>
+</ul></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">تأمين الاتصال: مفتاح SSH أو رمز وصول</div><div class="en">Secure your connection: SSH key or token</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 15 نقطة</span><span class="chip">ssh-keygen</span><span class="chip">GitHub</span></div><p><strong>الهدف:</strong> تمكين الجهاز من الرفع إلى GitHub دون كتابة كلمة المرور كل مرة، وبأمان.</p>
+<div class="bi "><div class="ar"><p><strong>لماذا لا تكفي كلمة المرور؟</strong> GitHub لم يعد يقبل كلمة مرور الحساب في أوامر git.
+أمامك طريقان: <strong>رمز الوصول الشخصي (PAT)</strong> وهو أسهل، أو <strong>مفتاح SSH</strong> وهو الأفضل لجهازك
+الشخصي لأنه لا ينتهي صلاحيته.</p></div><div class="eng"><p><strong>Why not the password?</strong> GitHub no longer accepts account passwords for git commands. You
+have two options: a <strong>Personal Access Token (PAT)</strong> — easiest — or an <strong>SSH key</strong>, which is
+better on a personal machine because it does not expire.</p></div></div>
+
+<p><strong>الطريق أ — رمز الوصول الشخصي (الأسرع):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">GitHub — إنشاء PAT</span></div><pre><span class="o">1) Settings ← Developer settings ← Personal access tokens ← Tokens (classic)</span>
+<span class="o">2) Generate new token (classic)</span>
+<span class="o">3) Note: workshop-laptop     Expiration: 30 days</span>
+<span class="o">4) Scopes: اختر repo و read:user فقط   (أقل صلاحية ممكنة)</span>
+<span class="o">5) Generate token ← انسخ الرمز فوراً واحفظه في مدير كلمات المرور</span></pre></div>
+
+<div class="box err"><div class="h">تحذير أمني<span class="en">Security warning</span></div><p>الرمز يظهر <strong>مرة واحدة فقط</strong>. لا تضعه في ملف داخل المستودع، ولا في محادثة، ولا في صورة
+شاشة. عند طلب كلمة المرور في git، الصق الرمز بدل كلمة المرور.</p></div>
+
+<p><strong>الطريق ب — مفتاح SSH (الموصى به):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — توليد مفتاح SSH وإضافة المفتاح العام</span></div><pre><span class="p">$</span> <span class="k">ssh-keygen -t ed25519 -C &quot;sara@example.com&quot;</span>
+<span class="o">Generating public/private ed25519 key pair.</span>
+<span class="o">Enter file in which to save the key (/home/sara/.ssh/id_ed25519):</span>
+<span class="o">Enter passphrase (empty for no passphrase):</span>
+<span class="o">Your identification has been saved in /home/sara/.ssh/id_ed25519</span>
+<span class="o">Your public key has been saved in /home/sara/.ssh/id_ed25519.pub</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">cat ~/.ssh/id_ed25519.pub</span>
+<span class="o">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... sara@example.com</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">ssh -T git@github.com</span>
+<span class="o">Hi sara-alhassan! You&#x27;ve successfully authenticated, but GitHub does not provide shell access.</span></pre></div>
+
+<p>انشر المفتاح: GitHub ← <code>Settings</code> ← <code>SSH and GPG keys</code> ← <code>New SSH key</code> ← الصق سطر
+<code>ssh-ed25519 ...</code> كاملاً ← <code>Add SSH key</code>.</p>
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>الطريق الذي اخترته: ☐ PAT  ☐ SSH</li>
+<li>الناتج المتوقع عند نجاح الاتصال (لـ SSH): <code>Hi &lt;username&gt;! You've successfully authenticated…</code></li>
+<li>الصق هنا مخرجات <code>ssh -T git@github.com</code> أو تأكيد إنشاء PAT:</li>
+</ul>
+<pre class="plain"><span class="ph">$ ssh -T git@github.com</span>
+</pre></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">تجهيز بيئة العمل: VS Code والطرفية</div><div class="en">Set up your workspace: VS Code and the terminal</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 10 دقائق</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 10 نقطة</span><span class="chip">VS Code</span></div><p><strong>الهدف:</strong> بيئة تحرير مريحة تُظهر لك حالة Git بلمحة بصر.</p>
+<ol>
+<li>نزّل <a href="https://code.visualstudio.com">Visual Studio Code</a> وثبّته.</li>
+<li>من داخل VS Code افتح <strong>Extensions</strong> وثبّت (Arabic Language Pack اختياري):</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>الإضافة</th>
+<th>الفائدة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Arabic Language Pack</code></td>
+<td>واجهة عربية إن رغبت</td>
+</tr>
+<tr>
+<td><code>GitLens</code></td>
+<td>يظهر لك من عدّل كل سطر ومتى (مهم في المراجعة)</td>
+</tr>
+<tr>
+<td><code>Prettier</code></td>
+<td>تنسيق تلقائي للملفات</td>
+</tr>
+<tr>
+<td><code>Live Server</code></td>
+<td>تشغيل ملف HTML مباشرة في المتصفح</td>
+</tr>
+</tbody>
+</table>
+<ol start="3">
+<li>افتح الطرفية المدمجة: <code>Terminal ← New Terminal</code> (اختصار: <code>Ctrl+</code> `).</li>
+<li>تحقّق أن الطرفية تعرف git وضبط اتجاه أوامرك:</li>
+</ol>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">VS Code Terminal</span></div><pre><span class="p">$</span> <span class="k">git --version</span>
+<span class="o">git version 2.39.5</span>
+<span class="p">$</span> <span class="k">git config user.name</span>
+<span class="o">سارة الحسن</span></pre></div>
+
+<ol start="5">
+<li><strong>جولة سريعة على أوامر الطرفية</strong> التي ستستخدمها في كل جلسة:</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>الأمر</th>
+<th>الوظيفة</th>
+<th>مثال</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pwd</code></td>
+<td>أين أنا الآن؟</td>
+<td><code>/c/Users/sara/projects</code></td>
+</tr>
+<tr>
+<td><code>ls</code></td>
+<td>ماذا يوجد هنا؟</td>
+<td><code>ls -la</code></td>
+</tr>
+<tr>
+<td><code>cd</code></td>
+<td>الانتقال إلى مجلد</td>
+<td><code>cd class-team-hub</code></td>
+</tr>
+<tr>
+<td><code>cd ..</code></td>
+<td>الرجوع خطوة للخلف</td>
+<td></td>
+</tr>
+<tr>
+<td><code>mkdir</code></td>
+<td>إنشاء مجلد جديد</td>
+<td><code>mkdir projects</code></td>
+</tr>
+<tr>
+<td><code>clear</code></td>
+<td>تنظيف الشاشة</td>
+<td></td>
+</tr>
+<tr>
+<td><code>history</code></td>
+<td>الأوامر السابقة</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><p>الصق مخرجات <code>pwd</code> و<code>ls</code> من مجلد مشاريعك:</p>
+<pre class="plain"><span class="ph">$ pwd</span>
+</pre>
+
+<p>قائمة الإضافات التي ثبّتها: …………………………………………………………………………</p></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">أول مستودع شخصي: clone ثم commit ثم push</div><div class="en">Your first repository: clone, commit, push</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 25 نقطة</span><span class="chip">git clone</span><span class="chip">git commit</span><span class="chip">git push</span></div><p><strong>الهدف:</strong> تجربة الدورة الكاملة بنفسك على مستودع تجريبي شخصي (لم تُسلَّم بعد
+المستودع المشترك — سيبدأ في ورقة العمل 02).</p>
+<p><strong>الخطوة 1 — أنشئ مستودعاً فارغاً على GitHub:</strong></p>
+<ol>
+<li>من أعلى الصفحة: <strong>+</strong> ← <code>New repository</code>.</li>
+<li>الاسم: <code>git-practice-&lt;اسم المستخدم&gt;</code> — مثال: <code>git-practice-sara-alhassan</code>.</li>
+<li>الوصف: <code>تديب شخصي على أوامر Git — ورشة الصف</code>.</li>
+<li>النوع: <strong>Public</strong>، وفعّل <code>Add a README file</code>.</li>
+<li>اضغط <code>Create repository</code>.</li>
+</ol>
+<p><strong>الخطوة 2 — انسخ المستودع إلى جهازك (clone):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الاستنساخ</span></div><pre><span class="p">$</span> <span class="k">cd ~/projects</span>
+<span class="p">$</span> <span class="k">git clone https://github.com/sara-alhassan/git-practice-sara-alhassan.git</span>
+<span class="o">Cloning into &#x27;git-practice-sara-alhassan&#x27;...</span>
+<span class="c">remote: Enumerating objects: 3, done.</span>
+<span class="c">remote: Counting objects: 100% (3/3), done.</span>
+<span class="o">Unpacking objects: 100% (3/3), done.</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">cd git-practice-sara-alhassan</span>
+<span class="p">$</span> <span class="k">ls</span>
+<span class="o">README.md</span></pre></div>
+
+<div class="box info"><div class="h">ماذا حدث؟<span class="en">What just happened?</span></div><p>أمر <code>git clone</code> أنشأ مجلداً على جهازك يحتوي على كل ملفات المستودع + مجلد مخفي اسمه
+<code>.git</code> فيه كامل التاريخ والإعدادات. لا تحذف أو تعدّل هذا المجلد يدوياً أبداً.</p></div>
+
+<p><strong>الخطوة 3 — عدّل ملف README.md</strong> داخل VS Code: أضف سطرين عن نفسك.</p>
+<p><strong>الخطوة 4 — افحص ثم التزم ثم ارفع:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الدورة الكاملة</span></div><pre><span class="p">$</span> <span class="k">git status</span>
+<span class="o">On branch main</span>
+<span class="o">Your branch is up to date with &#x27;origin/main&#x27;.</span>
+<span class="o"></span>
+<span class="o">Changes not staged for commit:</span>
+<span class="o">  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)</span>
+<span class="o">        modified:   README.md</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git diff</span>
+<span class="o">diff --git a/README.md b/README.md</span>
+<span class="o">--- a/README.md</span>
+<span class="o">+++ b/README.md</span>
+<span class="o">@@ -1 +1,3 @@</span>
+<span class="o"> # git-practice-sara-alhassan</span>
+<span class="o">+طالبة في ورشة Git وGitHub.</span>
+<span class="o">+أتعلّم كيف يعمل الفريق على مشروع واحد.</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git add README.md</span>
+<span class="p">$</span> <span class="k">git commit -m &quot;docs(readme): add a short personal introduction&quot;</span>
+<span class="o">[main 3f1a9c2] docs(readme): add a short personal introduction</span>
+<span class="o"> 1 file changed, 2 insertions(+)</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git push</span>
+<span class="o">Enumerating objects: 5, done.</span>
+<span class="o">To https://github.com/sara-alhassan/git-practice-sara-alhassan.git</span>
+<span class="o">   9d4b1a7..3f1a9c2  main -&gt; main</span></pre></div>
+
+<p><strong>الخطوة 5 — افحص التاريخ وتأكد أن التعديل ظهر على GitHub:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — القراءة والتحقق</span></div><pre><span class="p">$</span> <span class="k">git log --oneline</span>
+<span class="o">3f1a9c2 (HEAD -&gt; main, origin/main) docs(readme): add a short personal introduction</span>
+<span class="o">9d4b1a7 Initial commit</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git remote -v</span>
+<span class="o">origin  https://github.com/sara-alhassan/git-practice-sara-alhassan.git (fetch)</span>
+<span class="o">origin  https://github.com/sara-alhassan/git-practice-sara-alhassan.git (push)</span></pre></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>رابط مستودعك: <code>https://github.com/……………………/……………………</code></li>
+<li>الصق مخرجات <code>git log --oneline</code> (سطران على الأقل):</li>
+</ul>
+<pre class="plain"><span class="ph">$ git log --oneline</span>
+</pre>
+
+<ul>
+<li>الصق مخرجات <code>git status</code> في اللحظة الأخيرة (يجب أن تكون نظيفة):</li>
+</ul>
+<pre class="plain"><span class="ph">$ git status</span>
+</pre></div>
+
+<div class="box ok"><div class="h">معيار الإتمام<span class="en">Definition of done</span></div><p>تكون المهمة مكتملة عندما ترى على صفحة مستودعك في GitHub آخر التزام باسمك ورسالتك،
+من دون أي رسالة خطأ في الطرفية.</p></div></div></div>
+<div class="band violet"><span class="ar">الجزء الثالث · تحقّق ومراجعة</span><span class="en">Part 3 · Check your understanding</span></div>
+
+<h2>أسئلة تحقّق سريعة (15 نقطة)</h2>
+<p><strong>س1.</strong> ما الفرق بين <code>git add</code> و<code>git commit</code>؟ اذكر ماذا يحدث في كل خطوة ولماذا نحتاجهما معاً.</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س2.</strong> لو رفعت تعديلاً إلى GitHub ثم فتح زميلك المتصفح ولم يرَ أي تغيير، فما الاحتمالان الأكثر شيوعاً؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س3.</strong> اكتب الأمر الذي يُظهر: (أ) حالة المشروع الحالية، (ب) آخر الالتزامات في سطر واحد لكل التزام.</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س4.</strong> لماذا نستخدم اسم مستخدم مهنياً وصورة واضحة في GitHub؟ اذكر سببين مرتبطين بالعمل الجماعي.</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س5.</strong> ما الذي يحدث إذا استخدمت بريداً مختلفاً في <code>git config user.email</code> عن بريد حسابك على GitHub؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div></div>
+
+<div class="band green"><span class="ar">قبل التسليم</span><span class="en">Before you submit</span></div>
+
+<div class="write"><strong>قائمة الفحص النهائية<span class="muted tiny"> / Final checklist</span></strong><ul class="checklist">
+<li>[ ] نُفّذ <code>git --version</code> بنجاح وأظهر رقماً لا خطأ (المهمة 1)</li>
+<li>[ ] ضُبط <code>user.name</code> و<code>user.email</code> بنفس بريد GitHub (المهمة 2)</li>
+<li>[ ] الحساب مؤكَّد والتحقق بخطوتين مُفعَّل، والملف الشخصي مكتمل (المهمة 3)</li>
+<li>[ ] PAT أو مفتاح SSH يعمل واختُبر فعلاً (المهمة 4)</li>
+<li>[ ] VS Code مثبّت مع GitLens، والطرفية المدمجة تعمل (المهمة 5)</li>
+<li>[ ] مستودع شخصي أُنشئ ووُصل إليه بـ <code>clone</code> ورُفع إليه <code>commit</code> (المهمة 6)</li>
+<li>[ ] جميع الأدلة أعلاه مملوءة بمخرجات حقيقية لا منسوخة من الورقة</li>
+</ul></div>
+
+<div class="write"><div class="lbl">قيّم نفسك بصدق قبل التسليم / Rate yourself honestly</div><div class="scale"><div class="s"><span class="b">1</span>لم أبدأ</div><div class="s"><span class="b">2</span>بدأت</div><div class="s"><span class="b">3</span>أنجزت</div><div class="s"><span class="b">4</span>أتقنت</div></div></div>
+
+<div class="evidence"><div class="h">بطاقة التسليم<span class="en">/ Submission card</span></div><table>
+<thead>
+<tr>
+<th>البند</th>
+<th>ما يُسلَّم</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>رابط الحساب</td>
+<td><code>https://github.com/………………………</code></td>
+</tr>
+<tr>
+<td>رابط المستودع الشخصي</td>
+<td><code>https://github.com/………………………/………………………</code></td>
+</tr>
+<tr>
+<td>طريقة التعريف</td>
+<td>☐ PAT  ☐ SSH</td>
+</tr>
+<tr>
+<td>اسم نظام التشغيل</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td>الوقت الذي استغرقته فعلاً</td>
+<td>………………………</td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box info"><div class="h">ما القادم؟<span class="en">What&#x27;s next</span></div><p>في <strong>ورقة العمل 02</strong> ستنسخ مستودع الفريق <code>class-team-hub</code>، وتفهم بنيته، وتشغّل موقع
+الفريق على جهازك، وتجري تعديلك الأول على فرع خاص بك.</p></div>
+<div class="footer-note"><span>ورشة Git وGitHub · ورقة عمل 01 — التهيئة والتعريف</span><span class="en">Git &amp; GitHub Workshop · Worksheet 01 — Setup &amp; Orientation</span></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "fullName": "طالب مثال",
+  "github": "example-student",
+  "role": "مطوّر",
+  "favoriteCommand": "git switch -c feature/example-student-card",
+  "message": "مثال جاهز يوضح شكل البطاقة الصحيح — احذف أو عدّل هذا الملف بعد إضافة بطاقتك.",
+  "tags": ["JavaScript", "HTML"],
+  "joinedAt": "2026-10-06"
+}

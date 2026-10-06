@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حلول ورقة العمل 02: الاستنساخ والاستكشاف</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top" style="background:#7A1220"><div class="badge"><div class="n">02</div><div class="l">نموذج حل</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — دليل المدرّب المرجعي</div><h1>حلول ورقة العمل 02: الاستنساخ والاستكشاف</h1><div class="sub">Solutions · Worksheet 02 — Clone &amp; Explore</div></div></div><div class="meta"><div><span class="k">التقييم الكلي / Total</span><span class="v">100 نقطة</span></div><div><span class="k">زمن التصحيح المقترح / Marking time</span><span class="v">5–7 دقائق لكل طالب</span></div><div><span class="k">أدلة إلزامية / Mandatory evidence</span><span class="v">6 بنود</span></div><div><span class="k">معيار النجاح / Pass mark</span><span class="v">70 نقطة</span></div></div></div>
+<div class="box err"><div class="h">نسخة المدرّب — نماذج الحلول والتقييم <span class="en">/ Instructor copy — do not distribute</span></div></div><div class="band "><span class="ar">جوهر هذه الورقة</span><span class="en">The core of this worksheet</span></div>
+
+<div class="bi "><div class="ar"><p>الهدف الحقيقي ليس «نسخ الملفات»، بل أن يفهم الطالب أن <strong>المستودع نسخة كاملة من
+التاريخ</strong>، وأن موقع الفريق يقرأ بياناته من ملفات JSON. من فهم هاتين النقطتين سيجد
+الورقة 03 (إضافة بطاقته) سهلة، ومن لم يفهمهما سيسأل عن كل خطوة.</p></div><div class="eng"><p>The real goal is not copying files but understanding that a clone carries the whole history,
+and that the site renders from JSON data files. Students who grasp this will find Worksheet 03
+straightforward.</p></div></div>
+
+<div class="band alt"><span class="ar">جدول التقييم المُجمَّع</span><span class="en">Marking rubric</span></div>
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>المهمة</th>
+<th>النقاط</th>
+<th>معيار القبول</th>
+<th>وزن الجودة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>تجهيز مكان العمل والاستنساخ</td>
+<td>15</td>
+<td><code>git remote -v</code> + <code>git status</code> نظيف</td>
+<td>3</td>
+</tr>
+<tr>
+<td>2</td>
+<td>قراءة بنية المشروع (8 ملفات)</td>
+<td>20</td>
+<td>الجدول مملوء بدقة، لا تعميم</td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>تشغيل الموقع</td>
+<td>20</td>
+<td>دليل تشغيل فعلي (صورة/رابط) + الفرق مفهوم</td>
+<td>3</td>
+</tr>
+<tr>
+<td>4</td>
+<td>تتبّع مسار البيانات (5 دوال)</td>
+<td>20</td>
+<td>شرح وظيفة كل دالة بفهمه لا بنقله</td>
+<td>3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>قراءة تاريخ الفريق</td>
+<td>25</td>
+<td>مخرجات log + تحديد مَن عدّل ماذا</td>
+<td>3</td>
+</tr>
+<tr>
+<td>—</td>
+<td>الأسئلة (س1–س3)</td>
+<td>15</td>
+<td>—</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<div class="band "><span class="ar">إجابات المهام</span><span class="en">Task solutions</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">الاستنساخ</div><div class="en">Clone</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ قبول</span><span class="chip t">★ 15 نقطة</span></div><p><strong>معيار القبول:</strong></p>
+<pre class="plain"><span class="ph">$ git remote -v
+origin  https://github.com/school-git-workshop/class-team-hub.git (fetch)
+origin  https://github.com/school-git-workshop/class-team-hub.git (push)
+
+$ git status
+On branch main
+Your branch is up to date with &#x27;origin/main&#x27;.
+nothing to commit, working tree clean</span>
+</pre>
+
+<p><strong>أخطاء متوقعة وأسبابها التدريسية:</strong></p>
+<table>
+<thead>
+<tr>
+<th>الخطأ</th>
+<th>الرسالة التي سيراها</th>
+<th>العلاج في التصحيح</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>نسخ المستودع (Download ZIP) بدل <code>git clone</code></td>
+<td>فتظهر <code>fatal: not a git repository</code> لاحقاً</td>
+<td>−15 — إعادة إلزامية، لأن ZIP بلا تاريخ ولا <code>.git</code></td>
+</tr>
+<tr>
+<td>الاستنساخ داخل مستودع آخر</td>
+<td>مستودع متداخل (nested repo)</td>
+<td>وجّهه لإعادة الاستنساخ في <code>projects/</code> نظيف</td>
+</tr>
+<tr>
+<td>اختار مجلد <code>C:\Windows</code> أو سطح المكتب</td>
+<td>فوضى ملفات</td>
+<td>لا خصم، لكن وضّح قاعدة مجلد المشاريع</td>
+</tr>
+<tr>
+<td><code>git remote -v</code> فارغ</td>
+<td>نسخ ZIP</td>
+<td>نفس الحالة الأولى</td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">مؤشر سريع في الجولة<span class="en">Quick tour check</span></div><p>اطلب من الطالب أن ينفّذ <code>ls -a</code> — من نجح في الاستنساخ سيرى مجلد <code>.git</code>. وجود <code>.git</code>
+هو الدليل القاطع أن المستودع صحيح وليس نسخة ZIP أو مجلد ملفات عادي.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">بنية المشروع</div><div class="en">Project structure</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ فهم</span><span class="chip t">★ 20 نقطة</span></div><p><strong>الإجابات النموذجية للجدول:</strong></p>
+<table>
+<thead>
+<tr>
+<th>الملف</th>
+<th>دوره</th>
+<th>من يعدّله</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>index.html</code></td>
+<td>الهيكل الأساسي للصفحة: العنوان، شارة الفريق، حاويات البطاقات</td>
+<td>المدرّب/قائد الفريق أساساً، والطلاب لتحسينات</td>
+</tr>
+<tr>
+<td><code>css/style.css</code></td>
+<td>كل التنسيقات والألوان وتخطيط البطاقات (يوجد قسم للطباعة)</td>
+<td>أصحاب مهام <code>style</code></td>
+</tr>
+<tr>
+<td><code>js/app.js</code></td>
+<td>يقرأ ملفات البيانات ويبني بطاقات HTML ويعرضها + البحث والتصفية</td>
+<td>أصحاب مهام الميزات</td>
+</tr>
+<tr>
+<td><code>data/site-config.json</code></td>
+<td>إعدادات الموقع وجميع نصوصه العامة</td>
+<td>مشترك — نقاط تعارض متكررة</td>
+</tr>
+<tr>
+<td><code>data/members/&lt;username&gt;.json</code></td>
+<td>بطاقتك: الاسم، الدور، الأمر المفضّل، الرسالة، الوسوم</td>
+<td><strong>أنت فقط</strong> — لن تتعارض</td>
+</tr>
+<tr>
+<td><code>data/members-index.json</code></td>
+<td>فهرس أسماء ملفات البطاقات (يقرأه الكود)</td>
+<td>مُولَّد آلياً — لا يُكتب يدوياً</td>
+</tr>
+<tr>
+<td><code>tools/build-index.mjs</code></td>
+<td>يفحص مجلد البطاقات ويولّد الفهرس + النسخة المدمجة</td>
+<td>لا يُعدّل، يُنفّذ فقط</td>
+</tr>
+<tr>
+<td><code>.gitignore</code></td>
+<td>قائمة ما لا يُتتبَّع (أسرار، ملفات نظام، مؤقتة)</td>
+<td>مشترك — نادر التعديل</td>
+</tr>
+</tbody>
+</table>
+<p><strong>معيار الدرجة:</strong> 2.5 نقطة لكل سطر صحيح (المجموع 20). الإجابة «ملف إعدادات» بلا تفصيل
+لا تكفي. الشرط المهم: أن يذكر أن <strong>الفهرس مُولَّد آلياً</strong> وأن <strong>ملف بطاقته خاص به</strong>.</p>
+<p><strong>أخطاء متوقعة:</strong>
+- خلط بين <code>data/members-index.json</code> و<code>data/members/</code> (يجب أن يفرّق بين الملف والمجلد).
+- كتابة أن <code>00-template.json</code> و<code>01-example-student.json</code> ملفان «مهمان» — الأصح أنهما
+  قالب ومثال يُنسخ منهما، وليسا بيانات فريق حقيقية.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">تشغيل الموقع</div><div class="en">Run the site</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ قبول</span><span class="chip t">★ 20 نقطة</span></div><p><strong>معيار القبول:</strong> دليل تشغيل حقيقي (صورة شاشة، أو مناقشة شفهية تحريرية أثناء الجولة، أو
+اسم ملف الصورة)، مع إجابة صحيحة على سؤال <code>file://</code> مقابل <code>http://</code>.</p>
+<p><strong>الإجابات النموذجية:</strong>
+- عنوان الموقع: <code>دليل فريق الصف</code> (من <code>data/site-config.json</code> → <code>siteTitle</code>).
+- عدد البطاقات الافتراضي: <strong>2</strong> (<code>01-example-student.json</code> و<code>99-you-instructor.json</code>).
+- أي ملف جاء منه الاسم: <code>data/site-config.json</code>.</p>
+<p><strong>سؤال الفرق (المهم):</strong> عند الفتح المباشر <code>file://</code> يمنع المتصفح <code>fetch</code> لملفات محلية
+لأسباب أمنية (سياسة المصدر الواحد CORS)، لذا يفشل تحميل JSON، ويعتمد المشروع على ملف
+مدمج مسبقاً <code>data/members-bundle.js</code>. الحل: تشغيل خادم محلي (<code>python3 -m http.server</code>
+أو Live Server) فيصبح العنوان <code>http://localhost:8000</code> والقراءة مسموحة. وهذا هو نفس
+النمط الذي سيعمل به الموقع عند النشر على GitHub Pages.</p>
+<p><strong>توزيع درجات السؤال:</strong> 10 للمشاهدة العملية، 5 لصحة الإجابات الرقمية، 5 لتفسير فرق
+<code>file://</code> و<code>http://</code>.</p>
+<p><strong>أخطاء متوقعة:</strong> نسيان <code>Ctrl+Shift+R</code> بعد التعديل فيرى نسخة قديمة؛ تشغيل الخادم من
+المجلد الأعلى فيظهر خطأ 404 على <code>index.html</code>.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">مسار البيانات ودوال الكود</div><div class="en">Data path and functions</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ فهم</span><span class="chip t">★ 20 نقطة</span></div><p><strong>الإجابات النموذجية:</strong></p>
+<table>
+<thead>
+<tr>
+<th>الاسم في الكود</th>
+<th>وظيفته</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DATA</code></td>
+<td>كائن ثوابت يجمع مسارات الملفات (<code>config</code>, <code>index</code>, <code>membersDir</code>, <code>bundle</code>)</td>
+</tr>
+<tr>
+<td><code>fetchJSON()</code></td>
+<td>يحمّل ملفاً بصيغة JSON ويتحقق من نجاح الطلب (<code>res.ok</code>) وإلا يرمي خطأ</td>
+</tr>
+<tr>
+<td><code>cardHTML()</code></td>
+<td>يبني قالب HTML لبطاقة عضو واحد (الاسم، الحرفان الأولان، الرابط، الدور، الأمر، الوسوم)</td>
+</tr>
+<tr>
+<td><code>render()</code></td>
+<td>يعرض البطاقات المطابقة (بعد البحث والتصفية) داخل <code>#membersGrid</code></td>
+</tr>
+<tr>
+<td><code>window.MEMBERS_DATA</code></td>
+<td>نسخة مدمجة من البيانات تحمّلها الصفحة فقط عند تعذّر <code>fetch</code> (تشغيل <code>file://</code>)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>تجربة إضافة اسم ملف غير موجود:</strong> تعمل الصفحة عادةً وتُظهر <strong>تنبيهاً في الطرفية فقط</strong>
+(<code>تعذّر قراءة بطاقة / cannot read card …</code>) لأن الكود يلتقط الخطأ داخل <code>try/catch</code>
+ويستمر في بقية البطاقات. الدرس: <strong>المرونة في التعامل مع البيانات الناقصة</strong> تجعل صفحة
+الفريق لا تنهار بسبب خطأ طالب واحد.</p>
+<p><strong>معيار الدرجة:</strong> 3 نقاط لكل دالة صحيحة (15) + 5 نقاط لنتيجة التجربة وتفسيرها. من كتب
+«تظهر رسالة خطأ حمراء ولا تظهر البطاقة الوحيدة» فقد فهم الفكرة جزئياً → 3 من 5.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">قراءة تاريخ الفريق</div><div class="en">Reading team history</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 25 نقطة</span></div><p><strong>معيار القبول:</strong>
+1. مخرجات <code>git log --oneline -5</code> حقيقية من الجهاز (8 نقاط).
+2. تحديد أكثر مساهم من <code>git shortlog -sn</code> (5 نقاط).
+3. ذكر ملف عدّله زميلان — والجواب الصحيح في هذا المشروع هو <code>data/members-index.json</code>
+   (وأيضاً <code>data/members-bundle.js</code>)، لأنهما يتغيّران مع كل بطاقة جديدة (7 نقاط).
+4. جودة قراءة السجل: القدرة على شرح معنى عقدة الدمج (5 نقاط).</p>
+<p><strong>ملاحظة مهمة للمدرّب — حل مشكلة «الفرق الكاذب»:</strong> من ينفّذ
+<code>git diff main..feature/x</code> على فرع <strong>مدموج بالفعل</strong> سيرى حذفاً لا إضافة (لأن المقارنة
+تسير في الاتجاه المعاكس). الصحيح قبل الدمج:</p>
+<pre class="plain"><span class="ph">$ git fetch origin
+$ git log --oneline origin/main..feature/omar-qa-card     # الالتزامات الجديدة فقط
+$ git diff --stat origin/main...feature/omar-qa-card      # ثلاثة نُقَط = مقارنة صحيحة</span>
+</pre>
+
+<p><strong>علّم الطالب الفرق بين النقطتين (<code>..</code>) والثلاث (<code>...</code>)</strong> — هذا يوفّر عليه لبساً في
+الورقة 04 و05 وسيظهر في التقييم.</p>
+<div class="box info"><div class="h">سؤال ذكاء سريع<span class="en">A quick depth question</span></div><p>اسأل: «لماذا يظهر <code>data/members-index.json</code> في كل التزامات الفريق؟» الجواب المطلوب:
+لأنه يسجّل عدد البطاقات وقائمتها، فيتغيّر مع كل إضافة. تابع بالسؤال: «وهل هذا مشكلة؟» —
+الجواب: لا، لأن الحل أن يُعاد توليده لا أن يُحلّ يدوياً (وهو جوهر الورقة 05).</p></div></div></div>
+
+<div class="band violet"><span class="ar">إجابات الأسئلة</span><span class="en">Knowledge-check answers</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س1</div><div class="task-titles"><div class="ar">clone مقابل pull</div><div class="en">clone vs. pull</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ فهم</span><span class="chip t">★ 5 نقطة</span></div><p><strong>الإجابة النموذجية:</strong> <code>git clone</code> تُنشئ مستودعاً محلياً جديداً من الصفر مع كامل التاريخ
+وتربطه بـ <code>origin</code> — تُستخدم <strong>مرة واحدة</strong> لكل مشروع على كل جهاز. أما <code>git pull</code> فتحدّث
+مستودعاً موجوداً مسبقاً بجلب التحديثات الجديدة ودمجها — تُستخدم <strong>مراراً</strong> وعلى أساس يومي.</p>
+<p><strong>الدرجة:</strong> 3 نقاط للفرق «إنشاء أولي مقابل تحديث»، ونقطتان لذكر كامل التاريخ في clone.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س2</div><div class="task-titles"><div class="ar">فشل الفتح المباشر</div><div class="en">file:// failure</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 5 نقطة</span></div><p><strong>الإجابة النموذجية:</strong> السبب سياسة أمان المتصفح التي تمنع <code>fetch</code> لملفات محلية عند
+العمل بنظام <code>file://</code>. الحل تشغيل خادم محلي (<code>python3 -m http.server 8000</code> أو Live
+Server) ثم فتح <code>http://localhost:8000</code>، لأن الطلبات تصبح من مصدر <code>http</code> مسموح.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س3</div><div class="task-titles"><div class="ar">لماذا لا تعارض في ملفات البطاقات</div><div class="en">No conflict between cards</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 5 نقطة</span></div><p><strong>الإجابة النموذجية:</strong> لأن كل طالب يضيف <strong>ملفاً جديداً بمسار مختلف</strong> (<code>data/members/&lt;username&gt;.json</code>)،
+وGit يتعامل مع إضافة ملفات مستقلة بدمج تلقائي بلا تعارض. التعارض يحدث فقط عند تعديل
+<strong>نفس السطور في نفس الملف</strong> — وهو ما سيحدث في <code>data/members-index.json</code> المشترك،
+ولذلك جعلناه مُولَّداً آلياً.</p>
+<p><strong>الدرجة:</strong> 3 نقاط لمبدأ «ملفات مختلفة = لا تعارض»، ونقطتان لاستنتاج أن المشكلة في
+الملف المشترك فقط.</p></div></div>
+
+<div class="band green"><span class="ar">ملخّص التصحيح</span><span class="en">Marking summary</span></div>
+
+<div class="evidence"><div class="h">سجل الدرجات<span class="en">/ Grade sheet</span></div><table>
+<thead>
+<tr>
+<th>اسم الطالب</th>
+<th>م1 /15</th>
+<th>م2 /20</th>
+<th>م3 /20</th>
+<th>م4 /20</th>
+<th>م5 /25</th>
+<th>أسئلة /15</th>
+<th>المجموع /100</th>
+<th>ملاحظة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box err"><div class="h">ثلاث علامات خطر في هذه الورقة<span class="en">Three red flags</span></div><ol>
+<li><strong>نسخ ZIP بدل clone</strong> ← لن يستطيع الالتزام ولا الرفع، وسيعطّل الورقة 03.</li>
+<li><strong>لا يستطيع تحديد ملف بطاقته</strong> ← سيعدّل ملف زميل ويصنع تعارضاً حقيقياً.</li>
+<li><strong>يفتح <code>data/members-index.json</code> ليعدّله يدوياً</strong> ← سيصنع تعارضاً في كل مرة؛ أصلح
+   هذا المفهوم <strong>الآن</strong> وليس في الورقة 05.</li>
+</ol></div>
+<div class="footer-note"><span>دليل المدرّب — حلول ورقة 02 · ورشة Git وGitHub</span><span class="en">Instructor key · Worksheet 02 solutions</span></div>
+</div>
+</body>
+</html>

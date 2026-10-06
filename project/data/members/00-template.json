@@ -1,0 +1,17 @@
+{
+  "_comment": "انسخ هذا الملف باسم مستخدمك على GitHub ثم املأ الحقول. Copy this file to <your-github-username>.json and fill the required fields.",
+  "_requiredFields": ["fullName", "github", "role", "favoriteCommand", "message"],
+  "_rules": [
+    "لا تضع بريداً إلكترونياً أو رقم هاتف أو أي بيانات شخصية حساسة",
+    "favoriteCommand يجب أن يبدأ بكلمة git",
+    "message بين 10 و140 حرفاً",
+    "role اختر من: مطوّر / مصمّم / مختبر QA / كاتب توثيق / قائد فريق"
+  ],
+  "fullName": "الاسم الكامل",
+  "github": "your-github-username",
+  "role": "مطوّر",
+  "favoriteCommand": "git status",
+  "message": "اكتب جملة واحدة تعرّف بها عن نفسك وعمّا تعلمته في الورشة.",
+  "tags": ["HTML", "CSS"],
+  "joinedAt": "2026-10-06"
+}

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حل التعارضات النهائية والنشر</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top"><div class="badge"><div class="n">05</div><div class="l">ورقة عمل</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — البرنامج التدريبي العملي</div><h1>حل التعارضات النهائية والنشر</h1><div class="sub">Workshop 5 · Resolve Conflicts &amp; Ship the Project</div></div></div><div class="meta"><div><span class="k">المدة / Duration</span><span class="v">120 دقيقة</span></div><div><span class="k">المستوى / Level</span><span class="v">متقدم — الورقة الختامية</span></div><div><span class="k">المتطلبات / Prerequisites</span><span class="v">إتمام الأوراق 01–04</span></div><div><span class="k">المخرجات / Deliverable</span><span class="v">تعارض محلوول + موقع منشور + تقرير</span></div><div><span class="k">المهام / Tasks</span><span class="v">6 مهام</span></div><div><span class="k">الدرجة / Points</span><span class="v">100 نقطة</span></div></div></div>
+
+<div class="identity">
+  <div class="fld"><span class="k">اسم الطالب / Student</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">اسم المستخدم / GitHub username</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">المجموعة / Group</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">التاريخ / Date</span><span class="dots"></span></div>
+</div>
+<div class="band "><span class="ar">مرحباً في التحدي الأخير</span><span class="en">Welcome to the final challenge</span></div>
+
+<div class="bi "><div class="ar"><p>كل ما تعلّمته حتى الآن كان تمهيداً لهذه الورقة. اليوم ستصنع <strong>تعارضاً عن قصد</strong> لتتعلم
+كيف يُحلّ بأمان، ثم تعالج التفاف التاريخ بـ <code>rebase</code>، ثم تنشر موقع الفريق على الإنترنت
+عبر GitHub Pages، وأخيراً تكتب تقريراً نهائياً عن المشروع وعن نفسك.</p></div><div class="eng"><p>Everything so far was preparation. Today you deliberately create a conflict and resolve it,
+handle rebasing, publish the team site with GitHub Pages, and write your final project report.</p></div></div>
+
+<div class="goal-list"><strong>أهداف التعلّم<span class="muted tiny"> / Learning objectives</span></strong><ul>
+<li>فهم متى يحدث التعارض ومَن المسؤول عن حلّه (لا Git ولا الزميل: أنتما معاً).</li>
+<li>قراءة علامات التعارض (<code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> <code>=======</code> <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code>) وتفسيرها بدقة.</li>
+<li>حل نوعين مختلفين: تعارض سطر واحد، وتعارض ملف مُولَّد آلياً.</li>
+<li>استخدام <code>git rebase</code> وفهم الفرق بين معنى <code>HEAD</code> في merge وrebase.</li>
+<li>الدفع الآمن بـ <code>--force-with-lease</code> بعد إعادة التشكيل.</li>
+<li>النشر على GitHub Pages وتوثيق التنظيم النهائي للمشروع.</li>
+</ul></div>
+
+<div class="band alt"><span class="ar">الجزء الأول · فهم التعارض</span><span class="en">Part 1 · Understanding conflicts</span></div>
+
+<div class="box rule"><div class="h">حقيقة يجب أن تعرفها<span class="en">A fact you must know</span></div><p>التعارض <strong>ليس خطأً</strong> وليس فشلاً، بل رسالة من Git تقول: «تعديلان مختلفان على نفس المكان،
+ولا أستطيع أن أقرّر عنكما». القرار قرار بشري — وأنت مؤهّل لاتخاذه الآن.</p></div>
+
+<figure class="dia"><img src="../assets/img/conflict-markers.svg" alt="علامات التعارض"><figcaption>شكل 1: بنية علامات التعارض الثلاث داخل الملف <span class="en">— the three markers</span></figcaption></figure>
+
+<table>
+<thead>
+<tr>
+<th>الحالة</th>
+<th>هل يحدث تعارض؟</th>
+<th>السبب</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>طالبان يضيفان بطاقتين في ملفين مختلفين</td>
+<td>❌ لا</td>
+<td>Git يدمج ملفين مستقلين تلقائياً</td>
+</tr>
+<tr>
+<td>طالبان يعدّلان <strong>نفس السطر</strong></td>
+<td>✅ نعم</td>
+<td>تعديلان على نفس المكان بالضبط</td>
+</tr>
+<tr>
+<td>طالبان يعدّلان ملفاً <strong>مُولَّداً</strong> (الفهرس)</td>
+<td>✅ نعم (مقصود)</td>
+<td>الملف يتغير من الجهتين معاً</td>
+</tr>
+<tr>
+<td>طالبان يعدّلان سطرين <strong>متباعدين</strong> في ملف واحد</td>
+<td>❌ لا</td>
+<td>Git يدمج المقاطع بلا تداخل</td>
+</tr>
+<tr>
+<td>طالب حذف ملفاً وآخر عدّله</td>
+<td>✅ نعم</td>
+<td>تعارض حذف مقابل تعديل</td>
+</tr>
+</tbody>
+</table>
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">اصنع تعارضاً في سطر واحد (مقصود)</div><div class="en">Deliberately create a single-line conflict</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 20 نقطة</span><span class="chip">git merge</span><span class="chip">conflict markers</span></div><p><strong>الهدف:</strong> تجربة تعارض حقيقي في ملف واحد بسيط: شعار الفريق.</p>
+<p><strong>التحضير — الطالب (أ) يعدّل الشعار:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الطالب أ (سارة)</span></div><pre><span class="p">$</span> <span class="k">git switch main &amp;&amp; git pull --ff-only</span>
+<span class="p">$</span> <span class="k">git switch -c docs/sara-slogan</span>
+<span class="p">$</span> <span class="k">nano sandbox/team-slogan.txt      # أضف اسمك في نهاية السطر</span>
+<span class="c"># الناتج: شعار الفريق: «نتعلّم معاً، ونرفع معاً» — أعضاء الفريق: سارة</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git commit -am &quot;docs(slogan): add sara to the team slogan&quot;</span>
+<span class="p">$</span> <span class="k">git push -u origin docs/sara-slogan</span></pre></div>
+
+<p><strong>الطالب (ب) يعدّل نفس الملف — قبل أن يصل تعديل (أ):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الطالب ب (عمر)</span></div><pre><span class="p">$</span> <span class="k">git switch main &amp;&amp; git pull --ff-only</span>
+<span class="p">$</span> <span class="k">git switch -c docs/omar-slogan</span>
+<span class="p">$</span> <span class="k">nano sandbox/team-slogan.txt</span>
+<span class="c"># الناتج: شعار الفريق: «نتعلّم معاً، ونرفع معاً» — أعضاء الفريق: عمر</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git commit -am &quot;docs(slogan): add omar to the team slogan&quot;</span>
+<span class="p">$</span> <span class="k">git push -u origin docs/omar-slogan</span>
+<span class="p">$</span> <span class="k">git switch main</span></pre></div>
+
+<p><strong>الآن دمج سارة أولاً (يمرّ بسلام)، ثم دمج عمر (سيحدث التعارض):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — التعارض يظهر</span></div><pre><span class="p">$</span> <span class="k">git merge --no-ff docs/sara-slogan -m &quot;Merge pull request #21 from sara/slogan&quot;</span>
+<span class="o">Merge made by the &#x27;ort&#x27; strategy.</span>
+<span class="o"> sandbox/team-slogan.txt | 2 +-</span>
+<span class="o"> 1 file changed, 1 insertion(+), 1 deletion(-)</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git merge --no-ff docs/omar-slogan -m &quot;Merge pull request #22 from omar/slogan&quot;</span>
+<span class="s">Auto-merging sandbox/team-slogan.txt</span>
+<span class="s">CONFLICT (content): Merge conflict in sandbox/team-slogan.txt</span>
+<span class="o">Automatic merge failed; fix conflicts and then commit the result.</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git status -sb</span>
+<span class="c">## main</span>
+<span class="o">UU sandbox/team-slogan.txt</span></pre></div>
+
+<p><strong>افتح الملف واقرأ علامات التعارض:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">sandbox/team-slogan.txt — ما تراه على الشاشة</span></div><pre><span class="c">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="o">شعار الفريق: «نتعلّم معاً، ونرفع معاً» — أعضاء الفريق: سارة</span>
+<span class="c">=======</span>
+<span class="o">شعار الفريق: «نتعلّم معاً، ونرفع معاً» — أعضاء الفريق: عمر</span>
+<span class="c">&gt;&gt;&gt;&gt;&gt;&gt;&gt; docs/omar-slogan</span></pre></div>
+
+<p><strong>الحل الصحيح — نُبقي المعلومتين معاً:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — حل التعارض</span></div><pre><span class="c"># احذف الأسطر الثلاثة للعلامات واكتب السطر النهائي:</span>
+<span class="p">$</span> <span class="k">nano sandbox/team-slogan.txt</span>
+<span class="c"># الناتج: شعار الفريق: «نتعلّم معاً، ونرفع معاً» — أعضاء الفريق: سارة، عمر</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git add sandbox/team-slogan.txt</span>
+<span class="p">$</span> <span class="k">git commit --no-edit</span>
+<span class="o">[main d34a3f6] Merge pull request #22 from omar/slogan</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git diff --check          # لا مخارج = لا علامات تعارض باقية</span>
+<span class="p">$</span> <span class="k">git log --oneline -3</span>
+<span class="o">d34a3f6 (HEAD -&gt; main) Merge pull request #22 from omar/slogan</span>
+<span class="o">85972ba Merge pull request #21 from sara/slogan</span>
+<span class="o">abfa9da docs(slogan): add sara to the team slogan</span></pre></div>
+
+<div class="box err"><div class="h">أخطاء يرتكبها المبتدئون<span class="en">Beginner mistakes</span></div><ol>
+<li><strong>نسيان حذف العلامات</strong> فتصبح <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> جزءاً من المشروع! افحص دائماً بـ
+   <code>git diff --check</code> أو ابحث يدوياً: <code>grep -rn "&lt;&lt;&lt;&lt;&lt;&lt;&lt;" .</code></li>
+<li><strong>اختيار طرف واحد دائماً</strong> بدل دمج المعلومتين، فيضيع عمل زميل.</li>
+<li><strong>الالتزام بلا <code>git add</code></strong> فالملف يبقى «غير محلول» ولا يقبل Git الإكمال.</li>
+</ol></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>الصق ملف التعارض كما ظهر قبل الحل (مع العلامات):</li>
+</ul>
+<pre class="plain"><span class="ph">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+</pre>
+
+<ul>
+<li>الصق السطر النهائي بعد الحل: ……………………………………………………</li>
+<li>مخرجات <code>git diff --check</code> (يجب ألا تظهر مخرجات): ……………………………</li>
+<li>عدد الملفات المتعارضة التي ظهرت في <code>git status -sb</code>: …………</li>
+</ul></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">حل تعارض ملف مُولَّد آلياً</div><div class="en">Resolve a generated-file conflict</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 20 نقطة</span><span class="chip">build-index.mjs</span><span class="chip">git rebase</span></div><p><strong>الهدف:</strong> أشهر تعارض سيقع فعلاً في مشروعنا: <code>data/members-index.json</code>.</p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — التعارض في ملف مُولَّد</span></div><pre><span class="p">$</span> <span class="k">git switch main &amp;&amp; git pull --ff-only</span>
+<span class="p">$</span> <span class="k">git switch -c feature/omar-qa-card</span>
+<span class="p">$</span> <span class="k">cp data/members/00-template.json data/members/omar-qa.json</span>
+<span class="c"># … املأ البطاقة ثم:</span>
+<span class="p">$</span> <span class="k">node tools/build-index.mjs</span>
+<span class="p">$</span> <span class="k">git add -A &amp;&amp; git commit -m &quot;feat(members): add card for omar-qa&quot;</span>
+<span class="p">$</span> <span class="k">git push -u origin feature/omar-qa-card</span>
+<span class="o"></span>
+<span class="c"># في هذه الأثناء دمج المدرّب بطاقة لينا على main — فمزامنة فرعك:</span>
+<span class="p">$</span> <span class="k">git fetch origin</span>
+<span class="p">$</span> <span class="k">git rebase origin/main</span>
+<span class="o">Rebasing (1/1)</span>
+<span class="s">Auto-merging data/members-bundle.js</span>
+<span class="s">CONFLICT (content): Merge conflict in data/members-bundle.js</span>
+<span class="s">Auto-merging data/members-index.json</span>
+<span class="s">CONFLICT (content): Merge conflict in data/members-index.json</span>
+<span class="s">error: could not apply 1af7c9b... feat(members): add card for omar-qa</span>
+<span class="c">hint: Resolve all conflicts manually, mark them as resolved with</span>
+<span class="c">hint: &quot;git add/rm &lt;conflicted_files&gt;&quot;, then run &quot;git rebase --continue&quot;.</span></pre></div>
+
+<p><strong>افحص الملف المتعارض:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">data/members-index.json — كيف يبدو التعارض</span></div><pre><span class="o">{</span>
+<span class="o">  &quot;_generated&quot;: true,</span>
+<span class="o">  &quot;total&quot;: 4,</span>
+<span class="o">  &quot;files&quot;: [</span>
+<span class="o">    &quot;01-example-student.json&quot;,</span>
+<span class="o">    &quot;99-you-instructor.json&quot;,</span>
+<span class="c">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="o">    &quot;leen-docs.json&quot;,</span>
+<span class="c">=======</span>
+<span class="o">    &quot;omar-qa.json&quot;,</span>
+<span class="c">&gt;&gt;&gt;&gt;&gt;&gt;&gt; 1af7c9b (feat(members): add card for omar-qa)</span>
+<span class="o">    &quot;sara-design.json&quot;</span>
+<span class="o">  ]</span>
+<span class="o">}</span></pre></div>
+
+<div class="box err"><div class="h">لا تحلّه يدوياً أبداً!<span class="en">Never resolve it by hand!</span></div><p>الملف مُولَّد آلياً من ملفات <code>data/members/</code>. لو حللت التعارض يدوياً سينكسر الفهرس عند
+أول إضافة جديدة. <strong>الحل الاحترافي: أعد التوليد.</strong></p></div>
+
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الحل الصحيح: أعد التوليد</span></div><pre><span class="p">$</span> <span class="k">node tools/build-index.mjs</span>
+<span class="o">[build-index] ✓ تم توليد الفهرس: 5 بطاقة.</span>
+<span class="o">   • example-student        مطوّر</span>
+<span class="o">   • leen-docs              كاتب توثيق</span>
+<span class="o">   • omar-qa                مختبر QA</span>
+<span class="o">   • sara-design            مصمّم</span>
+<span class="o">   • you-instructor         قائد فريق</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git add data/members-index.json data/members-bundle.js</span>
+<span class="p">$</span> <span class="k">git rebase --continue</span>
+<span class="o">[detached HEAD 9a8b7c6] feat(members): add card for omar-qa</span>
+<span class="o"> 3 files changed, 25 insertions(+), 2 deletions(-)</span>
+<span class="o">Successfully rebased and updated refs/heads/feature/omar-qa-card.</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git status -sb</span>
+<span class="c">## feature/omar-qa-card...origin/feature/omar-qa-card [ahead 1, behind 3]</span></pre></div>
+
+<div class="box warn"><div class="h">لاحظ السطر الأخير<span class="en">Note the last line</span></div><p>الفرع المحلي صار <code>ahead 1, behind 3</code> — أي أن تاريخه أُعيد كتابته. الدفع العادي سيُرفض،
+نحتاج <code>--force-with-lease</code> (انظر المهمة 3).</p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>الصق مقطع التعارض من <code>data/members-index.json</code> (العلامات والملف):</li>
+</ul>
+<pre class="plain"><span class="ph">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+</pre>
+
+<ul>
+<li>الصق مخرجات <code>node tools/build-index.mjs</code>:</li>
+</ul>
+<pre class="plain"><span class="ph">$ node tools/build-index.mjs</span>
+</pre>
+
+<ul>
+<li>اذكر النتيجة النهائية لـ <code>git status -sb</code>: ……………………………………………………</li>
+</ul></div></div></div>
+<div class="band "><span class="ar">الجزء الثاني · إعادة التشكيل والدفع الآمن</span><span class="en">Part 2 · Rebase &amp; safe push</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">rebase و --force-with-lease والفرق بينه وبين --force</div><div class="en">Rebase and safe force-push</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 15 نقطة</span><span class="chip">git rebase</span><span class="chip">push --force-with-lease</span></div><div class="bi "><div class="ar"><p><code>git push --force</code> يمحو كل ما على الفرع البعيد ويستبدله بتاريخك بلا أي سؤال — فإن كان
+زميلك قد رفع التزاماً على نفس الفرع، سيُفقد عمله. أما <code>--force-with-lease</code> فيقول للخادم:
+«استبدل التاريخ <strong>فقط</strong> إن كان لا يزال على الحالة التي أعرفها»، فيرفض العملية إن تغيّر
+شيء، فتنقذ عمل زميلك.</p></div><div class="eng"><p><code>--force</code> overwrites the remote branch with no questions asked — possibly destroying a
+teammate's commits. <code>--force-with-lease</code> only overwrites if the remote is still exactly as you
+last saw it, refusing otherwise. Always use the lease version, and only on your own branch.</p></div></div>
+
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الدفع العادي يُرفض ثم الدفع الآمن ينجح</span></div><pre><span class="p">$</span> <span class="k">git push</span>
+<span class="o">To https://github.com/school-git-workshop/class-team-hub.git</span>
+<span class="o"> ! [rejected]        feature/omar-qa-card -&gt; feature/omar-qa-card (non-fast-forward)</span>
+<span class="s">error: failed to push some refs to &#x27;https://github.com/school-git-workshop/class-team-hub.git&#x27;</span>
+<span class="c">hint: Updates were rejected because the tip of your current branch is behind</span>
+<span class="c">hint: its remote counterpart. Integrate the remote changes (e.g.</span>
+<span class="c">hint: &#x27;git pull ...&#x27;) before pushing again.</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git push --force-with-lease origin feature/omar-qa-card</span>
+<span class="o">To https://github.com/school-git-workshop/class-team-hub.git</span>
+<span class="o"> + 1af7c9b...9a8b7c6 feature/omar-qa-card -&gt; feature/omar-qa-card (forced update)</span></pre></div>
+
+<p><strong>أوضاع التاريخ التي ستراها كثيراً:</strong></p>
+<table>
+<thead>
+<tr>
+<th>الحالة في <code>git status -sb</code></th>
+<th>المعنى</th>
+<th>الأمر السليم</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ahead 2</code></td>
+<td>عندك التزامان غير مرفوعين</td>
+<td><code>git push</code></td>
+</tr>
+<tr>
+<td><code>behind 3</code></td>
+<td>عند الزملاء 3 التزامات لم تجلبها</td>
+<td><code>git pull --ff-only</code></td>
+</tr>
+<tr>
+<td><code>ahead 1, behind 3</code></td>
+<td>التاريخان افترقا</td>
+<td><code>git pull --rebase</code></td>
+</tr>
+<tr>
+<td><code>diverged</code></td>
+<td>افتراق ثم محاولة دفع</td>
+<td><code>pull --rebase</code> ثم <code>push --force-with-lease</code></td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">قاعدة عملي<span class="en">My rule of thumb</span></div><p>الدفع على الفرع الشخصي فقط، ومع <code>fetch</code> أولاً، وبـ <code>--force-with-lease</code> فقط.
+<strong><code>--force</code> المجرد ≠ مسموح في أي حالة.</strong></p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>الصق مخرجات <code>git push --force-with-lease</code>:</li>
+</ul>
+<pre class="plain"><span class="ph">$ git push --force-with-lease origin feature/omar-qa-card</span>
+</pre>
+
+<ul>
+<li>اشرح في سطرين: كيف يحمي <code>--force-with-lease</code> عمل زميلك تحديداً؟</li>
+</ul>
+<pre class="plain"><span class="ph">……………………………………………………………………………………………………………………</span>
+</pre></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">افحص قبل الدمج: كيف يقرأ المراجع طلب سحبك؟</div><div class="en">Pre-merge inspection: what your reviewer sees</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 15 نقطة</span><span class="chip">git diff</span><span class="chip">gh</span><span class="chip">GitHub</span></div><p><strong>الهدف:</strong> أن تتحقق من فرعك بنفسك قبل أن يتحقق منه غيرك — وهذا أسرع طريق للقبول.</p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الفحص الذاتي قبل طلب المراجعة</span></div><pre><span class="p">$</span> <span class="k">node tests/validate-members.mjs</span>
+<span class="o">--- النتيجة / Result: 7 بطاقة، 0 خطأ، 0 تحذير ---</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git fetch origin &amp;&amp; git diff --stat origin/main...HEAD</span>
+<span class="o"> data/members-bundle.js     | 13 +++++++++++++</span>
+<span class="o"> data/members-index.json    |  5 +++--</span>
+<span class="o"> data/members/omar-qa.json  |  9 +++++++++</span>
+<span class="o"> 3 files changed, 26 insertions(+), 1 deletion(-)</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git log --oneline origin/main..HEAD</span>
+<span class="o">9a8b7c6 feat(members): add card for omar-qa</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git diff origin/main...HEAD -- data/members/omar-qa.json</span>
+<span class="o">+{</span>
+<span class="o">+  &quot;fullName&quot;: &quot;عمر القاسم&quot;,</span>
+<span class="o">+  &quot;github&quot;: &quot;omar-qa&quot;,</span>
+<span class="o">+  &quot;role&quot;: &quot;مختبر QA&quot;,</span>
+<span class="o">+  …</span>
+<span class="o">+}</span></pre></div>
+
+<div class="box info"><div class="h">لماذا ثلاث نقاط؟<span class="en">Why three dots?</span></div><p><code>origin/main...HEAD</code> تعني: «التعديلات التي على فرعي فقط مقارنةً بالفرع المشترك» — وهذا
+بالضبط ما يعرضه GitHub في تبويب <code>Files changed</code> داخل طلب السحب.</p></div>
+
+<p><strong>قائمة الفحص قبل أن تطلب مراجعة (افحصها دائماً):</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>الفحص</th>
+<th>الأمر</th>
+<th>النتيجة المطلوبة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>الاختبارات</td>
+<td><code>node tests/validate-members.mjs</code></td>
+<td>0 خطأ</td>
+</tr>
+<tr>
+<td>2</td>
+<td>لا علامات تعارض</td>
+<td><code>git diff --check</code></td>
+<td>لا مخرجات</td>
+</tr>
+<tr>
+<td>3</td>
+<td>ما سيدخل فعلاً</td>
+<td><code>git diff --stat origin/main...HEAD</code></td>
+<td>ملفاتك فقط</td>
+</tr>
+<tr>
+<td>4</td>
+<td>رسالة الالتزام</td>
+<td><code>git log --oneline origin/main..HEAD</code></td>
+<td>صيغة صحيحة</td>
+</tr>
+<tr>
+<td>5</td>
+<td>فرع محدَّث</td>
+<td><code>git status -sb</code></td>
+<td>لا <code>behind</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>لا أسرار</td>
+<td><code>git diff origin/main...HEAD | grep -iE "token|password"</code></td>
+<td>لا نتائج</td>
+</tr>
+</tbody>
+</table>
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><p>نفّذ الفحوص الستة على فرعك واملأ النتيجة:</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>الفحص</th>
+<th>النتيجة التي حصلت عليها</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>node tests/validate-members.mjs</code></td>
+<td>………………………</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>git diff --check</code></td>
+<td>………………………</td>
+</tr>
+<tr>
+<td>3</td>
+<td>ملفات في <code>git diff --stat</code></td>
+<td>………………………</td>
+</tr>
+<tr>
+<td>4</td>
+<td>آخر رسالة التزام</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>git status -sb</code></td>
+<td>………………………</td>
+</tr>
+<tr>
+<td>6</td>
+<td>البحث عن أسرار</td>
+<td>………………………</td>
+</tr>
+</tbody>
+</table></div></div></div>
+<div class="band violet"><span class="ar">الجزء الثالث · النشر والتسليم النهائي</span><span class="en">Part 3 · Ship it</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">انشر الموقع على GitHub Pages</div><div class="en">Publish the site with GitHub Pages</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 15 نقطة</span><span class="chip">GitHub Pages</span><span class="chip">Settings</span></div><p><strong>الهدف:</strong> أن يرى العالم — وذووك — مشروع الفريق على رابط حقيقي.</p>
+<div class="bi "><div class="ar"><p>النشر على GitHub Pages يعني أن GitHub سيتولّى استضافة ملفات المشروع من فرع محدَّد
+(غالباً <code>main</code>) ويعطينا رابطاً عاماً. المشروع جاهز للنشر لأنه موقع ثابت بلا أي خادم
+أو قاعدة بيانات.</p></div><div class="eng"><p>GitHub Pages hosts your static files straight from a branch and gives you a public URL. Our
+project is ready because it is a pure static site — no server, no database.</p></div></div>
+
+<p><strong>الخطوة 1 — من صفحة المستودع:</strong></p>
+<pre class="plain"><span class="ph">Settings ← Pages ← Source: Deploy from a branch
+Branch: main        Folder: / (root)        ثم اضغط Save</span>
+</pre>
+
+<p><strong>الخطوة 2 — انتظر دقيقة، ثم افتح الرابط:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">الرابط المتوقع / expected URL</span></div><pre><span class="o">https://&lt;org&gt;.github.io/class-team-hub/</span>
+<span class="o">مثال: https://school-git-workshop.github.io/class-team-hub/</span></pre></div>
+
+<p><strong>الخطوة 3 — إن لم تظهر البطاقات، افحص هذا الترتيب:</strong></p>
+<table>
+<thead>
+<tr>
+<th>العرض</th>
+<th>السبب</th>
+<th>الحل</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>صفحة 404</td>
+<td>النشر لم يكتمل بعد</td>
+<td>انتظر 1–3 دقائق ثم أعد التحميل بقوة (Ctrl+Shift+R)</td>
+</tr>
+<tr>
+<td>الصفحة تعمل بلا بطاقات</td>
+<td><code>data/members-index.json</code> غير محدَّث</td>
+<td><code>node tools/build-index.mjs</code> ثم التزم وارفع</td>
+</tr>
+<tr>
+<td>الصفحة فارغة تماماً</td>
+<td>فحص المسارات في <code>js/app.js</code></td>
+<td>تأكد أن الأسماء <code>data/...</code> بحروف صغيرة بالضبط</td>
+</tr>
+<tr>
+<td>تظهر بطاقة واحدة فقط</td>
+<td>خطأ في JSON لدى أحد الزملاء</td>
+<td>شغّل الفحص: <code>node tests/validate-members.mjs</code></td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">تحسين احترافي<span class="en">Professional touch</span></div><p>أضف ملف <code>docs/index.md</code> أو شرائح عرض صغيرة عن المشروع، واربط الرابط في ملف <code>README.md</code>:
+<code>🔗 الموقع المباشر: https://…</code> — هكذا يرى الزائر النتيجة فوراً.</p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>رابط الموقع المنشور: <code>https://…………………………………</code></li>
+<li>حالة النشر: ☐ نجح ووجهة النظر تعمل  ☐ فشل (اذكر السبب) ………………………</li>
+<li>هل تظهر كل بطاقات الفريق؟ ☐ نعم  ☐ لا — العدد الظاهر: …………</li>
+</ul></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">التسليم النهائي: طلب سحب مركّب وتقرير المشروع</div><div class="en">Final delivery: a real PR and the project report</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 15 نقطة</span><span class="chip">GitHub</span><span class="chip">PR</span><span class="chip">README</span></div><p><strong>الهدف:</strong> إغلاق المشروع باحتراف: طلب سحب نظيف، وتقرير يوثّق العمل وفريقك.</p>
+<p><strong>الجزء أ — طلب سحب نهائي محترف.</strong> أنشئ تعديلاً جديداً يحسّن المشروع (مثال: تحديث
+<code>README.md</code> بإضافة رابط الموقع المباشر + قسم «كيف تشغّل المشروع»)، ثم:</p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — طلب سحب نهائي</span></div><pre><span class="p">$</span> <span class="k">git switch main &amp;&amp; git pull --ff-only</span>
+<span class="p">$</span> <span class="k">git switch -c docs/&lt;username&gt;-final-readme</span>
+<span class="c"># عدّل README.md، ثم:</span>
+<span class="p">$</span> <span class="k">node tools/build-index.mjs</span>
+<span class="p">$</span> <span class="k">node tests/validate-members.mjs</span>
+<span class="p">$</span> <span class="k">git add README.md &amp;&amp; git commit -m &quot;docs(readme): add live site link and run instructions&quot;</span>
+<span class="p">$</span> <span class="k">git push -u origin docs/&lt;username&gt;-final-readme</span></pre></div>
+
+<p>وعلى GitHub افتح طلب سحب واملأه بهذا الشكل:</p>
+<pre class="plain"><span class="ph">العنوان: docs(readme): add live site link and run instructions
+
+المشكلة: Closes #34
+ماذا تغيّر: أضفت رابط الموقع المنشور، وقسم تشغيل المشروع خطوة بخطوة.
+كيف جُرّب: نفّذت node tests/validate-members.mjs ← النتيجة 0 خطأ، وفتحت الموقع عبر Live Server.
+لقطات/أدلة: (الصق المخرجات أو صورة)</span>
+</pre>
+
+<p><strong>الجزء ب — تقرير المشروع النهائي (املأ الجدول):</strong></p>
+<div class="evidence"><div class="h">تقرير المشروع النهائي<span class="en">/ Final project report</span></div><table>
+<thead>
+<tr>
+<th>المؤشر</th>
+<th>القيمة / التفصيل</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>اسم الموقع المنشور</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>عدد بطاقات الفريق النهائي</td>
+<td>…………</td>
+</tr>
+<tr>
+<td>عدد الالتزامات في <code>main</code></td>
+<td>…………</td>
+</tr>
+<tr>
+<td>عدد طلبات السحب المدموجة</td>
+<td>…………</td>
+</tr>
+<tr>
+<td>أكبر تعارض واجهته وحلّه</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>الأمر الذي أستخدمه كل يوم</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>فرع واحد لم أنجح في دمجه (إن وُجد)</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>تقييمي لجودة تاريخ المشروع (1–5)</td>
+<td>…………</td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box ok"><div class="h">معيار الإتمام النهائي<span class="en">Final definition of done</span></div><p>تكون قد أتممت البرنامج عندما تتحقق هذه الشروط مجتمعة:
+1. بطاقتك ظاهرة على <strong>الموقع المنشور</strong> لا على جهازك فقط.
+2. <code>main</code> عندك متساوٍ مع <code>origin/main</code> وبلا علامات تعارض.
+3. <code>node tests/validate-members.mjs</code> يخرج بـ <strong>0 خطأ</strong>.
+4. لديك <strong>3 طلبات سحب على الأقل</strong>: واحد لك، وواحد راجعته، وواحد أُغلق بالمراجعة.
+5. لديك دليل موثّق على حل <strong>تعارضين مختلفين</strong> (سطر واحد + ملف مُولَّد).</p></div></div></div>
+<div class="band green"><span class="ar">قبل التسليم النهائي</span><span class="en">Final submission</span></div>
+
+<h2>أسئلة ختامية (تحليلية)</h2>
+<p><strong>س1.</strong> اشرح بالعربية: لماذا يحدث التعارض عند تعديل نفس السطر، ولا يحدث عند تعديل أسطر متباعدة؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س2.</strong> ما الفرق في <strong>معنى</strong> <code>HEAD</code> داخل تعارض merge مقارنةً بتعارض rebase؟ ولماذا يخطئ الطلاب هنا؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س3.</strong> لو كان <code>data/members-index.json</code> <strong>غير</strong> مُولَّد آلياً، فماذا كان سيحدث للفريق؟ اشرح بمثال.</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س4.</strong> اقترح على فريقك تعديلاً واحداً على سير العمل يقلّل التعارضات في المشروع القادم.</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<div class="write"><strong>قائمة الفحص النهائية للبرنامج<span class="muted tiny"> / Final programme checklist</span></strong><ul class="checklist">
+<li>[ ] صنعت تعارضاً عن قصد وحلّلته بنفسي (سطر واحد)</li>
+<li>[ ] حللت تعارض ملف مُولَّد بإعادة التوليد لا يدوياً</li>
+<li>[ ] استخدمت <code>rebase</code> ودفعت بـ <code>--force-with-lease</code> بلا أخطاء</li>
+<li>[ ] أتممت الفحوص الستة قبل طلب المراجعة</li>
+<li>[ ] الموقع منشور على GitHub Pages ويعمل</li>
+<li>[ ] تقرير المشروع مملوء بالأرقام الفعلية</li>
+<li>[ ] راجعت عمل زميل وردّي على المراجعة موثّق في طلب سحب</li>
+</ul></div>
+
+<div class="write"><div class="lbl">تقييم ذاتي نهائي للبرنامج / Final self-assessment</div><div class="scale"><div class="s"><span class="b">1</span>لم أبدأ</div><div class="s"><span class="b">2</span>بدأت</div><div class="s"><span class="b">3</span>أنجزت</div><div class="s"><span class="b">4</span>أتقنت</div></div></div>
+
+<div class="evidence"><div class="h">بيانات التسليم النهائي<span class="en">/ Final submission data</span></div><table>
+<thead>
+<tr>
+<th>البند</th>
+<th>القيمة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>الاسم واسم المستخدم</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>رابط المستودع المشترك</td>
+<td><code>https://github.com/……………………/class-team-hub</code></td>
+</tr>
+<tr>
+<td>رابط الموقع المنشور</td>
+<td><code>https://…………………………………</code></td>
+</tr>
+<tr>
+<td>رقم طلب السحب الأخير</td>
+<td><code>#………</code></td>
+</tr>
+<tr>
+<td>عدد ساعات عملي في البرنامج</td>
+<td>…………</td>
+</tr>
+<tr>
+<td>المستوى الذي أراه لنفسي اليوم</td>
+<td>☐ مبتدئ  ☐ قادر على العمل في فريق  ☐ قائد فريق</td>
+</tr>
+</tbody>
+</table></div>
+
+<p class="center"><span class="stamp green">أتممت البرنامج التدريبي ✓</span></p>
+<div class="footer-note"><span>ورشة Git وGitHub · ورقة عمل 05 — التعارضات والنشر</span><span class="en">Git &amp; GitHub Workshop · Worksheet 05 — Conflicts &amp; Deployment</span></div>
+</div>
+</body>
+</html>

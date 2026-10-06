@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>فرعي الأول وطلب السحب الأول</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top"><div class="badge"><div class="n">03</div><div class="l">ورقة عمل</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — البرنامج التدريبي العملي</div><h1>فرعي الأول وطلب السحب الأول</h1><div class="sub">Workshop 3 · My First Branch &amp; Pull Request</div></div></div><div class="meta"><div><span class="k">المدة / Duration</span><span class="v">90 دقيقة</span></div><div><span class="k">المستوى / Level</span><span class="v">متوسط — بعد ورقة 02</span></div><div><span class="k">المتطلبات / Prerequisites</span><span class="v">المستودع يعمل على جهازك</span></div><div><span class="k">المخرجات / Deliverable</span><span class="v">بطاقتك مدموجة في main</span></div><div><span class="k">المهام / Tasks</span><span class="v">6 مهام</span></div><div><span class="k">الدرجة / Points</span><span class="v">100 نقطة</span></div></div></div>
+
+<div class="identity">
+  <div class="fld"><span class="k">اسم الطالب / Student</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">اسم المستخدم / GitHub username</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">المجموعة / Group</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">التاريخ / Date</span><span class="dots"></span></div>
+</div>
+<div class="band "><span class="ar">مهمة اليوم</span><span class="en">Today&#x27;s mission</span></div>
+
+<div class="bi "><div class="ar"><p>اليوم ستقوم بأول <strong>مساهمة حقيقية</strong> في مشروع الفريق: تنشئ فرعاً باسمك، وتكتب ملف بطاقتك،
+وتلتزم بالعمل، وترفع الفرع إلى GitHub، ثم تفتح <strong>طلب سحب (Pull Request)</strong> يشرح ما فعلته،
+وتطلب مراجعة من زميل، وتردّ على ملاحظاته. هذه هي دورة عمل أي فريق برمجي في العالم.</p></div><div class="eng"><p>Today you make your first <strong>real contribution</strong>: create a branch, write your card file,
+commit, push, open a <strong>pull request</strong>, request a peer review, and respond to feedback. This
+is exactly how professional teams work.</p></div></div>
+
+<div class="goal-list"><strong>أهداف التعلّم<span class="muted tiny"> / Learning objectives</span></strong><ul>
+<li>إنشاء فرع بشكل صحيح باستخدام <code>git switch -c</code> وتسميته باتفاقيات الفريق.</li>
+<li>كتابة ملف بطاقة JSON صحيح وتمريره في فحص المشروع تلقائياً.</li>
+<li>التمييز الدقيق بين <code>git add</code> و<code>git commit</code> وصياغة رسالة التزام مهنية.</li>
+<li>رفع الفرع بـ <code>git push -u origin &lt;branch&gt;</code> وقراءة رسالة الربط (upstream).</li>
+<li>فتح طلب سحب (Pull Request) بوصف واضح وربطه بمهمة (Issue).</li>
+<li>كتابة مراجعة بنّاءة لزميل والردّ على الملاحظات باحتراف.</li>
+</ul></div>
+
+<figure class="dia"><img src="../assets/img/pr-flow.svg" alt="رحلة طلب السحب"><figcaption>شكل 1: خمس مراحل من الفرع إلى الدمج <span class="en">— branch → commit → push → PR → review & merge</span></figcaption></figure>
+
+<div class="box rule"><div class="h">لماذا نمنع العمل المباشر على main؟<span class="en">Why is direct work on main blocked?</span></div><p>لأن <code>main</code> هو النسخة التي يعتمد عليها الجميع. لو رفع كل طالب تعديله مباشرة إلى <code>main</code>
+لفقدنا القدرة على المراجعة، ولانهار المشروع عند أول خطأ. الفرع يعطيك مساحة آمنة
+للتجربة، وطلب السحب يعطي الفريق فرصة الفحص قبل الدمج.</p></div>
+
+<div class="band alt"><span class="ar">الجزء الأول · الفرع</span><span class="en">Part 1 · The branch</span></div>
+
+<h2>تصنيف الفروع وأسماؤها</h2>
+<div class="bi "><div class="ar"><p>اسم الفرع رسالة للفريق. الاتفاقية المتبعة في المشروع: <code>type/username-topic</code>
+حيث <code>type</code> نوع العمل (<code>feature</code>, <code>fix</code>, <code>docs</code>, <code>chore</code>)، و<code>username</code> اسمك على GitHub،
+و<code>topic</code> وصف قصير بالإنجليزية.</p></div><div class="eng"><p>A branch name communicates intent. Team convention: <code>type/username-topic</code> where type is one of
+<code>feature</code>, <code>fix</code>, <code>docs</code>, <code>chore</code>.</p></div></div>
+
+<table>
+<thead>
+<tr>
+<th>✅ اسم فرع صحيح</th>
+<th>❌ اسم فرع خطأ</th>
+<th>السبب</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feature/omar-qa-card</code></td>
+<td><code>my-branch</code></td>
+<td>لا يدل على صاحبه ولا موضوعه</td>
+</tr>
+<tr>
+<td><code>docs/leen-readme-faq</code></td>
+<td><code>test</code></td>
+<td>غامض، وتكرار <code>test</code> يفسد المشروع</td>
+</tr>
+<tr>
+<td><code>fix/sara-search-filter</code></td>
+<td><code>sara/new/final/2</code></td>
+<td>شرطات لا مسارات، وبلا معنى</td>
+</tr>
+<tr>
+<td><code>chore/ali-regenerate-index</code></td>
+<td><code>فرع علي</code></td>
+<td>حروف عربية ومسافة في اسم الفرع</td>
+</tr>
+</tbody>
+</table>
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">حدّث main وافتح مطالبة عمل (Issue) لمهمتك</div><div class="en">Update main and open an issue for your task</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 10 نقطة</span><span class="chip">git pull</span><span class="chip">GitHub Issues</span></div><p><strong>الهدف:</strong> أن يبدأ العمل من أحدث نسخة، وأن يكون لعملك رقم مرجعي في المشروع.</p>
+<p><strong>الخطوة 1 — زامن نسختك المحلية قبل أي شيء:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — مزامنة قبل العمل</span></div><pre><span class="p">$</span> <span class="k">cd ~/projects/class-team-hub</span>
+<span class="p">$</span> <span class="k">git switch main</span>
+<span class="p">$</span> <span class="k">git pull --ff-only</span>
+<span class="c">remote: Enumerating objects: 12, done.</span>
+<span class="o">Updating 8de1e7a..a1b2c3d</span>
+<span class="o">Fast-forward</span>
+<span class="o"> data/members/ali-h.json | 9 +++++++++</span>
+<span class="o"> 1 file changed, 9 insertions(+)</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git log --oneline -3</span>
+<span class="o">a1b2c3d (HEAD -&gt; main, origin/main) Merge pull request #7 from nour-dev/feature/nour-card</span>
+<span class="o">9f8e7d6 feat(members): add card for nour-dev</span>
+<span class="o">c4d5e6f Merge pull request #6 from ali-h/feature/ali-card</span></pre></div>
+
+<div class="box err"><div class="h">لا تتجاوز هذه الخطوة<span class="en">Never skip this</span></div><p>من يبدأ العمل من نسخة قديمة سيصنع تعارضاً بنفسه بلا داعٍ، وسيضطر لحلّه لاحقاً. المزامنة
+قبل كل فرع جديد عادة لا استثناء.</p></div>
+
+<p><strong>الخطوة 2 — افتح Issue في مستودع الفريق:</strong></p>
+<ol>
+<li>اذهب إلى صفحة المستودع على GitHub ← تبويب <strong>Issues</strong> ← <code>New issue</code>.</li>
+<li>اختر القالب <code>طلب ميزة / Feature request</code>.</li>
+<li>العنوان: <code>إضافة بطاقة &lt;اسم المستخدم&gt; إلى دليل الفريق</code>.</li>
+<li>اكتب في المشكلة: مَن أنت، وما الملف الذي ستضيفه، ومعيار القبول
+   (<code>البطاقة تظهر في الصفحة، والفحص التلقائي ينجح</code>).</li>
+<li>اضغط <code>Submit new issue</code> وسجّل الرقم (مثال: <code>#12</code>).</li>
+</ol>
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>رقم المهمة: <code>#………</code> — رابطها: <code>https://github.com/……………………/class-team-hub/issues/………</code></li>
+<li>مخرجات <code>git pull --ff-only</code>:</li>
+</ul>
+<pre class="plain"><span class="ph">$ git pull --ff-only</span>
+</pre></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">أنشئ فرعك وتحقق من موقعك</div><div class="en">Create your branch and verify where you are</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 10 دقائق</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 10 نقطة</span><span class="chip">git switch</span><span class="chip">git branch</span></div><div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — إنشاء الفرع</span></div><pre><span class="p">$</span> <span class="k">git switch -c feature/&lt;username&gt;-card</span>
+<span class="o">Switched to a new branch &#x27;feature/omar-qa-card&#x27;</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git branch</span>
+<span class="o">  main</span>
+<span class="o">* feature/omar-qa-card</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git branch --show-current</span>
+<span class="o">feature/omar-qa-card</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git status -sb</span>
+<span class="c">## feature/omar-qa-card</span></pre></div>
+
+<div class="bi "><div class="ar"><p>لاحظ علامة النجمة <code>*</code> في قائمة الفروع — تدل على الفرع الحالي. ومن الآن فصاعداً كل
+التزاماتك تسقط على هذا الفرع، و<code>main</code> محفوظ سليم.</p></div><div class="eng"><p>The <code>*</code> marks your current branch. From now on every commit lands on this branch, leaving
+<code>main</code> untouched.</p></div></div>
+
+<div class="box tip"><div class="h">حيلة عملية<span class="en">Practical tip</span></div><p>أضف اسم الفرع الحالي إلى «موجّه الطرفية» (prompt) أو راقبه في شريط VS Code السفلي
+Before every command ask yourself: <strong>على أي فرع أنا الآن؟</strong></p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><p>الصق مخرجات <code>git branch</code> (يجب أن يظهر فرعك بنجمة):</p>
+<pre class="plain"><span class="ph">$ git branch</span>
+</pre></div></div></div>
+<div class="band "><span class="ar">الجزء الثاني · الكتابة والالتزام</span><span class="en">Part 2 · Write and commit</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">اكتب ملف بطاقتك</div><div class="en">Write your card file</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 20 نقطة</span><span class="chip">VS Code</span><span class="chip">JSON</span></div><p><strong>الخطوة 1 — انسخ القالب باسم مستخدمك:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — نسخ القالب</span></div><pre><span class="p">$</span> <span class="k">cp data/members/00-template.json data/members/omar-qa.json</span>
+<span class="p">$</span> <span class="k">ls data/members/</span>
+<span class="o">00-template.json  01-example-student.json  99-you-instructor.json  ali-h.json  nour-dev.json  omar-qa.json</span></pre></div>
+
+<p><strong>الخطوة 2 — افتح الملف واملأ الحقول الخمسة الإلزامية:</strong></p>
+<pre class="plain"><span class="ph">{
+  &quot;fullName&quot;: &quot;اسمك الكامل&quot;,
+  &quot;github&quot;: &quot;your-github-username&quot;,
+  &quot;role&quot;: &quot;مطوّر&quot;,
+  &quot;favoriteCommand&quot;: &quot;git status&quot;,
+  &quot;message&quot;: &quot;جملة واحدة تعرّف بها عن نفسك (10 إلى 140 حرفاً).&quot;,
+  &quot;tags&quot;: [&quot;HTML&quot;, &quot;CSS&quot;],
+  &quot;joinedAt&quot;: &quot;2026-10-06&quot;
+}</span>
+</pre>
+
+<table>
+<thead>
+<tr>
+<th>الحقل</th>
+<th>الشرط</th>
+<th>صحيح ✅</th>
+<th>خطأ ❌</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fullName</code></td>
+<td>الاسم الحقيقي بلا ألقاب</td>
+<td><code>عمر القاسم</code></td>
+<td><code>Mr.Pro</code></td>
+</tr>
+<tr>
+<td><code>github</code></td>
+<td>حروف صغيرة وأرقام وشرطات فقط</td>
+<td><code>omar-qa</code></td>
+<td><code>Omar_QA</code></td>
+</tr>
+<tr>
+<td><code>role</code></td>
+<td>من القائمة المعتمدة</td>
+<td><code>مختبر QA</code></td>
+<td><code>مبرمج خارق</code></td>
+</tr>
+<tr>
+<td><code>favoriteCommand</code></td>
+<td>يبدأ بـ <code>git</code></td>
+<td><code>git log --oneline</code></td>
+<td><code>ls -la</code></td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td>10–140 حرفاً</td>
+<td><code>أبحث عن الأخطاء قبل أن يجدها المستخدم.</code></td>
+<td>`` (فارغ)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>الأدوار المعتمدة:</strong> <code>مطوّر</code> · <code>مصمّم</code> · <code>مختبر QA</code> · <code>كاتب توثيق</code> · <code>قائد فريق</code></p>
+<div class="box err"><div class="h">بيانات تُرفض<span class="en">Rejected content</span></div><p>لا تضع بريداً إلكترونياً، رقم هاتف، عنواناً، رقم هوية، أو كلمة مرور. الفحص التلقائي
+يرفض الملف، وقد يُطلب منك حذف الالتزام وإعادة العمل.</p></div>
+
+<p><strong>الخطوة 3 — أعِد توليد الفهرس ثم شغّل الفحص:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — توليد الفهرس والتحقق</span></div><pre><span class="p">$</span> <span class="k">node tools/build-index.mjs</span>
+<span class="o">[build-index] ✓ تم توليد الفهرس: 6 بطاقة.</span>
+<span class="o">   • ali-h                 مطوّر</span>
+<span class="o">   • example-student        مطوّر</span>
+<span class="o">   • nour-dev               مصمّم</span>
+<span class="o">   • omar-qa                مختبر QA</span>
+<span class="o">   • you-instructor         قائد فريق</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">node tests/validate-members.mjs</span>
+<span class="o"></span>
+<span class="o">=== فحص بطاقات الأعضاء / Validating member cards ===</span>
+<span class="o"></span>
+<span class="o">--- النتيجة / Result: 6 بطاقة، 0 خطأ، 0 تحذير ---</span></pre></div>
+
+<div class="box warn"><div class="h">إن ظهرت أخطاء<span class="en">If the validator fails</span></div><p>اقرأ أول سطر خطأ فقط وأصلحه، ثم أعد التشغيل. الرسائل مصمَّمة لتخبرك بالحقل المشكل
+واسم الملف. لا تُكمل قبل أن تصبح النتيجة <code>0 خطأ</code>.</p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>الصق مخرجات الفحص الأخيرة (يجب أن تكون 0 خطأ):</li>
+</ul>
+<pre class="plain"><span class="ph">$ node tests/validate-members.mjs</span>
+</pre>
+
+<ul>
+<li>الصق محتوى ملف بطاقتك:</li>
+</ul>
+<pre class="plain">
+</pre></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">التزم وارفع فرعك</div><div class="en">Commit and push your branch</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 20 نقطة</span><span class="chip">git add</span><span class="chip">git commit</span><span class="chip">git push</span></div><p><strong>الخطوة 1 — افحص ما ستلتزم به قبل الالتزام:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الفحص قبل الالتزام</span></div><pre><span class="p">$</span> <span class="k">git status -sb</span>
+<span class="c">## feature/omar-qa-card</span>
+<span class="o"> M data/members-bundle.js</span>
+<span class="o"> M data/members-index.json</span>
+<span class="o">?? data/members/omar-qa.json</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git diff --stat</span>
+<span class="o"> data/members-bundle.js  | 13 +++++++++++++</span>
+<span class="o"> data/members-index.json |  3 ++-</span>
+<span class="o"> 2 files changed, 15 insertions(+), 1 deletion(-)</span></pre></div>
+
+<div class="box info"><div class="h">اقرأ الرموز<span class="en">Read the symbols</span></div><p><code>??</code> ملف جديد غير متتبَّع · <code>M</code> تعديل مُمرَّر للمرحلة · <code>M</code> تعديل غير مُمرَّر.
+تعلم قراءة <code>git status -sb</code> يجعل تشخيص أي مشكلة أسرع ثلاث مرات.</p></div>
+
+<p><strong>الخطوة 2 — التزم برسالة مهنية:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الالتزام</span></div><pre><span class="p">$</span> <span class="k">git add data/members/omar-qa.json data/members-index.json data/members-bundle.js</span>
+<span class="p">$</span> <span class="k">git commit -m &quot;feat(members): add card for omar-qa&quot;</span>
+<span class="o">[feature/omar-qa-card 89f5cff] feat(members): add card for omar-qa</span>
+<span class="o"> 3 files changed, 25 insertions(+), 2 deletions(-)</span>
+<span class="o"> create mode 100644 data/members/omar-qa.json</span></pre></div>
+
+<p><strong>صيغة رسالة الالتزام المعتمدة (Conventional Commits):</strong></p>
+<pre class="plain"><span class="ph">&lt;type&gt;(&lt;scope&gt;): &lt;وصف قصير بصيغة الأمر&gt;</span>
+</pre>
+
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>الاستخدام</th>
+<th>مثال</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feat</code></td>
+<td>إضافة جديدة</td>
+<td><code>feat(members): add card for omar-qa</code></td>
+</tr>
+<tr>
+<td><code>fix</code></td>
+<td>إصلاح خطأ</td>
+<td><code>fix(ui): correct card alignment on mobile</code></td>
+</tr>
+<tr>
+<td><code>docs</code></td>
+<td>توثيق فقط</td>
+<td><code>docs(readme): add FAQ section</code></td>
+</tr>
+<tr>
+<td><code>style</code></td>
+<td>تنسيق بلا تغيير سلوك</td>
+<td><code>style(css): reorder card properties</code></td>
+</tr>
+<tr>
+<td><code>chore</code></td>
+<td>صيانة وأدوات</td>
+<td><code>chore(index): regenerate members index</code></td>
+</tr>
+</tbody>
+</table>
+<div class="box err"><div class="h">رسائل مرفوضة<span class="en">Rejected messages</span></div><p><code>update</code> · <code>changes</code> · <code>final</code> · <code>done</code> · <code>asdf</code> · <code>.</code> — هذه الرسائل لا تشرح شيئاً
+للمراجع، وتُحسب عليك في تقييم الورقة.</p></div>
+
+<p><strong>الخطوة 3 — ارفع الفرع واربطه بالخادم:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الرفع</span></div><pre><span class="p">$</span> <span class="k">git push -u origin feature/omar-qa-card</span>
+<span class="o">Enumerating objects: 8, done.</span>
+<span class="o">Counting objects: 100% (8/8), done.</span>
+<span class="o">Writing objects: 100% (5/5), 742 bytes | 742.00 KiB/s, done.</span>
+<span class="o">Total 5 (delta 1), reused 0 (delta 0), pack-reused 0</span>
+<span class="c">remote:</span>
+<span class="c">remote: Create a pull request for &#x27;feature/omar-qa-card&#x27; on GitHub by visiting:</span>
+<span class="c">remote:      https://github.com/school-git-workshop/class-team-hub/pull/new/feature/omar-qa-card</span>
+<span class="c">remote:</span>
+<span class="o">To https://github.com/school-git-workshop/class-team-hub.git</span>
+<span class="o"> * [new branch]      feature/omar-qa-card -&gt; feature/omar-qa-card</span>
+<span class="o">branch &#x27;feature/omar-qa-card&#x27; set up to track &#x27;origin/feature/omar-qa-card&#x27;.</span></pre></div>
+
+<div class="box tip"><div class="h">معنى -u<span class="en">What -u does</span></div><p><code>-u</code> تسجّل الربط بين فرعك المحلي والفرع البعيد، فتستطيع بعدها كتابة <code>git push</code> و<code>git pull</code>
+بلا تحديد الاسم. افحص ذلك بـ <code>git branch -vv</code> وسترى <code>[origin/feature/omar-qa-card]</code>.</p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>الصق مخرجات <code>git push -u origin feature/&lt;username&gt;-card</code>:</li>
+</ul>
+<pre class="plain"><span class="ph">$ git push -u origin feature/omar-qa-card</span>
+</pre>
+
+<ul>
+<li>الصق مخرجات <code>git branch -vv</code>:</li>
+</ul>
+<pre class="plain"><span class="ph">$ git branch -vv</span>
+</pre></div></div></div>
+<div class="band violet"><span class="ar">الجزء الثالث · طلب السحب والمراجعة</span><span class="en">Part 3 · Pull request &amp; review</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">افتح طلب سحب واطلب مراجعة زميل</div><div class="en">Open a pull request and request a peer review</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 20 نقطة</span><span class="chip">GitHub</span><span class="chip">Pull Request</span></div><p><strong>الخطوة 1 — افتح طلب السحب:</strong></p>
+<ol>
+<li>افتح الرابط الذي ظهر في مخرجات <code>git push</code> (أو تبويب <code>Pull requests</code> ← <code>New pull request</code>).</li>
+<li>تأكد: <code>base: main</code> ← <code>compare: feature/omar-qa-card</code>.</li>
+<li>اكتب <strong>عنواناً</strong> بنفس صيغة رسالة الالتزام: <code>feat(members): add card for omar-qa</code>.</li>
+<li>املأ القالب بالكامل، وخصوصاً:
+   - <strong>ماذا تغيّر:</strong> «أضفت ملف بطاقتي <code>data/members/omar-qa.json</code> وأعدت توليد الفهرس».
+   - <strong>الأدلة:</strong> الصق مخرجات <code>node tests/validate-members.mjs</code>.
+   - <strong>الربط:</strong> اكتب <code>Closes #12</code> ليرتبط الطلب بمهمتك ويُغلق تلقائياً عند الدمج.</li>
+<li><strong>Reviewers</strong> ← اختر زميلاً. <strong>Assignees</strong> ← نفسك.</li>
+<li>اضغط <code>Create pull request</code>.</li>
+</ol>
+<div class="box warn"><div class="h">لا تضغط Merge<span class="en">Do not press Merge</span></div><p>الدمج مسؤولية المراجع أو المدرّب. من يدمج فرعه بنفسه بلا مراجعة يفقد 15 نقطة من هذه
+الورقة — لأن المراجعة مهارة مقصودة في التدريب لا إجراء شكلي.</p></div>
+
+<p><strong>الخطوة 2 — راجع طلب سحب زميلك.</strong> افتح <code>Pull requests</code> ← اختر طلباً لزميل ← تبويب
+<code>Files changed</code> ← <code>Add review comment</code>.</p>
+<p>اقلبه على قواعد المراجعة:</p>
+<table>
+<thead>
+<tr>
+<th>افعل ✅</th>
+<th>لا تفعل ❌</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>«الحقل <code>favoriteCommand</code> لا يبدأ بـ <code>git</code>، هل تصححه؟»</td>
+<td>«كودك خاطئ»</td>
+</tr>
+<tr>
+<td>«هل تريد إضافة وسم <code>JavaScript</code> أيضاً؟»</td>
+<td>«افعله بشكل صحيح»</td>
+</tr>
+<tr>
+<td>«ممتاز، البطاقة تظهر بشكل نظيف ✅»</td>
+<td>«موافق» بلا أي تفصيل</td>
+</tr>
+<tr>
+<td>اقتراح تحسين واحد واضح</td>
+<td>إطلاق أحكام على الشخص</td>
+</tr>
+</tbody>
+</table>
+<p><strong>الخطوة 3 — ردّ على مراجعة زميلك أنت.</strong> أجب على تعليق واحد على الأقل: إما تصحيح
+والتزام جديد على نفس الفرع، أو شرح مقنع. ثم اضغط <code>Resolve conversation</code>.</p>
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><table>
+<thead>
+<tr>
+<th>البند</th>
+<th>القيمة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>رقم طلب سحبك</td>
+<td><code>#………</code></td>
+</tr>
+<tr>
+<td>رابط طلب سحبك</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>اسم الزميل الذي راجعك</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>اسم الزميل الذي راجعته</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>رقم طلب السحب الذي راجعته</td>
+<td><code>#………</code></td>
+</tr>
+</tbody>
+</table>
+<p>الصق نص تعليق المراجعة الذي كتبته لزميلك:</p>
+<pre class="plain"><span class="ph">…………………………………………………………………………………………………………</span>
+</pre></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">استجب للملاحظات وأكمل مهمتك</div><div class="en">Respond to feedback and finish</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 10 دقائق</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 10 نقطة</span><span class="chip">git commit</span><span class="chip">git push</span></div><p><strong>الهدف:</strong> تجربة دورة المراجعة الفعلية: ملاحظة ← تصحيح ← التزام إضافي ← إعادة فحص.</p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — تصحيح بعد مراجعة</span></div><pre><span class="c"># مثال: المراجع طلب إضافة وسم JavaScript إلى بطاقتك</span>
+<span class="p">$</span> <span class="k">nano data/members/omar-qa.json       # أو افتحه في VS Code وعدّل tags</span>
+<span class="p">$</span> <span class="k">node tools/validate-members.mjs</span>
+<span class="o">--- النتيجة / Result: 6 بطاقة، 0 خطأ، 0 تحذير ---</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git add data/members/omar-qa.json</span>
+<span class="p">$</span> <span class="k">git commit -m &quot;fix(members): add JavaScript tag per review feedback&quot;</span>
+<span class="o">[feature/omar-qa-card 3c7d9e1] fix(members): add JavaScript tag per review feedback</span>
+<span class="o"> 1 file changed, 1 insertion(+), 1 deletion(-)</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git push</span>
+<span class="o">To https://github.com/school-git-workshop/class-team-hub.git</span>
+<span class="o">   89f5cff..3c7d9e1  feature/omar-qa-card -&gt; feature/omar-qa-card</span></pre></div>
+
+<div class="bi "><div class="ar"><p>لاحظ أن <strong>نفس طلب السحب</strong> تحدّث تلقائياً — لم تفتح طلباً جديداً. هذه قوة الفروع:
+طلب السحب يعرض كل ما على الفرع حتى لحظة الدمج.</p></div><div class="eng"><p>Notice the pull request updated itself — no new PR needed. A PR always shows the current state
+of your branch until it is merged.</p></div></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><p>الصق مخرجات <code>git log --oneline</code> على فرعك (يجب أن يظهر التزامان أو أكثر):</p>
+<pre class="plain"><span class="ph">$ git log --oneline</span>
+</pre>
+
+<p>سجّل ما تعلّمته من ملاحظة المراجع (سطر واحد):</p>
+<pre class="plain"><span class="ph">…………………………………………………………………………………………………………</span>
+</pre></div></div></div>
+<div class="band green"><span class="ar">قبل التسليم</span><span class="en">Before you submit</span></div>
+
+<h2>أسئلة تحقّق سريعة</h2>
+<p><strong>س1.</strong> ما الفرق بين <code>git switch -c feature/x</code> و<code>git switch feature/x</code>؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س2.</strong> لماذا نزامن <code>main</code> <strong>قبل</strong> إنشاء الفرع، لا بعده؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س3.</strong> ما معنى <code>Closes #12</code> في وصف طلب السحب؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س4.</strong> اكتب رسالة التزام صحيحة لمهمة «إصلاح محاذاة البطاقة في الجوال».</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div></div>
+
+<div class="write"><strong>قائمة الفحص النهائية<span class="muted tiny"> / Final checklist</span></strong><ul class="checklist">
+<li>[ ] المهمة (Issue) مفتوحة وتحمل رقمها</li>
+<li>[ ] فرع باسم صحيح حسب الاتفاقية، وبدأ من <code>main</code> محدَّث</li>
+<li>[ ] ملف البطاقة صحيح، و<code>node tests/validate-members.mjs</code> بلا أخطاء</li>
+<li>[ ] التزام واحد على الأقل برسالة بصيغة Conventional Commits</li>
+<li>[ ] الفرع مرفوع ومربوط، و<code>git branch -vv</code> يُظهر التتبّع</li>
+<li>[ ] طلب سحب مفتوح، ووصفه يشمل الأدلة و<code>Closes #…</code></li>
+<li>[ ] مراجعة مكتوبة لزميل، وردّ على ملاحظة وردت لي</li>
+</ul></div>
+
+<div class="evidence"><div class="h">بطاقة التسليم<span class="en">/ Submission card</span></div><table>
+<thead>
+<tr>
+<th>البند</th>
+<th>القيمة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>اسم الفرع</td>
+<td><code>feature/……………………………</code></td>
+</tr>
+<tr>
+<td>عدد الالتزامات</td>
+<td>…………</td>
+</tr>
+<tr>
+<td>رقم المهمة (Issue)</td>
+<td><code>#………</code></td>
+</tr>
+<tr>
+<td>رقم طلب السحب</td>
+<td><code>#………</code></td>
+</tr>
+<tr>
+<td>حالة طلب السحب</td>
+<td>☐ مفتوح  ☐ تمت الموافقة  ☐ مدموج</td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box info"><div class="h">ما القادم؟<span class="en">What&#x27;s next</span></div><p>في <strong>ورقة العمل 04</strong> سترى أثر تعديلات زملائك بعد دمجها، وتتعلم كيف تجلب تحديثاتهم
+إلى جهازك، وكيف يعمل <strong>الدمج (Merge)</strong>، وكيف تسترجع أي تعديل أفسد المشروع.</p></div>
+<div class="footer-note"><span>ورشة Git وGitHub · ورقة عمل 03 — الفرع وطلب السحب</span><span class="en">Git &amp; GitHub Workshop · Worksheet 03 — Branch &amp; Pull Request</span></div>
+</div>
+</body>
+</html>

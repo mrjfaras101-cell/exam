@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>دليل المدرّب الشامل وإدارة الورشة</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top" style="background:#0E5E4A"><div class="badge"><div class="n">★</div><div class="l">دليل المدرّب</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — البرنامج التدريبي العملي</div><h1>دليل المدرّب الشامل وإدارة الورشة</h1><div class="sub">Trainer Playbook · Delivery, Facilitation &amp; Assessment</div></div></div><div class="meta"><div><span class="k">مدة البرنامج / Programme</span><span class="v">5 جلسات · 7.5 ساعة عمل موجّه</span></div><div><span class="k">الفئة / Audience</span><span class="v">متدربون بالغون — مستوى متوسط</span></div><div><span class="k">المشروع / Project</span><span class="v">class-team-hub (موقع ثابت بلا تبعيات)</span></div><div><span class="k">الأدوات / Tools</span><span class="v">Git + GitHub + VS Code + المتصفح</span></div><div><span class="k">عدد الطلاب الأمثل / Optimal class</span><span class="v">12–20 طالباً</span></div><div><span class="k">المخرجات / Evidence</span><span class="v">5 أوراق + بطاقات مدموجة + موقع منشور</span></div></div></div>
+<div class="box ok"><div class="h">دليل المدرّب <span class="en">/ Trainer guide</span></div></div><div class="band "><span class="ar">1 · فلسفة البرنامج ونتائجه</span><span class="en">1 · Programme philosophy &amp; outcomes</span></div>
+
+<div class="bi "><div class="ar"><p>البرنامج مبني على مبدأ واحد: <strong>يُتعلّم Git بالعمل الجماعي فقط</strong>. لذلك يبدأ كل طالب
+بعمل خاص به (بطاقته)، ثم يرى عمل زملائه، ثم يواجه تعارضاً حقيقياً ويحلّه، ثم يُنشَر
+النتيجة للعالم. في نهاية البرنامج يكون المتدرب قادراً على العمل كعضو فريق في مستودع
+حقيقي — لا أن يحفظ أوامر فقط.</p></div><div class="eng"><p>The programme rests on one principle: Git is learned through real collaboration. Each trainee
+owns a personal artefact (their card), sees teammates' work, resolves a genuine conflict, and
+ships the result publicly.</p></div></div>
+
+<p><strong>النتائج التدريبية المتوقعة (Measurable outcomes):</strong></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>النتيجة</th>
+<th>كيف تُقاس</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>إنشاء حساب ومستودع وإعداد بيئة عمل مؤمَّنة</td>
+<td>ورقة 01 — الأدلة السبعة</td>
+</tr>
+<tr>
+<td>2</td>
+<td>استنساخ مشروع حقيقي وفهم بنيته وتشغيله محلياً</td>
+<td>ورقة 02 — دليل التشغيل + جدول البنية</td>
+</tr>
+<tr>
+<td>3</td>
+<td>مساهمة كاملة: فرع → التزام → رفع → طلب سحب → مراجعة</td>
+<td>ورقة 03 — رقم PR + مراجعة مكتوبة</td>
+</tr>
+<tr>
+<td>4</td>
+<td>مزامنة عمل الفريق وفهم استراتيجيات الدمج</td>
+<td>ورقة 04 — مخرجات الدمج + تقرير الفريق</td>
+</tr>
+<tr>
+<td>5</td>
+<td>حل التعارضات بأمان والنشر على الإنترنت</td>
+<td>ورقة 05 — دليل تعارضين + رابط منشور</td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">مبدأ التصميم التربوي<span class="en">Instructional design principle</span></div><p>كل ورقة = دورة تعلّم كاملة: <strong>مفهوم قصير → تنفيذ على الجهاز → دليل مخرجات → تحقّق ذاتي
+→ تسليم</strong>. لا يوجد بند نظري بلا تنفيذ مقابله، ولا تنفيذ بلا دليل يثبته. هذا يقلّل
+«الحفظ الأعمى» ويمنحك أنت أدلة قابلة للمطابقة.</p></div>
+
+<div class="band alt"><span class="ar">2 · تخطيط الجلسات (خطة تنفيذ مقترحة)</span><span class="en">2 · Session plan</span></div>
+
+<table>
+<thead>
+<tr>
+<th>الجلسة</th>
+<th>الورقة</th>
+<th>الزمن</th>
+<th>محتوى موجّه</th>
+<th>مخرجات الجلسة</th>
+<th>تقنية</th>
+<th>عمل منزلي</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>01 التهيئة</td>
+<td>90 د</td>
+<td>مفاهيم Git/GitHub · المناطق الثلاث · تثبيت وضبط ودعم 2FA</td>
+<td>حساب مؤمَّن + Git مهيّأ</td>
+<td>عرض 20 د + تنفيذ 60 د + تحقّق 10 د</td>
+<td>إتمام المهام 1–4</td>
+</tr>
+<tr>
+<td>2</td>
+<td>02 الاستنساخ</td>
+<td>75 د</td>
+<td>clone · بنية المشروع · تشغيل محلي</td>
+<td>الموقع يعمل على الأجهزة + Issue</td>
+<td>عرض 10 د + تنفيذ 55 د</td>
+<td>قراءة <code>docs/git-cheatsheet.md</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>03 الفرع وطلب السحب</td>
+<td>90 د</td>
+<td>الفرع · الالتزام المهني · PR · المراجعة</td>
+<td>بطاقة كل طالب + PR + مراجعة زميل</td>
+<td>تنفيذ موجّه 70 د + مراجعة ثنائية 20 د</td>
+<td>استجابة لملاحظات المراجع</td>
+</tr>
+<tr>
+<td>4</td>
+<td>04 المزامنة والدمج</td>
+<td>90 د</td>
+<td>fetch/pull · الاستراتيجيات · التراجع</td>
+<td>main محدَّث + تقرير الفريق</td>
+<td>تنفيذ 60 د + مناقشة تاريخ المشروع 30 د</td>
+<td>قراءة <code>sandbox/conflict-lab.md</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>05 التعارضات والنشر</td>
+<td>120 د</td>
+<td>التعارض · rebase · النشر · التسليم</td>
+<td>تعارضان محلولان + موقع منشور + تقرير</td>
+<td>مختبر تعارض 50 د + نشر 30 د + احتفال 20 د</td>
+<td>مهمة إثراء اختيارية</td>
+</tr>
+</tbody>
+</table>
+<div class="box warn"><div class="h">إدارة الوقت — أشد مشكلة في هذه الورشة<span class="en">Time management</span></div><p>90% من التأخير سببه طالب واحد عالق في تثبيت أو أمر خاطئ. الحلول المجرَّبة:
+1. <strong>زميل مساعد</strong>: عيّن الطالب الأسرع «مساعد الجلسة» يتحرك بين الصفوف (وليست مهمة إدارية بل تدريبية).
+2. <strong>مهل زمنية مرئية</strong>: اكتب على السبورة وقت نهاية كل مهمة، ونادِ عند الانتقال.
+3. <strong>لا تحلّ جهاز طالب بيدك</strong>: اسأل «ماذا تقرأ في هذه الرسالة؟» واتركه ينفّذ.
+4. <strong>شريحة زمن احتياطية</strong>: اترك آخر 10 دقائق بلا محتوى جديد دائماً.</p></div>
+
+<div class="band "><span class="ar">3 · الإعداد قبل الورشة (قائمة المدرّب)</span><span class="en">3 · Pre-workshop checklist</span></div>
+
+<div class="write"><strong>قبل اليوم الأول بثلاثة أيام<span class="muted tiny"> / Three days before</span></strong><ul class="checklist">
+<li>[ ] ارفع نسخة المشروع <code>class-team-hub</code> إلى منظمة GitHub خاصة بالورشة (مثال: <code>school-git-workshop</code>)</li>
+<li>[ ] فعّل حماية الفرع: <code>Settings ← Branches ← main ← Require a pull request before merging</code></li>
+<li>[ ] ارفع إلى المنظمة ملفات القالب: <code>CONTRIBUTING.md</code>, <code>CODE_OF_CONDUCT.md</code>, <code>.github/PULL_REQUEST_TEMPLATE.md</code></li>
+<li>[ ] جهّز تفعيل GitHub Pages (بعد الجلسة الخامسة) واختبر الرابط بمشروع تجريبي</li>
+<li>[ ] اختبر الحساب والدعوات على جهاز واحد للتحقق من أن المستودع عام وقابل للاستنساخ</li>
+<li>[ ] اطبع أوراق العمل الخمس (وكل ورقة على وجهين) + انسخ نماذج الحلول لنفسك</li>
+<li>[ ] جهّز بطاقات إجابة/تصحيح إلكترونياً أو ورقياً حسب بيئة المؤسسة</li>
+</ul></div>
+
+<div class="write"><strong>قبل الجلسة بعشر دقائق<span class="muted tiny"> / Ten minutes before each session</span></strong><ul class="checklist">
+<li>[ ] جهاز المدرّب موصول بالشاشة، والطرفية بخط كبير وواضح</li>
+<li>[ ] المتصفح مفتوح على صفحة المستودع + تبويب Pull requests</li>
+<li>[ ] ملاحظة على السبورة: «لا عمل على main» + رابط المستودع + رابط المرافق</li>
+<li>[ ] الأوراق المطبوعة لكل الطلاب على الطاولة</li>
+<li>[ ] فحص سريع للشبكة: <code>git ls-remote &lt;url&gt;</code> من جهازك</li>
+</ul></div>
+
+<div class="box info"><div class="h">محاكاة بدون إنترنت (سكربت الإنقاذ)<span class="en">Offline contingency plan</span></div><p>إذا سقط الإنترنت (شائع في القاعات)، لا تُلغِ الجلسة. استخدم <strong>مستودعاً محلياً وهمياً</strong>:</p>
+<pre class="plain"><span class="ph"># على جهاز المدرّب / instructor machine
+$ mkdir -p /srv/remote.git &amp;&amp; git init --bare /srv/remote.git
+$ git remote add origin /srv/remote.git      # بدل رابط GitHub
+$ git push -u origin main</span>
+</pre>
+
+<p>تربط أجهزة الطلاب بالمجلد المشترك داخل الشبكة المحلية، فتكمل تدريبات الفروع والدمج
+والتعارضات <strong>كاملة</strong> بلا أي وصول للإنترنت، ثم تُزامن الرفع إلى GitHub لاحقاً عندما يعود.
+هذا أيضاً هو السكربت الذي وُلد منه هذا البرنامج، وقد استُخدم في توليد نماذج الحلول.</p></div>
+
+<div class="band violet"><span class="ar">4 · إدارة الصف والمراجعة</span><span class="en">4 · Classroom &amp; review management</span></div>
+
+<h2>أزواج المراجعة (Review pairings)</h2>
+<div class="bi "><div class="ar"><p>لا تدع الطلاب يختارون مراجعيهم بحرية تامة؛ الأصدقاء يتبادلون المدح. استخدم <strong>دوران
+(rotation)</strong>: صفّ الطلاب، وكل طالب يراجع من يجلس بعيداً عنه. غيّر الاقتران في كل ورقة.</p></div><div class="eng"><p>Rotate reviewers deliberately. Friends swap praise; rotation produces real feedback.</p></div></div>
+
+<table>
+<thead>
+<tr>
+<th>الجلسة</th>
+<th>نمط الاقتران</th>
+<th>عدد المراجعين لكل طلب سحب</th>
+<th>هدف المهارة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>ثنائي (2 × 2)</td>
+<td>1</td>
+<td>كتابة أول مراجعة مكتوبة</td>
+</tr>
+<tr>
+<td>4</td>
+<td>ثلاثي حسب الأدوار (مطوّر + مختبر + كاتب)</td>
+<td>1–2</td>
+<td>مراجعة متخصصة</td>
+</tr>
+<tr>
+<td>5</td>
+<td>مراجعة مفتوحة (كل طالب على طلبين)</td>
+<td>2</td>
+<td>نقد تواريخ الدمج والنشر</td>
+</tr>
+</tbody>
+</table>
+<h2>سلّم تقييم جودة المراجعة (علّمه للطلاب قبل التطبيق)</h2>
+<table>
+<thead>
+<tr>
+<th>المستوى</th>
+<th>الوصف</th>
+<th>مثال جيد من مشروعنا</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5 نجوم</td>
+<td>ملاحظة محددة + سؤال + اقتراح تعديل + احترام</td>
+<td>«سطر 8: <code>fullName</code> اسم مختصر جداً، هل نضيف اسمك الكامل ليظهر صحيحاً في البطاقة؟»</td>
+</tr>
+<tr>
+<td>3 نجوم</td>
+<td>ملاحظة صحيحة بلا اقتراح</td>
+<td>«حقل <code>tags</code> فارغ»</td>
+</tr>
+<tr>
+<td>نجمة</td>
+<td>موافقة بلا تفصيل</td>
+<td>«ممتاز»</td>
+</tr>
+<tr>
+<td>صفر</td>
+<td>نقد شخصي أو سخرية أو صمت</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="box rule"><div class="h">قواعد التقدير التي أنصحك بإعلانها مسبقاً<span class="en">Announce these marking rules up front</span></div><ol>
+<li><strong>الأدلة هي الحكم:</strong> لا تحتسب مهمة بلا مخرجات أمر حقيقية من جهاز الطالب.</li>
+<li><strong>المراجعة نصف الدرجة في الورقة 3، وربعها في 4 و5.</strong> من لا يراجع لا يُقيَّم كامل الدرجة.</li>
+<li><strong>الدقة التقنية يُسامح عليها، والمخالفات الأمنية لا:</strong> نسيان أمر = مثال تعليمي؛ رفع
+   <code>token</code> أو <code>--force</code> على فرع مشترك = خصم مباشر.</li>
+<li><strong>الفهم العملي مقدَّم على الجمالية:</strong> ملف بـ 4 مسافات في الأخطاء البصرية لا يُخصم
+   عليه؛ ملف بلا التحقق (<code>node tests/validate-members.mjs</code>) يُخصم عليه.</li>
+<li><strong>حق إعادة المحاولة:</strong> لكل طالب إعادة تسليم واحدة خلال 48 ساعة على الأجزاء التي
+   فشلت فقط، بشرط أن يرفق مخرجات جديدة.</li>
+</ol></div>
+
+<div class="band "><span class="ar">5 · الأخطاء الشائعة وخطط التدخل</span><span class="en">5 · Common failures &amp; interventions</span></div>
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>المشكلة</th>
+<th>السبب الجذري</th>
+<th>التدخل الفوري (2 دقيقة)</th>
+<th>التدخل العميق</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>fatal: not a git repository</code></td>
+<td>نُفّذ الأمر خارج مجلد المشروع</td>
+<td><code>pwd</code> ثم <code>cd ~/projects/class-team-hub</code></td>
+<td>علّمه علامة الفرع في الموجّه</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>Author identity unknown</code></td>
+<td>لم يضبط <code>user.name/email</code></td>
+<td><code>git config --global …</code> مباشرة</td>
+<td>ربط بريده بحساب GitHub</td>
+</tr>
+<tr>
+<td>3</td>
+<td>الرفض <code>non-fast-forward</code></td>
+<td>لم يُحدّث الفرع</td>
+<td><code>git pull --rebase</code> ثم <code>push</code></td>
+<td>درس <code>fetch</code> في الورقة 04</td>
+</tr>
+<tr>
+<td>4</td>
+<td>بطاقة لا تظهر في الصفحة</td>
+<td>نسي <code>build-index.mjs</code></td>
+<td><code>node tools/build-index.mjs</code></td>
+<td>شرح الملف المُولَّد</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> في الملف المرفوع</td>
+<td>حل تعارض ناقص</td>
+<td><code>grep -rn "&lt;&lt;&lt;&lt;&lt;&lt;&lt;" .</code> ثم الإصلاح</td>
+<td>مختبر الورقة 05</td>
+</tr>
+<tr>
+<td>6</td>
+<td>JSON غير صالح (فاصلة زائدة)</td>
+<td>كتابة يدوية بلا محرر JSON</td>
+<td><code>node tests/validate-members.mjs</code></td>
+<td>استخدام VS Code مع تلوين JSON</td>
+</tr>
+<tr>
+<td>7</td>
+<td>الطالب يدمج فرعه بنفسه</td>
+<td>تجاوز عملية المراجعة</td>
+<td>أوقف الدمج واطلب مراجعاً في الحال</td>
+<td>خصم موثّق + مناقشة</td>
+</tr>
+<tr>
+<td>8</td>
+<td>عمل مشترك على جهاز واحد</td>
+<td>قلّة الأجهزة</td>
+<td>توزيع الأدوار: عضو تنفيذي + عضو موجّه</td>
+<td>تخطيط بديل بمستودع مشترك محلي</td>
+</tr>
+<tr>
+<td>9</td>
+<td>«ضاع عملي»</td>
+<td><code>reset --hard</code> أو <code>restore</code></td>
+<td><code>git reflog</code> ثم <code>git switch -c rescue &lt;sha&gt;</code></td>
+<td>درس التراجع في الورقة 04</td>
+</tr>
+<tr>
+<td>10</td>
+<td>تعارض متكرر في نفس الملف</td>
+<td>عدّلا نفس السطر في نفس الملف</td>
+<td>أخبرهما بقاعدة تقسيم الملفات</td>
+<td>إعادة توزيع المهام</td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">قاعدة الدقيقتين<span class="en">The two-minute rule</span></div><p>أي مشكلة لم تُحلّ مع الطالب خلال دقيقتين: <strong>سجّلها على السبورة في «طابور المشكلات»</strong>،
+وانتقل لغيره، ثم عالجها جماعياً في نهاية الجلسة. الطالب الذي يشغل المدرّب 15 دقيقة
+يحرم 15 طالباً آخرين من التوجيه — وهذا نمط شائع في ورش البرمجيات.</p></div>
+
+<div class="band "><span class="ar">6 · أسئلة متوقعة من الطلاب (وأجوبتك النموذجية)</span><span class="en">6 · Expected questions</span></div>
+
+<table>
+<thead>
+<tr>
+<th>السؤال</th>
+<th>الجواب المختصر الذي تعطيه</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>هل يمكن الرجوع بعد <code>commit</code> خاطئ؟</td>
+<td>نعم: قبل الرفع → <code>git commit --amend</code> أو <code>reset --soft</code>؛ بعد الرفع → <code>git revert</code>. والتزم كثيراً: كل التزام نقطة رجوع.</td>
+</tr>
+<tr>
+<td>ما الفرق بين Git وGitHub بالضبط؟</td>
+<td>Git برنامج يراقب التغييرات على جهازك. GitHub موقع يستضيف مستودعات Git ويتيح التعاون. لا يعمل أحدهما بدل الآخر.</td>
+</tr>
+<tr>
+<td>لماذا لا أرفع مباشرة إلى <code>main</code>؟</td>
+<td>لأن <code>main</code> هو النسخة التي يعتمد عليها الجميع؛ الفرع يحميك ويحمي الفريق حتى تُراجَع المساهمة.</td>
+</tr>
+<tr>
+<td>هل أفقد عملي إن أخطأت في الأمر؟</td>
+<td>لا، إلا في <code>reset --hard</code> و<code>git clean -fd</code> و<code>restore</code> على تعديل غير مُلتزم. و<code>git reflog</code> يعيدك في معظم الحالات.</td>
+</tr>
+<tr>
+<td>لماذا يظهر ملف <code>members-bundle.js</code> في كل تعديلي؟</td>
+<td>لأنه ملف مُولَّد آلياً من البطاقات. لا تعدّله يدوياً، وسيُعاد توليده مع الفهرس.</td>
+</tr>
+<tr>
+<td>هل تعارض الدمج خطأ يجب تفاديه؟</td>
+<td>لا، التعارض رسالة طبيعية يقول فيها Git: «هنا تعديلان متضاربان، اختر أنت». مهارة حلّه هي محور الورقة 05.</td>
+</tr>
+<tr>
+<td>كيف أعرف ما فعله زميلي؟</td>
+<td><code>git log --oneline --graph --all</code> ثم <code>git diff</code> ثم <code>git blame</code>. وطلبات السحب على GitHub هي أوضح عرض لحالة العمل.</td>
+</tr>
+<tr>
+<td>هل يمكن إلغاء طلب سحب؟</td>
+<td>نعم: <code>Close pull request</code> (يبقى التاريخ) أو استخدم <code>git revert</code> بعد الدمج. لا يوجد «حذف كامل» لسجل عام بل تصحيح معلن.</td>
+</tr>
+<tr>
+<td>هل يجب أن يكون مستودعي عاماً؟</td>
+<td>لا في مشاريع العمل الخاصة، لكن في هذه الورشة نحتاج العام لأن GitHub Pages على حساب مجاني يعمل مع مستودعات عامة.</td>
+</tr>
+<tr>
+<td>كيف أستمر بعد الورشة؟</td>
+<td>من أمثلة المهمة: أضف ميزة للموقع عبر فرع + طلب سحب، وشارك في مشروع مفتوح المصدر (<code>first-contributions</code>) لتمرين ممتع مماثل.</td>
+</tr>
+</tbody>
+</table>
+<div class="band green"><span class="ar">7 · لوحة متابعة التقدم (اطبعها وعلّقها)</span><span class="en">7 · Progress board</span></div>
+
+<div class="evidence"><div class="h">لوحة متابعة الفريق — تُملأ أمام الطلاب<span class="en">/ Team progress board</span></div><table>
+<thead>
+<tr>
+<th>الاسم</th>
+<th>حساب ✓</th>
+<th>Git مهيّأ</th>
+<th>بطاقة (فرع)</th>
+<th>PR فُتح</th>
+<th>روجع</th>
+<th>مدموج</th>
+<th>resolve تعارض</th>
+<th>منشور</th>
+<th>المجموع /500</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box info"><div class="h">قياس أثر الورشة (تقييم قبل/بعد)<span class="en">Measure the impact</span></div><p>اعطِ الطلاب هذا السؤال في دقيقتين قبل الجلسة الأولى وبعد الجلسة الخامسة:
+«اشرح بجملتين ما يحدث عندما يعدّل زميلك ملفاً ثم تدمجه، ولماذا قد يحدث تعارض.»
+قارن الإجابات: الفرق بين «Git يرفع الملفات» في البداية و«التزامات تجري على فرع، ثم
+تُدمج وتُقارن على مستوى الأسطر» في النهاية هو مقياس أثرك الحقيقي — واحتفظ بالإجابات
+في تقرير المؤسسة التدريبية.</p></div>
+
+<div class="band "><span class="ar">8 · الملحق: خطة التقييم الكلية (500 نقطة)</span><span class="en">8 · Appendix: total assessment</span></div>
+
+<table>
+<thead>
+<tr>
+<th>الورقة</th>
+<th>النقاط</th>
+<th>الوزن النسبي</th>
+<th>أهم عنصر في التقييم</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01 التهيئة</td>
+<td>100</td>
+<td>20%</td>
+<td>دليل اتصال مؤمَّن (SSH/PAT)</td>
+</tr>
+<tr>
+<td>02 الاستنساخ</td>
+<td>100</td>
+<td>20%</td>
+<td>فهم مسار البيانات وحدث تشغيل الموقع</td>
+</tr>
+<tr>
+<td>03 الفرع وطلب السحب</td>
+<td>100</td>
+<td>20%</td>
+<td>جودة الالتزام + جودة المراجعة</td>
+</tr>
+<tr>
+<td>04 المزامنة والدمج</td>
+<td>100</td>
+<td>20%</td>
+<td>قراءة التاريخ ومختبر التراجع</td>
+</tr>
+<tr>
+<td>05 التعارضات والنشر</td>
+<td>100</td>
+<td>20%</td>
+<td>حل تعارضين + نشر الموقع</td>
+</tr>
+<tr>
+<td><strong>المجموع</strong></td>
+<td><strong>500</strong></td>
+<td>100%</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>توصية توزيع الدرجات النهائية (لمن يعمل بنظام التقدير الجامعي/المهني):</strong>
+- العملي والأدلة: 70% (بطاقة مدموجة، PR، موقع منشور، حل تعارضات)
+- الفهم والتوثيق: 20% (أسئلة التحقق، تقرير الفريق، جدول البنية)
+- الاحتراف والتعاون: 10% (جودة المراجعة، الالتزام بالاتفاقيات، البيانات والالتزام الأخلاقي)</p>
+<div class="band "><span class="ar">9 · الملحق: بدائل جاهزة على GitHub</span><span class="en">9 · Appendix: ready-made repositories</span></div>
+
+<div class="bi "><div class="ar"><p>إن تعذّر عليك إنشاء منظمة ومستودع خاص بالورشة (قيود إدارية، أو شبكة مقيّدة، أو عدم
+توفر صلاحيات)، يمكنك تنفيذ البرنامج نفسه على مستودعات تعليمية جاهزة على GitHub.
+الجدول يربط كل بديل بالورقة التي يخدمها.</p></div><div class="eng"><p>If creating your own org/repo is not possible, run the same programme on ready-made public
+educational repositories. The table maps each option to the worksheet it serves.</p></div></div>
+
+<table>
+<thead>
+<tr>
+<th>المستودع</th>
+<th>الأفضل لـ</th>
+<th>الفكرة</th>
+<th>ملاحظة للمدرّب</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>githubtraining/hellogitworld</code></td>
+<td>الأوراق 02–04</td>
+<td>مستودع تدريب رسمي من GitHub Training يحتوي فروعاً متعددة وأخطاء مقصودة للتمرين</td>
+<td>يحتاج fork، والتحكم أقل من مستودعك</td>
+</tr>
+<tr>
+<td><code>firstcontributions/first-contributions</code></td>
+<td>الورقة 03</td>
+<td>أشهر مشروع لتمرين أول Pull Request في العالم (آلاف المساهمين)</td>
+<td>وثّق الخطوات بالعربية وأضفها لورقتك قبل الاستخدام</td>
+</tr>
+<tr>
+<td><code>octocat/Spoon-Knife</code></td>
+<td>الأوراق 02–03</td>
+<td>مستودع GitHub الشهير للتمرين على fork وPR وتعديل ملف بسيط</td>
+<td>بسيط جداً — لا يوجد كود يمكن تطويره</td>
+</tr>
+<tr>
+<td><code>skills/introduction-to-github</code></td>
+<td>الورقة 01</td>
+<td>مسار تفاعلي رسمي من GitHub Skills يمنح شارات تعلّم</td>
+<td>ممتاز كواجب منزلي منفصل</td>
+</tr>
+<tr>
+<td><code>git-it</code> (jlord/git-it-electron)</td>
+<td>الأوراق 01–03</td>
+<td>تطبيق سطح مكتب يعلّم Git بالتحديات المتدرجة</td>
+<td>يحتاج تثبيت تطبيق إضافي</td>
+</tr>
+<tr>
+<td><code>skills/resolve-merge-conflicts</code></td>
+<td>الورقة 05</td>
+<td>تمرين رسمي مخصص لحل التعارضات</td>
+<td>استخدمه كتمرين دعم لمن تعثّر في مختبر التعارض</td>
+</tr>
+</tbody>
+</table>
+<div class="box warn"><div class="h">لماذا يبقى مشروعنا هو الخيار الأول؟<span class="en">Why our own project is still first choice</span></div><p>التدريب على مستودع جاهز يعلّم <strong>الأوامر</strong>. أما مشروع الفريق المخصّص فيعلّم <strong>العمل
+الجماعي المنظّم</strong>: أدواراً حقيقية، ميزانية مراجعة، ملكية ملفات، وتعاقدات على التاريخ —
+وهي المهارات التي يطلبها سوق العمل. لذلك: استخدم البدائل للتوسّع أو التعويض، وليس
+كبديل أساسي. وإن لم يوجد سوى مستودع جاهز، أضف عليه خطوة إضافية: اطلب من كل طالب إضافة
+ملف باسمه في مجلد <code>students/</code> ليعيش تجربة «ملفي لا يتعارض مع ملفاتكم».</p></div>
+
+<div class="box ok"><div class="h">رسالة ختامية للمدرّب<span class="en">A closing note to the trainer</span></div><p>نجاح هذه الورشة لا يقاس بعدد الطلاب الذين يستخدمون <code>git commit</code> بسرعة، بل بعدد
+الطلاب الذين يتصرفون <strong>كزملاء في فريق</strong> بعد الورشة: يسألون قبل أن يرفعوا، يراجعون
+قبل أن يمدحوا، ويقرؤون مخرجات الأوامر قبل أن يخمّنوا. صمّم تدخّلك حول هذا الهدف، وستجد
+أن بقية المهارات التقنية تأتي تلقائياً معه.</p></div>
+<div class="footer-note"><span>دليل المدرّب — ورشة Git وGitHub</span><span class="en">Trainer playbook · Git &amp; GitHub Workshop</span></div>
+</div>
+</body>
+</html>

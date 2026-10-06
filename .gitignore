@@ -1,0 +1,8 @@
+# مخرجات البناء المؤقتة / build scratch & generated caches
+_work/
+assets/fonts-src/
+*.log
+
+# نسخ النظام / OS noise
+.DS_Store
+Thumbs.db

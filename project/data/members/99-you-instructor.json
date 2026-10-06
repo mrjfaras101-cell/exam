@@ -1,0 +1,9 @@
+{
+  "fullName": "مدرب الورشة",
+  "github": "you-instructor",
+  "role": "قائد فريق",
+  "favoriteCommand": "git log --oneline --graph --all",
+  "message": "أهلاً بكم في الورشة! أضفوا بطاقاتكم من فروعكم ثم افتحوا طلبات السحب.",
+  "tags": ["Git", "GitHub", "Code Review"],
+  "joinedAt": "2026-10-01"
+}

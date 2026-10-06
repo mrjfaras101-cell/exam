@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مزامنة الفريق: كيف أرى تعديلات زملائي؟</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top"><div class="badge"><div class="n">04</div><div class="l">ورقة عمل</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — البرنامج التدريبي العملي</div><h1>مزامنة الفريق: كيف أرى تعديلات زملائي؟</h1><div class="sub">Workshop 4 · Sync &amp; Merge — Seeing Teammates&#x27; Changes</div></div></div><div class="meta"><div><span class="k">المدة / Duration</span><span class="v">90 دقيقة</span></div><div><span class="k">المستوى / Level</span><span class="v">متوسط — بعد ورقة 03</span></div><div><span class="k">المتطلبات / Prerequisites</span><span class="v">طلب سحب مفتوح أو مدموج</span></div><div><span class="k">المخرجات / Deliverable</span><span class="v">main محدَّث على جهازك + تقرير فريق</span></div><div><span class="k">المهام / Tasks</span><span class="v">6 مهام</span></div><div><span class="k">الدرجة / Points</span><span class="v">100 نقطة</span></div></div></div>
+
+<div class="identity">
+  <div class="fld"><span class="k">اسم الطالب / Student</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">اسم المستخدم / GitHub username</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">المجموعة / Group</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">التاريخ / Date</span><span class="dots"></span></div>
+</div>
+<div class="band "><span class="ar">فكرة الورقة</span><span class="en">The big idea</span></div>
+
+<div class="bi "><div class="ar"><p>مشكلة كل فريق مبتدئ: «زميلي أضاف تعديلاً… وأنا لا أراه!». اليوم سنجيب على هذا السؤال
+عملياً: كيف تنتقل تعديلات الزملاء من مستودعهم إلى جهازك، وكيف يعمل <strong>الدمج (merge)</strong>
+خلف الكواليس، وما استراتيجيات الدمج الثلاث، وكيف ترجع عن تعديل أفسد شيئاً.</p></div><div class="eng"><p>Every beginner team hits the same wall: “my teammate pushed a change… and I can't see it!”
+Today we answer that hands-on: how your teammates' work travels from their machine to yours,
+how <strong>merge</strong> really works, which merge strategies exist, and how to undo a bad change.</p></div></div>
+
+<div class="goal-list"><strong>أهداف التعلّم<span class="muted tiny"> / Learning objectives</span></strong><ul>
+<li>فهم الفرق بين <code>git fetch</code> و<code>git pull</code> و<code>git pull --rebase</code> ومتى يُستخدم كل منها.</li>
+<li>تجربة الدمج الحقيقي ومعاينة النتيجة قبل الدمج بـ <code>--no-commit</code>.</li>
+<li>التمييز بين استراتيجيات الدمج الثلاث (Merge / Squash / Rebase) وتأثيرها على التاريخ.</li>
+<li>رؤية تعديلات الزملاء ومراجعتها بالأوامر: <code>diff</code>, <code>log -p</code>, <code>blame</code>, <code>shortlog</code>.</li>
+<li>تنظيف الفروع المدموجة بأمان والعمل بأسلوب «فرع واحد = مهمة واحدة».</li>
+<li>التراجع بثقة: <code>restore</code> و<code>commit --amend</code> و<code>revert</code> و<code>reset</code> و<code>stash</code>.</li>
+</ul></div>
+
+<div class="band alt"><span class="ar">الجزء الأول · جلب تعديلات الفريق</span><span class="en">Part 1 · Bringing in team updates</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">fetch أو pull؟ اعرف الفرق عملياً</div><div class="en">fetch or pull? Learn the difference by doing</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 15 نقطة</span><span class="chip">git fetch</span><span class="chip">git pull</span><span class="chip">git diff</span></div><div class="bi "><div class="ar"><p><code>git fetch</code> ينزّل تحديثات الخادم إلى جهازك <strong>دون</strong> أن يغيّر ملفاتك — إنه مثل «فتح
+البريد وقراءته»، أما <code>git pull</code> فهو <code>fetch</code> متبوعاً بدمج (أو إعادة تشكيل)، أي «قراءة
+البريد وتنفيذ ما فيه فوراً».</p></div><div class="eng"><p><code>fetch</code> downloads new objects but changes nothing in your working files; <code>pull</code> is fetch plus
+integration (merge or rebase).</p></div></div>
+
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — فلنشاهد الفرق بأنفسنا</span></div><pre><span class="p">$</span> <span class="k">git switch main</span>
+<span class="p">$</span> <span class="k">git fetch origin</span>
+<span class="c">remote: Enumerating objects: 9, done.</span>
+<span class="o">Unpacking objects: 100% (9/9), done.</span>
+<span class="o">From https://github.com/school-git-workshop/class-team-hub</span>
+<span class="o">   a1b2c3d..f9e8d7c  main       -&gt; origin/main</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git status -sb</span>
+<span class="c">## main...origin/main [behind 2]</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git log --oneline HEAD..origin/main</span>
+<span class="o">f9e8d7c feat(members): add card for leen-docs</span>
+<span class="o">3c7d9e1 Merge pull request #7 from nour-dev/feature/nour-card</span></pre></div>
+
+<figure class="dia"><img src="../assets/img/fetch-vs-pull.svg" alt="fetch مقابل pull"><figcaption>شكل 1: fetch يقرأ فقط، pull يقرأ ويدمج <span class="en">— fetch reads, pull integrates</span></figcaption></figure>
+
+<div class="box tip"><div class="h">عادة احترافية<span class="en">Professional habit</span></div><p>افحص دائماً قبل الدمج: <code>git fetch</code> ثم <code>git log --oneline HEAD..origin/main</code> ثم
+<code>git diff HEAD..origin/main</code>. تقرأ ما سيحدث قبل أن يحدث — وهذا يمنع معظم المفاجآت.</p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>الصق مخرجات <code>git status -sb</code> بعد <code>fetch</code> واذكر أين أنت (متقدّم/متأخر/متساوٍ):</li>
+</ul>
+<pre class="plain"><span class="ph">$ git status -sb</span>
+</pre>
+
+<ul>
+<li>اذكر عدد الالتزامات التي جاء بها الزملاء (<code>behind N</code>): …………</li>
+<li>أسماء الزملاء الذين ظهروا في <code>git log</code>: ……………………………………</li>
+</ul></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">ادمج تحديثات الفريق في main</div><div class="en">Merge the team updates into main</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 15 نقطة</span><span class="chip">git pull --ff-only</span><span class="chip">git merge</span></div><p><strong>الطريق الأفضل عندما لا يوجد تعارض — الدمج السريع (fast-forward):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الدمج السريع</span></div><pre><span class="p">$</span> <span class="k">git merge --ff-only origin/main</span>
+<span class="o">Updating a1b2c3d..f9e8d7c</span>
+<span class="o">Fast-forward</span>
+<span class="o"> data/members/leen-docs.json | 9 +++++++++</span>
+<span class="o"> data/members-index.json     | 5 +++--</span>
+<span class="o"> 2 files changed, 13 insertions(+), 4 deletions(-)</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git status</span>
+<span class="o">On branch main</span>
+<span class="o">Your branch is up to date with &#x27;origin/main&#x27;.</span></pre></div>
+
+<div class="box info"><div class="h">ما معنى Fast-forward؟<span class="en">What is fast-forward?</span></div><p>تعني أن <code>main</code> المحلي لم يكن فيه أي عمل خاص بك، فكل ما احتاجه Git هو «تقديم المؤشر»
+إلى الأمام بلا إنشاء التزام دمج. التاريخ يبقى خطاً نظيفاً بلا عُقد.</p></div>
+
+<p><strong>الطريق الثاني عندما يوجد عمل متبادل — دمج بعقدة (merge commit):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — دمج بعقدة</span></div><pre><span class="p">$</span> <span class="k">git merge feature/omar-qa-card</span>
+<span class="o">Merge made by the &#x27;ort&#x27; strategy.</span>
+<span class="o"> data/members/omar-qa.json | 9 +++++++++</span>
+<span class="o"> 1 file changed, 9 insertions(+)</span>
+<span class="o"> create mode 100644 data/members/omar-qa.json</span></pre></div>
+
+<div class="box warn"><div class="h">أخطاء شائعة<span class="en">Common pitfalls</span></div><table>
+<thead>
+<tr>
+<th>الرسالة</th>
+<th>السبب</th>
+<th>الحل</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fatal: Not possible to fast-forward</code></td>
+<td>يوجد عمل على الطرفين</td>
+<td>استخدم <code>git merge</code> بلا <code>--ff-only</code></td>
+</tr>
+<tr>
+<td><code>fatal: refusing to merge unrelated histories</code></td>
+<td>مستودعان غير مرتبطين</td>
+<td><code>git pull --allow-unrelated-histories</code></td>
+</tr>
+<tr>
+<td><code>error: Your local changes would be overwritten</code></td>
+<td>تعديلات محلية غير محفوظة</td>
+<td><code>git stash</code> ثم الدمج ثم <code>git stash pop</code></td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><p>الصق مخرجات عملية الدمج التي نفّذتها، وحدّد أي نوع دمج وقع:</p>
+<pre class="plain"><span class="ph">$ git merge ……………………………</span>
+</pre>
+
+<p>نوع الدمج: ☐ fast-forward  ☐ merge commit  ☐ لا يوجد تغيير (already up to date)</p></div></div></div>
+<div class="band "><span class="ar">الجزء الثاني · الدمج باستراتيجيات مختلفة</span><span class="en">Part 2 · Merge strategies</span></div>
+
+<figure class="dia"><img src="../assets/img/branch-merge.svg" alt="دورة العمل بالفروع والدمج"><figcaption>شكل 2: دورة العمل الكاملة — فرع، طلب سحب، مراجعة، دمج إلى main <span class="en">— the full team cycle</span></figcaption></figure>
+
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">جرب الدمج الثلاث بأساليب مختلفة</div><div class="en">Try all three merge strategies</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 15 نقطة</span><span class="chip">git merge</span><span class="chip">--squash</span><span class="chip">rebase</span></div><p><strong>الهدف:</strong> أن تفرّق بنفسك بين أثر الاستراتيجيات الثلاث على تاريخ المشروع.</p>
+<div class="bi "><div class="ar"><p>على GitHub سترى في زر الدمج ثلاث خيارات: <code>Create a merge commit</code> و<code>Squash and merge</code>
+و<code>Rebase and merge</code>. كل خيار يُنتج تاريخاً مختلف الشكل. جربها محلياً قبل أن تضغطها.</p></div><div class="eng"><p>On GitHub the merge button offers three modes. Try them locally first so you know exactly what
+each one does to history.</p></div></div>
+
+<p><strong>تجربة 1 — دمج بعقدة (merge commit):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — merge commit</span></div><pre><span class="p">$</span> <span class="k">git switch main</span>
+<span class="p">$</span> <span class="k">git merge --no-ff feature/ali-card -m &quot;Merge pull request #6 from ali-h/feature/ali-card&quot;</span>
+<span class="p">$</span> <span class="k">git log --oneline --graph -4</span>
+<span class="o">*   5b6c7d8 (HEAD -&gt; main) Merge pull request #6 from ali-h/feature/ali-card</span>
+<span class="o">|\</span>
+<span class="o">| * 1a2b3c4 feat(members): add card for ali-h</span>
+<span class="o">|/</span>
+<span class="o">* f9e8d7c feat(members): add card for leen-docs</span></pre></div>
+
+<p><strong>تجربة 2 — الدمج المضغوط (squash):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — squash merge</span></div><pre><span class="p">$</span> <span class="k">git switch main</span>
+<span class="p">$</span> <span class="k">git merge --squash feature/sara-fixes</span>
+<span class="o">Squash commit -- not updating HEAD</span>
+<span class="o">Automatic merge went well; stopped before committing as requested</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git commit -m &quot;feat(ui): improve member card layout (#9)&quot;</span>
+<span class="o">[main 7a8b9c0] feat(ui): improve member card layout (#9)</span>
+<span class="o"> 2 files changed, 18 insertions(+), 6 deletions(-)</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git log --oneline -2</span>
+<span class="o">7a8b9c0 (HEAD -&gt; main) feat(ui): improve member card layout (#9)</span>
+<span class="o">5b6c7d8 Merge pull request #6 from ali-h/feature/ali-card</span></pre></div>
+
+<div class="box tip"><div class="h">أهم استنتاج<span class="en">Key takeaway</span></div><p>لاحظ أن التزامات سارة الثلاثة صارت <strong>التزاماً واحداً</strong> نظيفاً على <code>main</code>. هذا أفضل خيار
+لفروع صغيرة كثيرة الالتزامات غير المهمة (مثل <code>fix</code> ثم <code>fix</code> ثم <code>fix</code>).</p></div>
+
+<p><strong>تجربة 3 — إعادة التشكيل (rebase):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — rebase</span></div><pre><span class="p">$</span> <span class="k">git switch feature/nour-card</span>
+<span class="p">$</span> <span class="k">git rebase main</span>
+<span class="o">Successfully rebased and updated refs/heads/feature/nour-card.</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git log --oneline --graph -4</span>
+<span class="o">* 4d5e6f7 (HEAD -&gt; feature/nour-card) feat(members): add card for nour-dev</span>
+<span class="o">* 5b6c7d8 Merge pull request #6 from ali-h/feature/ali-card</span>
+<span class="o">* 1a2b3c4 feat(members): add card for ali-h</span>
+<span class="o">* f9e8d7c feat(members): add card for leen-docs</span></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>الاستراتيجية</th>
+<th>شكل التاريخ</th>
+<th>متى نستخدمها</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Merge commit</td>
+<td>فروع وعُقد واضحة</td>
+<td>فرع طويل بمهام متعددة</td>
+</tr>
+<tr>
+<td>Squash</td>
+<td>التزام واحد نظيف</td>
+<td>فرع صغير، أو إصلاحات متتابعة</td>
+</tr>
+<tr>
+<td>Rebase</td>
+<td>خط مستقيم بلا عُقد</td>
+<td>تاريخ خطّي للعرض والمراجعة</td>
+</tr>
+</tbody>
+</table>
+<div class="box err"><div class="h">محذور<span class="en">Never do this</span></div><p>لا تنفّذ <code>rebase</code> على فرع <strong>مشترك</strong> يعمل عليه زملاؤك، لأنها تعيد كتابة التاريخ وتسبب
+فوضى عندهم. القاعدة: <strong>rebase للفروع الشخصية، merge للفروع المشتركة.</strong></p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>الصق مخرجات <code>git log --oneline --graph -6</code> بعد تجربة squash + rebase:</li>
+</ul>
+<pre class="plain"><span class="ph">$ git log --oneline --graph -6</span>
+</pre>
+
+<p>سؤال: أي استراتيجية تفضّل لمشروع فريق فيه 20 طالباً يضيفون بطاقات؟ ولماذا؟ (سطران)</p></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">شاهد تعديلات زملائك وافحص مصدرها</div><div class="en">Inspect your teammates&#x27; changes and their origin</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 15 نقطة</span><span class="chip">git log -p</span><span class="chip">git blame</span><span class="chip">git shortlog</span></div><p><strong>الهدف:</strong> أن تجيب بدقة: من عدّل هذا السطر؟ ومتى؟ ولماذا؟ — مهارة المراجعة الأساسية.</p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — فحص تعديل زميل</span></div><pre><span class="p">$</span> <span class="k">git log --oneline --all --graph --decorate -12</span>
+<span class="o">* f9e8d7c (origin/main, origin/HEAD, main) feat(members): add card for leen-docs</span>
+<span class="o">*   3c7d9e1 Merge pull request #7 from nour-dev/feature/nour-card</span>
+<span class="o">|\</span>
+<span class="o">| * 8c9d0e1 (origin/feature/nour-card) feat(members): add card for nour-dev</span>
+<span class="o">|/</span>
+<span class="o">* a1b2c3d Merge pull request #6 from ali-h/feature/ali-card</span>
+<span class="o">|\</span>
+<span class="o">| * 1a2b3c4 (origin/feature/ali-card) feat(members): add card for ali-h</span>
+<span class="o">|/</span>
+<span class="o">* 8de1e7a chore: initial commit of class-team-hub</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git log -p -- data/members/leen-docs.json</span>
+<span class="o">commit f9e8d7c9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3</span>
+<span class="o">Author: leen-docs &lt;leen@example.com&gt;</span>
+<span class="o">Date:   Mon Oct 6 11:02:40 2026 +0300</span>
+<span class="o"></span>
+<span class="o">    feat(members): add card for leen-docs</span>
+<span class="o"></span>
+<span class="o">+{</span>
+<span class="o">+  &quot;fullName&quot;: &quot;لينا حدّاد&quot;,</span>
+<span class="o">+  &quot;github&quot;: &quot;leen-docs&quot;,</span>
+<span class="o">+  &quot;role&quot;: &quot;كاتب توثيق&quot;,</span>
+<span class="o">+  &quot;favoriteCommand&quot;: &quot;git diff main..HEAD --stat&quot;,</span>
+<span class="o">+  &quot;message&quot;: &quot;أكتب التوثيق الذي يجعل المشروع مفهوماً لأي طالب جديد في دقيقتين.&quot;,</span>
+<span class="o">+  &quot;tags&quot;: [&quot;Markdown&quot;, &quot;Documentation&quot;],</span>
+<span class="o">+  &quot;joinedAt&quot;: &quot;2026-10-06&quot;</span>
+<span class="o">+}</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git blame data/members/leen-docs.json</span>
+<span class="o">f9e8d7c9 (leen-docs 2026-10-06 11:02:40 +0300 1) {</span>
+<span class="o">f9e8d7c9 (leen-docs 2026-10-06 11:02:40 +0300 2)   &quot;fullName&quot;: &quot;لينا حدّاد&quot;,</span></pre></div>
+
+<div class="box tip"><div class="h">أمر يعجب المدرّبين<span class="en">An instructor favourite</span></div><p><code>git shortlog -sn --all</code> يعطيك ترتيب المساهمين بعدد الالتزامات، و<code>git log --author="omar"</code>
+يعطيك كل ما فعله شخص واحد. استخدمهما في تقرير الفريق النهائي (المهمة 6).</p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><table>
+<thead>
+<tr>
+<th>السؤال</th>
+<th>جوابك</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>من عدّل <code>data/members-index.json</code> آخر مرة؟ ولاحظ: هل عدّله أكثر من شخص؟</td>
+<td><code>………………………</code></td>
+</tr>
+<tr>
+<td>عدد الالتزامات لكل زميل حسب <code>git shortlog -sn --all</code></td>
+<td><code>……………………………</code></td>
+</tr>
+<tr>
+<td>هل نسخة <code>main</code> عندك متساوية مع <code>origin/main</code>؟ (<code>git status</code>)</td>
+<td><code>☐ نعم  ☐ لا</code></td>
+</tr>
+</tbody>
+</table>
+<p>الصق مخرجات <code>git log --oneline --graph --all --decorate -10</code>:</p>
+<pre class="plain"><span class="ph">$ git log --oneline --graph --all --decorate -10</span>
+</pre></div></div></div>
+<div class="band violet"><span class="ar">الجزء الثالث · التراجع الآمن</span><span class="en">Part 3 · Safe undo</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">مختبر التراجع: أفسد شيئاً ثم استرجع</div><div class="en">Undo lab: break something and recover</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 20 نقطة</span><span class="chip">restore</span><span class="chip">amend</span><span class="chip">revert</span><span class="chip">reset</span><span class="chip">stash</span></div><p><strong>الهدف:</strong> أن تتصرف بثقة عند أي خطأ، وتعرف أي أمر يتراجع عن أي حالة.</p>
+<div class="bi "><div class="ar"><p>أغلب أوامر Git لا تُفني عملك — إنها فقط تنقل المؤشر. والمفتاح الذي ينقذك دائماً هو
+<code>git reflog</code> (سجل كل حركات HEAD). لكن الأمرين الوحيدين الذين يحذفان فعلاً بلا رجعة
+هما <code>git reset --hard</code> و<code>git restore</code> على ملف لم تُلتزمه.</p></div><div class="eng"><p>Most Git commands don't destroy work — they move pointers. Your safety net is <code>git reflog</code>.
+The only genuinely destructive ones are <code>git reset --hard</code> and <code>git restore</code> on uncommitted work.</p></div></div>
+
+<p><strong>الحالة 1 — تعديل محلي فاسد لم تُلتزمه بعد:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — التراجع عن تعديل غير مُلتزم</span></div><pre><span class="p">$</span> <span class="k">echo &quot;كلام فاسد&quot; &gt;&gt; README.md</span>
+<span class="p">$</span> <span class="k">git status -s</span>
+<span class="o"> M README.md</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git restore README.md</span>
+<span class="p">$</span> <span class="k">git status -s</span>
+<span class="o">(لا مخرجات — الملف عاد لحالته الأخيرة)</span></pre></div>
+
+<p><strong>الحالة 2 — التزام رسالته خاطئة ولم يُرفع بعد:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — تعديل آخر التزام</span></div><pre><span class="p">$</span> <span class="k">git commit --amend -m &quot;docs(readme): add FAQ section&quot;</span>
+<span class="o">[main 2b3c4d5] docs(readme): add FAQ section</span>
+<span class="o"> Date: Mon Oct 6 11:40:02 2026 +0300</span>
+<span class="o"> 1 file changed, 4 insertions(+)</span></pre></div>
+
+<p><strong>الحالة 3 — التزام مرفوع إلى GitHub (لا تعدّل التاريخ!):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — التراجع بالعكس (revert)</span></div><pre><span class="p">$</span> <span class="k">git revert --no-edit 8de1e7a</span>
+<span class="o">[main 6f7e8d9] Revert &quot;feat(ui): change card colors&quot;</span>
+<span class="o"> 1 file changed, 3 insertions(+), 3 deletions(-)</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git log --oneline -3</span>
+<span class="o">6f7e8d9 (HEAD -&gt; main) Revert &quot;feat(ui): change card colors&quot;</span>
+<span class="o">2b3c4d5 docs(readme): add FAQ section</span>
+<span class="o">8de1e7a feat(ui): change card colors</span></pre></div>
+
+<div class="box info"><div class="h">لماذا revert وليس reset؟<span class="en">Why revert, not reset?</span></div><p><code>revert</code> ينشئ التزاماً جديداً يعكس الأول — فيبقى التاريخ صحيحاً لكل من سحب المشروع.
+أما <code>reset --hard</code> فيحذف الالتزامات، ولو كان أحدهم قد بنى عليها عملاً انهار مشروعه.</p></div>
+
+<p><strong>الحالة 4 — تحتاج تبديل فرع وعملك غير مكتمل:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الحفظ المؤقت</span></div><pre><span class="p">$</span> <span class="k">git stash push -m &quot;عمل غير مكتمل على البطاقة&quot;</span>
+<span class="o">Saved working directory and index state On feature/omar-card: عمل غير مكتمل على البطاقة</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git stash list</span>
+<span class="o">stash@{0}: On feature/omar-card: عمل غير مكتمل على البطاقة</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git switch main          # غيّر الفرع بأمان</span>
+<span class="p">$</span> <span class="k">git switch feature/omar-card</span>
+<span class="p">$</span> <span class="k">git stash pop</span>
+<span class="o">On branch feature/omar-card</span>
+<span class="o">Changes not staged for commit:</span>
+<span class="o">        modified:   data/members/omar-qa.json</span>
+<span class="o">Dropped refs/stash@{0} (a7deb6a...)</span></pre></div>
+
+<p><strong>الحالة 5 — شبكة الأمان الأخيرة:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — reflog</span></div><pre><span class="p">$</span> <span class="k">git reflog -8</span>
+<span class="o">6f7e8d9 HEAD@{0}: revert: Revert &quot;feat(ui): change card colors&quot;</span>
+<span class="o">2b3c4d5 HEAD@{1}: commit (amend): docs(readme): add FAQ section</span>
+<span class="o">1e1682a HEAD@{2}: commit: docs(readme): add faq</span>
+<span class="o">5aaeef2 HEAD@{3}: reset: moving to origin/main</span>
+<span class="o">d107715 HEAD@{4}: checkout: moving from main to feature/omar-card</span>
+<span class="o">…</span>
+<span class="o"></span>
+<span class="c"># استرجاع أي حالة سابقة من السجل:</span>
+<span class="p">$</span> <span class="k">git switch -c rescue 5aaeef2      # أو: git reset --hard 5aaeef2</span></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>الحالة</th>
+<th>الأمر الصحيح</th>
+<th>هل يحذف عملاً؟</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>تعديل غير مُلتزم</td>
+<td><code>git restore &lt;file&gt;</code></td>
+<td>نعم (هو المقصود)</td>
+</tr>
+<tr>
+<td>ملف مُمرَّر للمرحلة خطأً</td>
+<td><code>git restore --staged &lt;file&gt;</code></td>
+<td>لا</td>
+</tr>
+<tr>
+<td>آخر التزام لم يُرفع</td>
+<td><code>git commit --amend</code> أو <code>git reset --soft HEAD~1</code></td>
+<td>لا</td>
+</tr>
+<tr>
+<td>التزام مرفوع</td>
+<td><code>git revert &lt;sha&gt;</code></td>
+<td>لا (يعكسه)</td>
+</tr>
+<tr>
+<td>تبديل فرع وعملك ناقص</td>
+<td><code>git stash</code> ثم <code>git stash pop</code></td>
+<td>لا</td>
+</tr>
+<tr>
+<td>حذفت شيئاً ولا تدري</td>
+<td><code>git reflog</code> ثم <code>git switch -c rescue &lt;sha&gt;</code></td>
+<td>لا</td>
+</tr>
+</tbody>
+</table>
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>نفّذ الحالة 4 (stash) والصق مخرجات <code>git stash list</code>:</li>
+</ul>
+<pre class="plain"><span class="ph">$ git stash list</span>
+</pre>
+
+<ul>
+<li>الصق آخر 5 أسطر من <code>git reflog</code>:</li>
+</ul>
+<pre class="plain"><span class="ph">$ git reflog -5</span>
+</pre>
+
+<ul>
+<li>سؤال: زميلك حذف ملفاً والتزم الحذف ثم رفعه، فكيف ترجعه دون إفساد تاريخ الفريق؟
+  (سطران)</li>
+</ul></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">نظّف الفروع واكتب تقرير الفريق</div><div class="en">Clean up branches and write the team report</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 20 نقطة</span><span class="chip">git branch -d</span><span class="chip">git shortlog</span><span class="chip">git log</span></div><p><strong>الهدف:</strong> مستودع نظيف + تقرير موجز يثبت أنك تعرف ما جرى في المشروع.</p>
+<p><strong>الخطوة 1 — احذف الفروع المدموجة فقط:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — تنظيف الفروع</span></div><pre><span class="p">$</span> <span class="k">git branch --merged main</span>
+<span class="o">  feature/ali-card</span>
+<span class="o">  feature/leen-card</span>
+<span class="o">* main</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git branch -d feature/ali-card feature/leen-card</span>
+<span class="o">Deleted branch feature/ali-card (was 1a2b3c4).</span>
+<span class="o">Deleted branch feature/leen-card (was f9e8d7c).</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git fetch --prune</span>
+<span class="o"> - [deleted]         (none)     -&gt; origin/feature/ali-card</span>
+<span class="o"> - [deleted]         (none)     -&gt; origin/feature/leen-card</span></pre></div>
+
+<div class="box warn"><div class="h">انتبه<span class="en">Careful</span></div><p><code>git branch --merged</code> يعرض الفروع التي اندمج عملها بالفعل — احذف هذه فقط. أما الفرع
+غير المدموج فيحتاج <code>-D</code> (وهو حذف قسري) ولا تستخدمه إلا بعد التأكد أن عملك محفوظ أو مرفوع.</p></div>
+
+<p><strong>الخطوة 2 — ابنِ تقرير الفريق (يُسلَّم مع هذه الورقة):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — بيانات التقرير</span></div><pre><span class="p">$</span> <span class="k">git log --oneline main | wc -l                    # عدد الالتزامات</span>
+<span class="p">$</span> <span class="k">git shortlog -sn --all                            # المساهمون</span>
+<span class="p">$</span> <span class="k">git log --since=&quot;2 weeks ago&quot; --pretty=&quot;%an&quot; | sort -u   # من عمل خلال أسبوعين</span>
+<span class="p">$</span> <span class="k">git log --oneline -- data/members/ | wc -l        # عدد الالتزامات على ملفات البطاقات</span>
+<span class="p">$</span> <span class="k">git ls-files data/members/ | wc -l                # عدد البطاقات</span></pre></div>
+
+<div class="evidence"><div class="h">تقرير الفريق — يُسلَّم<span class="en">/ Team report — to submit</span></div><table>
+<thead>
+<tr>
+<th>المؤشر</th>
+<th>القيمة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>عدد الالتزامات في <code>main</code></td>
+<td>…………</td>
+</tr>
+<tr>
+<td>عدد أعضاء الفريق (بطاقات)</td>
+<td>…………</td>
+</tr>
+<tr>
+<td>أكثر عضو التزامات</td>
+<td><code>……………………………</code> بعدد …………</td>
+</tr>
+<tr>
+<td>عدد الفروع المحذوفة بعد الدمج</td>
+<td>…………</td>
+</tr>
+<tr>
+<td>هل كل الفروع مدمجة الآن؟ (<code>git branch --merged main</code>)</td>
+<td>☐ نعم  ☐ لا</td>
+</tr>
+</tbody>
+</table>
+<p>اكتب في 3 أسطر: ما الذي كان سيحدث لو رفع كل طالب تعديله مباشرة إلى <code>main</code>؟</p>
+<pre class="plain"><span class="ph">……………………………………………………………………………………………………………………</span>
+</pre></div></div></div>
+<div class="band green"><span class="ar">قبل التسليم</span><span class="en">Before you submit</span></div>
+
+<h2>أسئلة تحقّق سريعة</h2>
+<p><strong>س1.</strong> ما الفرق بين <code>git fetch</code> و<code>git pull</code>؟ ومتى يكون <code>fetch</code> أأمن؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س2.</strong> متى تختار Squash ومتى تختار Merge commit؟ أعط مثالاً لكل حالة من مشروعنا.</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س3.</strong> لماذا لا يجوز <code>rebase</code> لفرع مشترك؟ وما البديل؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س4.</strong> زميلك رفع تعديلاً خاطئاً على <code>main</code>، فكيف تعالجه بأمان؟ اكتب الأمر.</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div></div>
+
+<div class="write"><strong>قائمة الفحص النهائية<span class="muted tiny"> / Final checklist</span></strong><ul class="checklist">
+<li>[ ] جربت <code>fetch</code> ثم <code>merge</code> وأنا أعرف الفرق عملياً</li>
+<li>[ ] جربت الدمج بالاستراتيجيات الثلاث (merge / squash / rebase)</li>
+<li>[ ] استخدمت <code>git log -p</code> و<code>git blame</code> للتحقيق في تعديل زميل</li>
+<li>[ ] جربت <code>stash</code> و<code>amend</code> و<code>revert</code> و<code>reflog</code></li>
+<li>[ ] الفروع المدموجة نظّفت، والمستودع بلا فروع ميتة</li>
+<li>[ ] تقرير الفريق مملوء بالأرقام الفعلية لا بالتقدير</li>
+</ul></div>
+
+<div class="evidence"><div class="h">بطاقة التسليم<span class="en">/ Submission card</span></div><table>
+<thead>
+<tr>
+<th>البند</th>
+<th>القيمة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>حالة <code>main</code> مقارنة بـ <code>origin/main</code></td>
+<td>☐ متساويان  ☐ متقدم  ☐ متأخر</td>
+</tr>
+<tr>
+<td>استراتيجية الدمج التي أفضل</td>
+<td>☐ Merge  ☐ Squash  ☐ Rebase</td>
+</tr>
+<tr>
+<td>الأمر الذي أنقذني اليوم</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>الوقت المستغرق</td>
+<td>…………</td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box info"><div class="h">ما القادم؟<span class="en">What&#x27;s next</span></div><p>في <strong>ورقة العمل 05</strong> سنسبّب <strong>تعارضاً حقيقياً عن قصد</strong> بين تعديلين على السطر نفسه،
+ونحلّه خطوة بخطوة — ثم ننهي المشروع بالنشر على GitHub Pages.</p></div>
+<div class="footer-note"><span>ورشة Git وGitHub · ورقة عمل 04 — المزامنة والدمج</span><span class="en">Git &amp; GitHub Workshop · Worksheet 04 — Sync &amp; Merge</span></div>
+</div>
+</body>
+</html>

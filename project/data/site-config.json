@@ -1,0 +1,16 @@
+{
+  "siteTitle": "دليل فريق الصف",
+  "subtitle": "فريق ورشة Git وGitHub — كل بطاقة أضافها طالب من فرعه الخاص ثم دمجناها معاً.",
+  "semester": "الفصل الدراسي الأول 2026",
+  "instructor": "اسم المدرب",
+  "org": "school-git-workshop",
+  "repository": "class-team-hub",
+  "primaryColor": "#12203C",
+  "accentColor": "#E8620C",
+  "welcomeMessage": "مرحباً بكم في مستودع الفريق! عدّلوا هذا الملف ضمن التمرين الأول.",
+  "socialLinks": {
+    "docs": "docs/",
+    "issues": "issues",
+    "wiki": "wiki"
+  }
+}

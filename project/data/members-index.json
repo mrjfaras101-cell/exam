@@ -1,0 +1,9 @@
+{
+  "_comment": "فهرس ملفات البطاقات — ملف مُولَّد، لا تعدّله يدوياً.",
+  "_generated": true,
+  "total": 2,
+  "files": [
+    "01-example-student.json",
+    "99-you-instructor.json"
+  ]
+}
