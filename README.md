@@ -20,7 +20,8 @@
 | `slides/` | **عروض الجلسات الستة** (16:9، جاهزة للشاشة) + نسخة متصفح + PDF | PPTX + HTML + PDF |
 | `project/` | **المستودع التدريبي** `class-team-hub` الذي ينسخه الطلبة ويعدّلونه | كود + بيانات |
 | `source/` | ملفات المصدر (Markdown بصيغة مختصرة) لتعديل المحتوى | MD |
-| `tools/` | أدوات توليد المستندات (PDF/DOCX) والعروض (PPTX) + فاحص جودة العروض | Python |
+| `index.html` | **فهرس الحزمة** — كل المخرجات في صفحة واحدة بروابط مباشرة | HTML |
+| `tools/` | أدوات التوليد (PDF/DOCX/PPTX/HTML) + فاحص جودة العروض | Python + Node |
 | `assets/` | التنسيقات، الخطوط العربية، والرسومات التوضيحية | CSS/SVG/PNG |
 
 ## 2) أوراق العمل الخمس | The five worksheets
@@ -58,6 +59,8 @@ python3 -m http.server 8000           # تشغيل الموقع على http://lo
 
 ## 4) كيف تستخدم الحزمة | How to use it
 
+0. **افتح** `index.html` في المتصفح (أو شغّل `python3 tools/serve_slides.py` ثم `/index.html`) —
+   فهرس الحزمة بروابط مباشرة لكل ورقة وحل وعرض.
 1. **اقرأ** `trainer/trainer-guide.pdf` (دليل المدرّب) — فيه تخطيط الجلسات وقوائم الإعداد.
 2. **ارفع** محتوى مجلد `project/` إلى مستودع GitHub في منظمة خاصة بالورشة:
    ```bash
@@ -84,6 +87,11 @@ python3 tools/build.py ws1             # ورقة واحدة
 python3 tools/build.py --no-docx       # بدون DOCX (أسرع)
 python3 tools/build.py --no-pdf        # بدون PDF
 
+bash tools/build_all.sh                     # بناء الحزمة كاملة (مستندات + عروض + فهرس)
+bash tools/build_all.sh --fast             # بلا DOCX (أسرع)
+
+python3 tools/build.py                     # المستندات + فهرس الحزمة (index.html)
+python3 tools/make_hub.py                  # فهرس الحزمة وحده
 python3 tools/build_slides.py              # عروض الجلسات → slides/*.pptx
 python3 tools/build_slides.py s3           # عرض واحد
 python3 tools/build_slides_html.py         # نسخة المتصفح → slides/html/*.html
@@ -127,6 +135,8 @@ python3 tools/serve_slides.py              # معاينة محلية: http://loc
 - ملفات DOCX مضبوطة على الاتجاه RTL (فقرة `bidi` + تشغيل `rtl`) وتتضمن الرسومات.
 - عروض PPTX بمقاس 16:9، فقرات `rtl="1"` وخط `Cairo` (يُستعمل `a:cs` لتشكيل العربية).
   لا يحتاج بناؤها إلى Word/LibreOffice، ويفحصها `tools/check_slides.py` بنيوياً.
+- `index.html` (فهرس الحزمة) يُولَّد آلياً بمسح مجلدات الحزمة (`tools/make_hub.py`)، فلا يتقادم
+  عند إضافة ملفات جديدة. ومعاينته المحلية عبر `tools/serve_slides.py` (يضبط أنواع MIME الناقصة).
 - الرموز التعبيرية (emoji) تُستبدل تلقائياً في كل المخرجات لأنها تظهر مربعات فارغة
   في بعض البيئات — المجموعة الآمنة: `✔ ✘ ✓ ✗ ★ ◆ ● ■ ▲ ☐ → ⇒ ⚠ ← •` (مع رموز الأشجار).
 - مصادر التوليد تحتاج: Python 3 + `markdown` + `pypandoc` + `python-docx` + `python-pptx`
@@ -143,6 +153,7 @@ python3 tools/serve_slides.py              # معاينة محلية: http://loc
 
 ```text
 .
+├── index.html    فهرس الحزمة — نقطة البداية للمدرّب
 ├── worksheets/   ws1…ws6 + program-overview      (PDF + HTML)   ← تُطبع للطلبة
 ├── solutions/    solutions-ws1…ws6               (PDF + HTML)   ← للمدرّب فقط
 ├── trainer/      trainer-guide                   (PDF + HTML)   ← للمدرّب فقط
@@ -150,7 +161,7 @@ python3 tools/serve_slides.py              # معاينة محلية: http://loc
 ├── slides/       عروض الجلسات s1…s6   (PPTX + html/ + pdf/)  ← للشاشة
 ├── project/      class-team-hub — المستودع التدريبي
 ├── source/       مصادر Markdown (+ source/slides/ للعروض)
-├── tools/        build.py · build_slides.py · build_slides_html.py ·
-│                 check_slides.py · serve_slides.py · rasterize.mjs
+├── tools/        build_all.sh · build.py · make_hub.py · build_slides.py ·
+│                 build_slides_html.py · check_slides.py · serve_slides.py · rasterize.mjs
 └── assets/       print.css · fonts/ · img/ (SVG + PNG) · cover-hero.png
 ```

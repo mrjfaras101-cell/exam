@@ -536,6 +536,7 @@ def main() -> None:
     args = sys.argv[1:]
     no_pdf = "--no-pdf" in args
     no_docx = "--no-docx" in args
+    no_hub = "--no-hub" in args
     patterns = [a for a in args if not a.startswith("--")]
     files = sorted(SRC.glob("*.md"))
     if patterns:
@@ -558,6 +559,16 @@ def main() -> None:
                 print("  ! تعذّر DOCX:", e)
     if not no_pdf:
         run_pdfs(html_files)
+    if not patterns and not no_hub:          # فهرس الحزمة يُولَّد فقط في البناء الكامل
+        try:
+            import importlib.util
+            spec = importlib.util.spec_from_file_location("make_hub", ROOT / "tools" / "make_hub.py")
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            hub = mod.build()
+            print(f"HTML ✓ {hub.relative_to(ROOT)} — فهرس الحزمة")
+        except Exception as e:  # noqa: BLE001
+            print("  ! تعذّر توليد فهرس الحزمة:", e)
     print("\nاكتمل البناء.")
 
 
