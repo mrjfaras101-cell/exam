@@ -128,7 +128,7 @@ core.editor=code --wait
 
 **قائمة تحقّق للمدرّب (استخدم صفحة الملف):
 
-| الفحص | المكان في GitHub | علامة ✅ |
+| الفحص | المكان في GitHub | علامة ✔ |
 |---|---|---|
 | البريد مؤكَّد | `Settings ← Emails` | |
 | التحقق بخطوتين | `Settings ← Password and authentication` | |

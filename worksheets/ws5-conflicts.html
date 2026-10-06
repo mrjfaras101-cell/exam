@@ -50,32 +50,32 @@ handle rebasing, publish the team site with GitHub Pages, and write your final p
 <tbody>
 <tr>
 <td>طالبان يضيفان بطاقتين في ملفين مختلفين</td>
-<td>❌ لا</td>
+<td>✘ لا</td>
 <td>Git يدمج ملفين مستقلين تلقائياً</td>
 </tr>
 <tr>
 <td>طالبان يعدّلان <strong>نفس السطر</strong></td>
-<td>✅ نعم</td>
+<td>✔ نعم</td>
 <td>تعديلان على نفس المكان بالضبط</td>
 </tr>
 <tr>
 <td>طالبان يعدّلان ملفاً <strong>مُولَّداً</strong> (الفهرس)</td>
-<td>✅ نعم (مقصود)</td>
+<td>✔ نعم (مقصود)</td>
 <td>الملف يتغير من الجهتين معاً</td>
 </tr>
 <tr>
 <td>طالبان يعدّلان سطرين <strong>متباعدين</strong> في ملف واحد</td>
-<td>❌ لا</td>
+<td>✘ لا</td>
 <td>Git يدمج المقاطع بلا تداخل</td>
 </tr>
 <tr>
 <td>طالب حذف ملفاً وآخر عدّله</td>
-<td>✅ نعم</td>
+<td>✔ نعم</td>
 <td>تعارض حذف مقابل تعديل</td>
 </tr>
 </tbody>
 </table>
-<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">اصنع تعارضاً في سطر واحد (مقصود)</div><div class="en">Deliberately create a single-line conflict</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 20 نقطة</span><span class="chip">git merge</span><span class="chip">conflict markers</span></div><p><strong>الهدف:</strong> تجربة تعارض حقيقي في ملف واحد بسيط: شعار الفريق.</p>
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">اصنع تعارضاً في سطر واحد (مقصود)</div><div class="en">Deliberately create a single-line conflict</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 20 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 20 نقطة</span><span class="chip">git merge</span><span class="chip">conflict markers</span></div><p><strong>الهدف:</strong> تجربة تعارض حقيقي في ملف واحد بسيط: شعار الفريق.</p>
 <p><strong>التحضير — الطالب (أ) يعدّل الشعار:</strong></p>
 <div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الطالب أ (سارة)</span></div><pre><span class="p">$</span> <span class="k">git switch main &amp;&amp; git pull --ff-only</span>
 <span class="p">$</span> <span class="k">git switch -c docs/sara-slogan</span>
@@ -150,7 +150,7 @@ handle rebasing, publish the team site with GitHub Pages, and write your final p
 <li>مخرجات <code>git diff --check</code> (يجب ألا تظهر مخرجات): ……………………………</li>
 <li>عدد الملفات المتعارضة التي ظهرت في <code>git status -sb</code>: …………</li>
 </ul></div></div></div>
-<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">حل تعارض ملف مُولَّد آلياً</div><div class="en">Resolve a generated-file conflict</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 20 نقطة</span><span class="chip">build-index.mjs</span><span class="chip">git rebase</span></div><p><strong>الهدف:</strong> أشهر تعارض سيقع فعلاً في مشروعنا: <code>data/members-index.json</code>.</p>
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">حل تعارض ملف مُولَّد آلياً</div><div class="en">Resolve a generated-file conflict</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 20 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 20 نقطة</span><span class="chip">build-index.mjs</span><span class="chip">git rebase</span></div><p><strong>الهدف:</strong> أشهر تعارض سيقع فعلاً في مشروعنا: <code>data/members-index.json</code>.</p>
 <div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — التعارض في ملف مُولَّد</span></div><pre><span class="p">$</span> <span class="k">git switch main &amp;&amp; git pull --ff-only</span>
 <span class="p">$</span> <span class="k">git switch -c feature/omar-qa-card</span>
 <span class="p">$</span> <span class="k">cp data/members/00-template.json data/members/omar-qa.json</span>
@@ -227,7 +227,7 @@ handle rebasing, publish the team site with GitHub Pages, and write your final p
 </ul></div></div></div>
 <div class="band "><span class="ar">الجزء الثاني · إعادة التشكيل والدفع الآمن</span><span class="en">Part 2 · Rebase &amp; safe push</span></div>
 
-<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">rebase و --force-with-lease والفرق بينه وبين --force</div><div class="en">Rebase and safe force-push</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 15 نقطة</span><span class="chip">git rebase</span><span class="chip">push --force-with-lease</span></div><div class="bi "><div class="ar"><p><code>git push --force</code> يمحو كل ما على الفرع البعيد ويستبدله بتاريخك بلا أي سؤال — فإن كان
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">rebase و --force-with-lease والفرق بينه وبين --force</div><div class="en">Rebase and safe force-push</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 15 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 15 نقطة</span><span class="chip">git rebase</span><span class="chip">push --force-with-lease</span></div><div class="bi "><div class="ar"><p><code>git push --force</code> يمحو كل ما على الفرع البعيد ويستبدله بتاريخك بلا أي سؤال — فإن كان
 زميلك قد رفع التزاماً على نفس الفرع، سيُفقد عمله. أما <code>--force-with-lease</code> فيقول للخادم:
 «استبدل التاريخ <strong>فقط</strong> إن كان لا يزال على الحالة التي أعرفها»، فيرفض العملية إن تغيّر
 شيء، فتنقذ عمل زميلك.</p></div><div class="eng"><p><code>--force</code> overwrites the remote branch with no questions asked — possibly destroying a
@@ -292,7 +292,7 @@ last saw it, refusing otherwise. Always use the lease version, and only on your 
 </ul>
 <pre class="plain"><span class="ph">……………………………………………………………………………………………………………………</span>
 </pre></div></div></div>
-<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">افحص قبل الدمج: كيف يقرأ المراجع طلب سحبك؟</div><div class="en">Pre-merge inspection: what your reviewer sees</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 15 نقطة</span><span class="chip">git diff</span><span class="chip">gh</span><span class="chip">GitHub</span></div><p><strong>الهدف:</strong> أن تتحقق من فرعك بنفسك قبل أن يتحقق منه غيرك — وهذا أسرع طريق للقبول.</p>
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">افحص قبل الدمج: كيف يقرأ المراجع طلب سحبك؟</div><div class="en">Pre-merge inspection: what your reviewer sees</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 15 نقطة</span><span class="chip">git diff</span><span class="chip">gh</span><span class="chip">GitHub</span></div><p><strong>الهدف:</strong> أن تتحقق من فرعك بنفسك قبل أن يتحقق منه غيرك — وهذا أسرع طريق للقبول.</p>
 <div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الفحص الذاتي قبل طلب المراجعة</span></div><pre><span class="p">$</span> <span class="k">node tests/validate-members.mjs</span>
 <span class="o">--- النتيجة / Result: 7 بطاقة، 0 خطأ، 0 تحذير ---</span>
 <span class="o"></span>
@@ -409,7 +409,7 @@ last saw it, refusing otherwise. Always use the lease version, and only on your 
 </table></div></div></div>
 <div class="band violet"><span class="ar">الجزء الثالث · النشر والتسليم النهائي</span><span class="en">Part 3 · Ship it</span></div>
 
-<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">انشر الموقع على GitHub Pages</div><div class="en">Publish the site with GitHub Pages</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 15 نقطة</span><span class="chip">GitHub Pages</span><span class="chip">Settings</span></div><p><strong>الهدف:</strong> أن يرى العالم — وذووك — مشروع الفريق على رابط حقيقي.</p>
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">انشر الموقع على GitHub Pages</div><div class="en">Publish the site with GitHub Pages</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 20 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 15 نقطة</span><span class="chip">GitHub Pages</span><span class="chip">Settings</span></div><p><strong>الهدف:</strong> أن يرى العالم — وذووك — مشروع الفريق على رابط حقيقي.</p>
 <div class="bi "><div class="ar"><p>النشر على GitHub Pages يعني أن GitHub سيتولّى استضافة ملفات المشروع من فرع محدَّد
 (غالباً <code>main</code>) ويعطينا رابطاً عاماً. المشروع جاهز للنشر لأنه موقع ثابت بلا أي خادم
 أو قاعدة بيانات.</p></div><div class="eng"><p>GitHub Pages hosts your static files straight from a branch and gives you a public URL. Our
@@ -457,14 +457,14 @@ Branch: main        Folder: / (root)        ثم اضغط Save</span>
 </tbody>
 </table>
 <div class="box tip"><div class="h">تحسين احترافي<span class="en">Professional touch</span></div><p>أضف ملف <code>docs/index.md</code> أو شرائح عرض صغيرة عن المشروع، واربط الرابط في ملف <code>README.md</code>:
-<code>🔗 الموقع المباشر: https://…</code> — هكذا يرى الزائر النتيجة فوراً.</p></div>
+<code>➜ الموقع المباشر: https://…</code> — هكذا يرى الزائر النتيجة فوراً.</p></div>
 
 <div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
 <li>رابط الموقع المنشور: <code>https://…………………………………</code></li>
 <li>حالة النشر: ☐ نجح ووجهة النظر تعمل  ☐ فشل (اذكر السبب) ………………………</li>
 <li>هل تظهر كل بطاقات الفريق؟ ☐ نعم  ☐ لا — العدد الظاهر: …………</li>
 </ul></div></div></div>
-<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">التسليم النهائي: طلب سحب مركّب وتقرير المشروع</div><div class="en">Final delivery: a real PR and the project report</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 15 نقطة</span><span class="chip">GitHub</span><span class="chip">PR</span><span class="chip">README</span></div><p><strong>الهدف:</strong> إغلاق المشروع باحتراف: طلب سحب نظيف، وتقرير يوثّق العمل وفريقك.</p>
+<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">التسليم النهائي: طلب سحب مركّب وتقرير المشروع</div><div class="en">Final delivery: a real PR and the project report</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 20 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 15 نقطة</span><span class="chip">GitHub</span><span class="chip">PR</span><span class="chip">README</span></div><p><strong>الهدف:</strong> إغلاق المشروع باحتراف: طلب سحب نظيف، وتقرير يوثّق العمل وفريقك.</p>
 <p><strong>الجزء أ — طلب سحب نهائي محترف.</strong> أنشئ تعديلاً جديداً يحسّن المشروع (مثال: تحديث
 <code>README.md</code> بإضافة رابط الموقع المباشر + قسم «كيف تشغّل المشروع»)، ثم:</p>
 <div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — طلب سحب نهائي</span></div><pre><span class="p">$</span> <span class="k">git switch main &amp;&amp; git pull --ff-only</span>

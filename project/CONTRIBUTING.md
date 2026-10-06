@@ -48,6 +48,18 @@ git status                           # تأكد أنك لا ترفع ملفات 
 git diff main..HEAD --stat           # راجع ما ستغيّره فعلاً
 ```
 
+## 3.5) الفحص التلقائي (CI) / Automated checks
+
+كل طلب سحب يشغّل تلقائياً الفحوص التالية على GitHub. **لا يُدمج طلب بفحص فاشل:**
+
+```bash
+node tools/build-index.mjs --check
+node tests/validate-members.mjs
+grep -rInE "^(<{7}|={7}|>{7})( |$)" --exclude-dir=.git .   # لا علامات تعارض
+```
+
+شغّلها محلياً بنفس الترتيب قبل الرفع — أرخص من انتظار GitHub ثم التصحيح.
+
 ## 4) طلب السحب / Pull request
 
 - العنوان بنفس صيغة رسالة الالتزام.
@@ -57,7 +69,8 @@ git diff main..HEAD --stat           # راجع ما ستغيّره فعلاً
 
 ## 5) الدمج / Merge
 
-- استخدم **Squash and merge** للفروع الصغيرة (بطاقة واحدة = التزام واحد نظيف).
+- استخدام **Squash and merge** للفروع الصغيرة (بطاقة واحدة = التزام واحد نظيف).
+- لا تدمج قبل أن يصبح الفحص التلقائي ✅ أخضر جميع البنود.
 - لا تدمج فرعك بنفسك قبل حصولك على موافقة مراجع واحد.
 - بعد الدمج: احذف الفرع وحدّث `main`.
 
@@ -66,6 +79,18 @@ git switch main
 git pull --prune
 git branch -d feature/<your-branch>
 ```
+
+## 5.5) الإصدارات / Releases
+
+نصدر نسخة عند كل معلم مهم في المشروع:
+
+```bash
+git switch main && git pull
+git tag -a v1.1.0 -m "feat: tag filtering for member cards"
+git push origin v1.1.0
+```
+
+ثم أنشئ إصداراً على GitHub (تبويب Releases) مع ملاحظات مختصرة، وحدّث `CHANGELOG.md`.
 
 ## 6) قواعد لا تُخالف / Never do this
 

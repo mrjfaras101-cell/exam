@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حلول ورقة العمل 06: الأتمتة وحماية الجودة</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top" style="background:#7A1220"><div class="badge"><div class="n">06</div><div class="l">نموذج حل</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — وحدة إتقان اختيارية</div><h1>حلول ورقة العمل 06: الأتمتة وحماية الجودة</h1><div class="sub">Solutions · Worksheet 06 — Automation &amp; Quality Gates</div></div></div><div class="meta"><div><span class="k">التقييم الكلي / Total</span><span class="v">100 نقطة</span></div><div><span class="k">زمن التصحيح المقترح / Marking time</span><span class="v">8–10 دقائق لكل طالب</span></div><div><span class="k">أدلة إلزامية / Mandatory evidence</span><span class="v">8 بنود</span></div><div><span class="k">معيار النجاح / Pass mark</span><span class="v">70 نقطة</span></div></div></div>
+<div class="box err"><div class="h">نسخة المدرّب — نماذج الحلول والتقييم <span class="en">/ Instructor copy — do not distribute</span></div></div><div class="band "><span class="ar">ما تقيسه هذه الورقة</span><span class="en">What this worksheet measures</span></div>
+
+<div class="bi "><div class="ar"><p>تقيس هذه الورقة <strong>تفكيراً هندسياً</strong> لا مهارة استخدام أدوات: هل يفهم الطالب أن الجودة
+تُفرض تقنياً؟ وهل يدرك أن الفحص نفسه يحتاج اختباراً؟ الطالب الذي يكتشف أن الفحص كان
+يمرّ على حالة معطوبة (نتيجة خطأ في نمط البحث) قد وصل إلى ما نريده بالضبط — وهذه فرصة
+تعليمية عالية القيمة، فلا تُفوّتها بالسكوت عنها.</p></div><div class="eng"><p>This worksheet measures engineering thinking: quality enforced by tooling, and checks that are
+themselves tested. The student who discovers that the original marker check silently passed a
+broken case has reached the target insight — treat it as a highlight, not an error.</p></div></div>
+
+<div class="band alt"><span class="ar">جدول التقييم المُجمَّع</span><span class="en">Marking rubric</span></div>
+
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>المهمة</th>
+<th>النقاط</th>
+<th>معيار القبول</th>
+<th>حساسية</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>قراءة سير العمل</td>
+<td>12</td>
+<td>جدول التحليل مكتمل + فهم دور <code>checkout</code></td>
+<td>متوسطة</td>
+</tr>
+<tr>
+<td>2</td>
+<td>الفحص المحلي</td>
+<td>15</td>
+<td>مخرجات <code>ci-local</code> كلها ✔ ومن جهازه</td>
+<td>عالية (دليل تنفيذ)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>اكسر وشاهد الفشل</td>
+<td>18</td>
+<td>ثلاث حالات معطوبة + دليل فشل حقيقي</td>
+<td><strong>الأهم</strong></td>
+</tr>
+<tr>
+<td>4</td>
+<td>أصلح حتى الأخضر</td>
+<td>15</td>
+<td>مخرجات ✔ + رابط فحص ناجح على GitHub</td>
+<td>عالية</td>
+</tr>
+<tr>
+<td>5</td>
+<td>حماية الفرع وCODEOWNERS</td>
+<td>15</td>
+<td>قواعد مفعّلة + جدول المسؤوليات + مراجع تلقائي</td>
+<td>متوسطة</td>
+</tr>
+<tr>
+<td>6</td>
+<td>الإصدار v1.0.0</td>
+<td>15</td>
+<td>وسم مع تعليق + رفع الوسم + Release + CHANGELOG</td>
+<td>متوسطة</td>
+</tr>
+<tr>
+<td>—</td>
+<td>الأسئلة (س1–س4)</td>
+<td>10</td>
+<td>2.5 لكل سؤال</td>
+<td>فهم</td>
+</tr>
+</tbody>
+</table>
+<div class="box rule"><div class="h">قاعدة التقييم الخاصة بهذه الورقة<span class="en">Special marking rule</span></div><p><strong>أعلى درجة تذهب لمن كسر المشروع فعلاً.</strong> الطالب الذي نفّذ الحالات المعطوبة والتقط دليل
+فشلها يثبت أنه فهم الأتمتة. أما من «قرأ الملف ونسخ مخرجاته» فيأخذ ثلث الدرجة فقط في
+المهمة 3، ولو كانت ورقة سليمة الشكل.</p></div>
+
+<div class="band "><span class="ar">إجابات المهام</span><span class="en">Task solutions</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">قراءة سير العمل</div><div class="en">Reading the workflow</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ فهم</span><span class="chip t">★ 12 نقطة</span></div><p><strong>الإجابات النموذجية للجدول:</strong></p>
+<table>
+<thead>
+<tr>
+<th>المفتاح</th>
+<th>معناه</th>
+<th>القيمة في مشروعنا</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>اسم سير العمل</td>
+<td><code>validate</code></td>
+</tr>
+<tr>
+<td><code>on:</code></td>
+<td>الأحداث المشغّلة</td>
+<td><code>pull_request</code> إلى <code>main</code> · <code>push</code> إلى <code>main</code> · <code>workflow_dispatch</code> (يدوي)</td>
+</tr>
+<tr>
+<td><code>jobs:</code></td>
+<td>المهام</td>
+<td>مهمة واحدة اسمها <code>validate</code></td>
+</tr>
+<tr>
+<td><code>runs-on</code></td>
+<td>نظام الخادم</td>
+<td><code>ubuntu-latest</code></td>
+</tr>
+<tr>
+<td><code>steps</code></td>
+<td>الخطوات بالترتيب</td>
+<td><strong>5 خطوات</strong>: checkout · setup-node · build-index --check · validate-members · فحص علامات التعارض</td>
+</tr>
+<tr>
+<td><code>actions/checkout</code></td>
+<td>ينزّل نسخة المستودع على الخادم</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>actions/setup-node</code></td>
+<td>يثبّت إصدار Node المطلوب (20)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>معيار الدرجة:</strong> 8 نقاط للجدول الصحيح (خطأ واحد مسموح)، 4 نقاط لشرح دور
+<code>actions/checkout</code> (ينزّل الكود، بدونه لا يوجد ما يُفحص).</p>
+<p><strong>أخطاء متوقعة:</strong> كتابة عدد الخطوات 3 (خلط بين عدد الفحوص وعدد الخطوات) ← وأشر إلى
+الفرق؛ إجابة أن <code>runs-on</code> هو «جهاز الطالب» ← تصحيح مباشر لأهمية عزل بيئة الفحص.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">الفحص المحلي</div><div class="en">Local CI run</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تنفيذ</span><span class="chip t">★ 15 نقطة</span></div><p><strong>المخرجات المتوقعة (من جهاز الطالب، ثلاث علامات ✔):</strong></p>
+<pre class="plain"><span class="ph">=== فحص محلي يشبه GitHub Actions / Local CI simulation ===
+
+▸ الفهرس مُحدَّث / index up to date … ✔ نجح
+    [build-index] ✓ الفهرس محدَّث بالفعل.
+▸ بطاقات الأعضاء صحيحة / member cards valid … ✔ نجح
+    --- النتيجة / Result: 3 بطاقة، 0 خطأ، 0 تحذير ---
+▸ لا علامات تعارض / no conflict markers … ✔ نجح
+
+✔ كل الفحوص نجحت — آمن للرفع (git push) / All checks passed.</span>
+</pre>
+
+<p><strong>أخطاء متوقعة وخصوماتها:</strong></p>
+<table>
+<thead>
+<tr>
+<th>الحالة</th>
+<th>الدلالة</th>
+<th>الخصم</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>نسخ مخرجات الورقة (عدد البطاقات يختلف عن واقعه)</td>
+<td>دليل غير شخصي</td>
+<td>−10 مع إعادة</td>
+</tr>
+<tr>
+<td>عنده فشل حقيقي ولم يصلحه</td>
+<td>لم يُكمل المهمة</td>
+<td>6 من 15</td>
+</tr>
+<tr>
+<td>شغّل <code>ci-local</code> ثم تجاهل الفشل ورفع</td>
+<td>يفهم الأداة ولا يحترمها</td>
+<td>5 من 15 + مناقشة</td>
+</tr>
+<tr>
+<td>أضاف الأمر إلى <code>&amp;&amp; git push</code> (مبادرة)</td>
+<td>ممارسة مهنية ممتازة</td>
+<td><strong>+2 تقدير</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">مؤشر جودة سريع في الجولة<span class="en">Quick quality signal</span></div><p>اسأل الطالب: «ماذا يعني <code>exit=0</code> في نهاية المخرجات؟» الجواب المطلوب: أن العملية نجحت،
+وأن نظام CI يقرأ هذا الرمز (لا النص) ليحدّد حالة الفحص. من فهم «رمز الخروج» يفهم لماذا
+تفشل خطوط الأنابيب (pipelines) في الفرق الحقيقية.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">اكسر ثم شاهد الفشل — أهم مهمة في الورقة</div><div class="en">Break and observe</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 18 نقطة</span></div><p><strong>الحالات الثلاث ومخرجاتها الحقيقية:</strong></p>
+<p><strong>(أ) فهرس قديم (نسيان <code>build-index</code>):</strong></p>
+<pre class="plain"><span class="ph">▸ الفهرس مُحدَّث / index up to date … ✘ فشل
+    [build-index] ✗ الفهرس غير محدَّث. شغّل: node tools/build-index.mjs
+▸ بطاقات الأعضاء صحيحة / member cards valid … ✘ فشل
+      ✗ data/members-index.json: البطاقة &quot;ali-h.json&quot; غير مُفهرسة — شغّل: node tools/build-index.mjs
+    --- النتيجة / Result: 4 بطاقة، 1 خطأ، 0 تحذير ---
+
+✘ 2 من 3 فحص فشل — لا ترفع قبل الإصلاح.</span>
+</pre>
+
+<p><strong>(ب) بطاقة بمحتوى مخالف:</strong></p>
+<pre class="plain"><span class="ph">      ✗ omar-qa.json: اسم مستخدم غير صالح / invalid username: &quot;Omar_QA&quot;
+      ⚠ omar-qa.json: دور غير معتاد / unusual role: &quot;سوبرمان&quot;
+      ✗ omar-qa.json: الامر المفضل يجب ان يبدا بـ &quot;git &quot;
+      ✗ omar-qa.json: tags يجب أن تكون مصفوفة / tags must be an array
+      ✗ sara-design.json: طول الرسالة 5 — يجب أن يكون بين 10 و140 حرفاً
+    --- النتيجة / Result: 4 بطاقة، 5 خطأ، 2 تحذير ---</span>
+</pre>
+
+<p><strong>(ج) علامات تعارض باقية:</strong></p>
+<pre class="plain"><span class="ph">▸ لا علامات تعارض / no conflict markers … ✘ فشل
+    ./sandbox/team-slogan.txt:2:&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+    ./sandbox/team-slogan.txt:4:=======
+    ./sandbox/team-slogan.txt:6:&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/omar-slogan
+
+✘ 1 من 3 فحص فشل — لا ترفع قبل الإصلاح.</span>
+</pre>
+
+<p><strong>معيار الدرجة (18 نقطة):</strong> 4 نقاط لكل حالة مكتشفة بمخرجها الحقيقي (12)، و6 نقاط لدليل
+الحالة الفاشلة على GitHub (رابط <code>Actions</code> أو ذكر حالة <code>✘ 1 failing check</code>)، بشرط أن يذكر
+جملة <code>Merging is blocked</code>.</p>
+<p><strong>أخطاء متوقعة:</strong></p>
+<table>
+<thead>
+<tr>
+<th>الخطأ</th>
+<th>الدلالة</th>
+<th>الدرجة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>جرّب حالة واحدة فقط</td>
+<td>تجربة ناقصة</td>
+<td>6 من 12</td>
+</tr>
+<tr>
+<td>اكتفى بقراءة الملف ولم يجرّب</td>
+<td>لم يفهم قيمة الأتمتة</td>
+<td>3 من 18</td>
+</tr>
+<tr>
+<td>لم ينتبه لأن الحالة (ج) تحتاج نطاق بحث صحيحاً</td>
+<td><strong>هذا مقصود!</strong> انظر أدناه</td>
+<td>لا خصم</td>
+</tr>
+<tr>
+<td>كسر المستودع ولم يُصلحه في المهمة 4</td>
+<td>لم يُكمل الدورة</td>
+<td>8 من 18</td>
+</tr>
+</tbody>
+</table>
+<div class="box err"><div class="h">الدرس المصمَّم بعناية: فحص ضعيف يخدع صاحبه<span class="en">The designed trap: a weak check lies</span></div><p>الإصدار الأول من فحص علامات التعارض كان يستخدم نمطاً غير دقيق:
+<code>grep -rInE "^(&lt;&lt;&lt;&lt;&lt;&lt;&lt;|&gt;&gt;&gt;&gt;&gt;&gt;&gt;|=======)$"</code> مع حصر البحث بامتدادات محددة. فكان يمرّ
+<strong>بنجاح</strong> رغم وجود علامات حقيقية مثل <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code>، ورغم أن ملف <code>sandbox/team-slogan.txt</code>
+(موضع التعارض المقصود في الورقة 05) مستثنى من النطاق.</p>
+<p>النمط الصحيح بعد الإصلاح:</p>
+<pre class="plain"><span class="ph">grep -rInE &quot;^(&lt;{7}|={7}|&gt;{7})( |$)&quot; --exclude-dir=.git --exclude-dir=node_modules .</span>
+</pre>
+
+<p><strong>كيف تستخدم هذا في التقييم:</strong>
+- الطالب الذي <strong>اكتشف</strong> أن الفحص كان يمرّ خطأً: <strong>+5 تقدير</strong> واذكره في الفريق، فهذا تفكير
+  نقدي حقيقي (Critical thinking) نادر في هذا العمر التدريبي.
+- الطالب الذي مرّ على الحالة (ج) ولم يلاحظها: لا خصم، لكن <strong>اطرح عليه السؤال</strong> ليقودك بنفسه
+  إلى الاستنتاج: «هل جربت أن تضع علامة <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> داخل ملف بامتداد <code>.txt</code>؟».
+- القاعدة التي تُعلن للصف: <strong>كل فحص جديد يجب أن يُختبر على حالة معطوبة قبل اعتماده.</strong></p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">أصلح حتى يصبح أخضر</div><div class="en">Fix until green</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 15 نقطة</span></div><p><strong>الإصلاح الصحيح لكل حالة:</strong></p>
+<table>
+<thead>
+<tr>
+<th>الحالة</th>
+<th>الإصلاح</th>
+<th>الأمر</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>فهرس قديم</td>
+<td>أعد التوليد وأضف الملفين الناتجين</td>
+<td><code>node tools/build-index.mjs</code> ثم <code>git add data/members-index.json data/members-bundle.js</code></td>
+</tr>
+<tr>
+<td>بطاقة مخالفة</td>
+<td>صحّح الحقل المذكور في رسالة الفحص</td>
+<td>تحرير الملف ثم إعادة <code>ci-local</code></td>
+</tr>
+<tr>
+<td>علامات تعارض</td>
+<td>احذف <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</code> و<code>=======</code> و<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt;</code> واترك النتيجة النهائية</td>
+<td><code>git add</code> ثم الالتزام</td>
+</tr>
+</tbody>
+</table>
+<p><strong>المخرجات المتوقعة بعد الإصلاح:</strong></p>
+<pre class="plain"><span class="ph">$ node tools/build-index.mjs
+[build-index] ✓ تم توليد الفهرس: 4 بطاقة.
+
+$ node tools/ci-local.mjs
+▸ الفهرس مُحدَّث … ✔ نجح
+▸ بطاقات الأعضاء صحيحة … ✔ نجح
+▸ لا علامات تعارض … ✔ نجح
+✔ كل الفحوص نجحت — آمن للرفع (git push) / All checks passed.    (exit=0)</span>
+</pre>
+
+<p><strong>وعلى GitHub بعد الدفع:</strong></p>
+<pre class="plain"><span class="ph">✔ All checks have passed
+   1 successful check
+   validate / فحص البطاقات والفهرس (pull_request) — Successful in 12s
+● This branch has no conflicts with the base branch.</span>
+</pre>
+
+<p><strong>معيار الدرجة:</strong> 6 نقاط لمخرجات ✔ من جهازه، 5 نقاط لرابط/لقطة الفحص الأخضر على GitHub،
+4 نقاط لمقارنة زمن الفحص (الخادم أبطأ عادة — الجواب المتوقع: على الخادم 10–30 ثانية
+لأنه ينزّل المستودع ويثبّت Node من الصفر).</p>
+<p><strong>أخطاء متوقعة:</strong> من حلّ بالحذف بدل التصحيح (حذف البطاقة المخالفة ليعبر الفحص) ←
+<strong>−6 وتنبيه صريح</strong>: «الحذف لإخفاء الخطأ يعطّل الغرض من الفحص»، وهي مخالفة تتكرر في
+المشاريع الحقيقية وتُعدّ سلوكاً غير مهني.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">حماية الفرع وملّاك الكود</div><div class="en">Protection and code owners</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ فهم تنظيمي</span><span class="chip t">★ 15 نقطة</span></div><p><strong>الإجابات النموذجية للجدول:</strong></p>
+<table>
+<thead>
+<tr>
+<th>الملف / المسار</th>
+<th>المراجع الإلزامي</th>
+<th>السبب</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>js/</code> و<code>css/</code></td>
+<td>قائد الفريق</td>
+<td>تعديلهما يؤثر على عرض كل البطاقات</td>
+</tr>
+<tr>
+<td><code>data/members/&lt;username&gt;.json</code></td>
+<td>الطالب نفسه (مالكه)</td>
+<td>لا يحتاج مراجعة إلزامية من القائد لأنه لا يؤثر على غيره</td>
+</tr>
+<tr>
+<td><code>data/site-config.json</code></td>
+<td>قائد الفريق</td>
+<td>إعدادات الموقع العامة (اسم الفريق، الوصف)</td>
+</tr>
+<tr>
+<td><code>tools/</code> و<code>tests/</code></td>
+<td>قائد الفريق</td>
+<td>أدوات الفحص تحمي جودة الجميع — تعديلها قد يعطّل الحماية</td>
+</tr>
+</tbody>
+</table>
+<p><strong>القواعد التي يجب أن تكون مفعّلة (تحقّق نظراً في إعدادات الطالب أو مستودع الصف):</strong>
+- Require a pull request before merging + Require approvals: 1
+- Require status checks to pass (الفحص: <code>validate / فحص البطاقات والفهرس</code>)
+- Require conversation resolution
+- Do not allow bypassing + منع force pushes</p>
+<p><strong>دليل «المراجع التلقائي»:</strong> في طلب سحب يعدّل <code>js/app.js</code> يجب أن يظهر تحت <code>Reviewers</code>
+اسم المالك مع لافتة <code>requested automatically by CODEOWNERS</code>.</p>
+<p><strong>معيار الدرجة:</strong> 8 نقاط للجدول (2 لكل سطر)، 4 نقاط لقائمة القواعد المفعّلة، 3 نقاط لدليل
+المراجع التلقائي.</p>
+<p><strong>أخطاء متوقعة:</strong>
+- الطالب لا يملك صلاحية تفعيل الحماية (مشروع صفّي بصلاحيات محدودة) ← اعتمد لقطة
+  إعدادات مستودع الصف التي تعرضها أنت على الشاشة، ومنحه الدرجة كاملة على التحليل.
+- من كتب «كل الملفات يراجعها القائد» ← يفقده التمييز بين الملف الفردي والمشترك (−2).
+- من جعل <code>CODEOWNERS</code> يُلزم الجميع حتى على ملفات البطاقات ← يبطئ الفريق بلا داعٍ؛ اشرح
+  المبدأ: <strong>المراجعة الإلزامية تُوفَّر للمخاطر، لا للشكليات.</strong></p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">الإصدار v1.0.0</div><div class="en">Release v1.0.0</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تنفيذ</span><span class="chip t">★ 15 نقطة</span></div><p><strong>المخرجات النموذجية:</strong></p>
+<pre class="plain"><span class="ph">$ git tag -a v1.0.0 -m &quot;الإصدار الأول: موقع دليل فريق الصف مع 4 بطاقات وسير تحقق تلقائي&quot;
+$ git tag -l
+v1.0.0
+
+$ git describe --tags
+v1.0.0
+
+$ git show v1.0.0 --stat --no-patch
+tag v1.0.0
+Tagger: Workshop Instructor &lt;instructor@example.com&gt;
+Date:   Tue Oct 6 20:57:47 2026 +0000
+
+الإصدار الأول: موقع دليل فريق الصف مع 4 بطاقات وسير تحقق تلقائي
+
+commit e20b6644b539bbb22200dde76ea5e5015d826b86
+Merge: ccbdca2 eb1df06
+    Merge pull request #32 from ali-h/feature/ali-card
+
+$ git tag -n1
+v1.0.0          الإصدار الأول: موقع دليل فريق الصف مع 4 بطاقات وسير تحقق تلقائي
+v1.1.0          ميزة الفلترة بالوسوم
+
+$ git push origin v1.0.0
+ * [new tag]         v1.0.0 -&gt; v1.0.0
+
+$ git ls-remote --tags origin
+1105c78548ddcafca65f03d9ea10f58ecddd0d15        refs/tags/v1.0.0
+e20b6644b539bbb22200dde76ea5e5015d826b86        refs/tags/v1.0.0^{}</span>
+</pre>
+
+<p><strong>معيار الدرجة (15):</strong> 5 نقاط لوسم <strong>مع تعليق</strong> (<code>-a</code> و<code>-m</code>) — والوسم الخفيف (<code>git tag
+v1.0.0</code>) يأخذ 2 فقط لأن الإصدارات الرسمية تحتاج وصفاً ومُصدِراً؛ 4 نقاط لرفع الوسم
+(<code>git push origin v1.0.0</code> أو <code>--tags</code>)؛ 3 نقاط لإنشاء Release على GitHub برابط صالح؛
+3 نقاط لتحديث <code>CHANGELOG.md</code>.</p>
+<p><strong>أخطاء متوقعة:</strong></p>
+<table>
+<thead>
+<tr>
+<th>الخطأ</th>
+<th>الدلالة</th>
+<th>الدرجة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>git push</code> فقط وسمّى «رفعت الإصدار»</td>
+<td>لا يعرف أن الوسوم لا تُرفع مع الفروع</td>
+<td>8 من 15</td>
+</tr>
+<tr>
+<td>وسم خفيف بلا تعليق</td>
+<td>ناقص المتانة</td>
+<td>10 من 15</td>
+</tr>
+<tr>
+<td>لم يحدّث <code>CHANGELOG.md</code></td>
+<td>نسي توثيق الإصدار</td>
+<td>12 من 15</td>
+</tr>
+<tr>
+<td>أطلق <code>v2.0.0</code> بلا تغيير يكسر التوافق</td>
+<td>خلل في فهم SemVer</td>
+<td>9 من 15 + شرح</td>
+</tr>
+<tr>
+<td>سجّل إصداراً بلا دليل (رابط)</td>
+<td>لا يمكن التحقق</td>
+<td>5 من 15</td>
+</tr>
+</tbody>
+</table>
+<div class="box info"><div class="h">تصحيح ذكي: فحص `ls-remote`<span class="en">Smart verification</span></div><p>لا تصدّق لقطة الشاشة وحدها. أمر واحد يتحقق من وجود الوسم على الخادم فعلاً:</p>
+<pre class="plain"><span class="ph">git ls-remote --tags origin</span>
+</pre>
+
+<p>إن لم يظهر <code>refs/tags/v1.0.0</code> فالوسم محلي فقط ولم يُرفع — وهذه أسرع طريقة لكشف الخطأ.</p></div></div></div>
+
+<div class="band violet"><span class="ar">إجابات الأسئلة</span><span class="en">Knowledge-check answers</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س1</div><div class="task-titles"><div class="ar">الفرق بين الحماية وCI</div><div class="en">Protection vs. CI</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ فهم</span><span class="chip t">★ 2.5 نقطة</span></div><p><strong>الجواب:</strong> فحص CI <strong>يكتشف</strong> الخلل ويُعلن عنه (يمنع الدمج من حيث النتيجة إذا كان مطلوباً
+في الحماية)، أما حماية الفرع فهي <strong>قواعد الوصول</strong> نفسها: تمنع الدفع المباشر إلى <code>main</code>،
+وتُلزم بطلب سحب وموافقة مراجع ومحادثات محلولة، وتمنع القوة وإعادة كتابة التاريخ. أي أن
+CI هو «حكم الجودة»، والحماية هي «نظام الدخول والصلاحيات» — ولا تكتمل الفائدة بأحدهما وحده:
+بلا حماية يمكن تجاوز الفحص بالدفع المباشر، وبلا فحص تُدمج أخطاء ميكانيكية.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س2</div><div class="task-titles"><div class="ar">اخلل المنطق في «الفحص يمرّ دائماً»</div><div class="en">The flawed assumption</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 2.5 نقطة</span></div><p><strong>الجواب:</strong> العبارة تفترض أن الفحص قادر على الكشف، وهذا غير مُثبت — فالفحص الذي يمرّ
+دائماً قد يكون <strong>ضعيفاً</strong> (نمط بحث خاطئ، نطاق مستثنى، شرط لا يتحقق أبداً)، لا أن المشروع
+سليم. التشبيه: إطفاء إنذار الحريق لا يعني عدم وجود حريق. وطريقة اختباره: أن تُنشئ حالة
+معطوبة عن قصد (اختبار سلبي) وتتأكد أن الفحص يفشل فيها بـ <code>exit=1</code>، وتكرر ذلك عند أي تعديل
+على الفحص. <strong>وهذا بالضبط ما حدث في هذا المشروع</strong>: فحص علامات التعارض كان يمرّ على ملف
+فيه علامات حقيقية.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س3</div><div class="task-titles"><div class="ar">وسم بسيط مقابل وسم مع تعليق</div><div class="en">Lightweight vs annotated tags</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ فهم</span><span class="chip t">★ 2.5 نقطة</span></div><p><strong>الجواب:</strong> الوسم البسيط مجرد مؤشر (pointer) إلى التزام بلا بيانات إضافية. الوسم مع
+التعليق كائن مستقل في Git يحتوي: من أنشأه، تاريخ الإنشاء، ورسالة كاملة. لذلك يُستحسن
+<strong>الوسم مع التعليق</strong> (<code>-a</code>) للإصدارات، لأنه يُظهر في <code>git describe --tags</code> ويحمل سياق
+الإصدار ويمكن توقيعه رقمياً (GPG)، وتُبنى عليه Releases على GitHub بصورة أنظف.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س4</div><div class="task-titles"><div class="ar">فائدة منع الدفع القسري</div><div class="en">Why block force pushes</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 2.5 نقطة</span></div><p><strong>الجواب:</strong> لأن <code>--force</code> يعيد كتابة تاريخ <code>main</code> ويستبدله بتاريخ دفعته، فيضيع عمل أي
+زميل دُمج بعد النسخة التي استند إليها، وتنكسر روابط الالتزامات في طلبات السحب والمراجعات
+والإصدارات. منعه على <code>main</code> يضمن أن <strong>التاريخ المشترك لا يُعاد كتابته أبداً</strong>، وأن إصلاح
+أي خطأ يمر بالطريق الوحيد الآمن: <code>git revert</code> أو التزام تصحيحي عبر طلب سحب.</p></div></div>
+
+<div class="band green"><span class="ar">ملخّص التصحيح</span><span class="en">Marking summary</span></div>
+
+<div class="evidence"><div class="h">سجل الدرجات<span class="en">/ Grade sheet</span></div><table>
+<thead>
+<tr>
+<th>الاسم</th>
+<th>م1 /12</th>
+<th>م2 /15</th>
+<th>م3 /18</th>
+<th>م4 /15</th>
+<th>م5 /15</th>
+<th>م6 /15</th>
+<th>أسئلة /10</th>
+<th>المجموع /100</th>
+<th>رابط CI</th>
+<th>تقدير المبادرة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box ok"><div class="h">قياس أثر هذه الورقة على الفريق<span class="en">Measuring the unit&#x27;s impact</span></div><p>مؤشر عملي بسيط يقيس أثر الأتمتة على صفك كله:
+1. <strong>قبل الورقة:</strong> احسب عدد طلبات السحب التي فشلت أو احتاجت تصحيحاً من المراجع (خطأ JSON
+   أو فهرس قديم). سجّلها.
+2. <strong>بعد الورقة بأسبوع:</strong> احسب نفس الرقم.
+3. الانخفاض المتوقع 60–80% في الأخطاء الميكانيكية. اعرض النتيجتين على الطلاب — هذا أبلغ
+   دليل على قيمة الأتمتة، ويجعلهم يطلبون إضافة فحوص جديدة بأنفسهم (وهذا هو الهدف النهائي:
+   ثقافة الجودة لا مهمة ورقية).</p></div>
+
+<div class="box tip"><div class="h">توسعات لمن أنهى بسرعة<span class="en">Fast-finisher extensions</span></div><ul>
+<li>أضف فحصاً جديداً إلى <code>validate-members.mjs</code> يتأكد أن <code>tags</code> لا تحتوي أكثر من 4 وسوم،
+  ثم <strong>اختبره بحالة معطوبة</strong> قبل اعتماده.</li>
+<li>أضف إلى <code>validate.yml</code> خطوة تنشر الموقع على GitHub Pages آلياً عند كل وسم إصدار
+  (<code>deploy</code> job مع <code>if: startsWith(github.ref, 'refs/tags/')</code>).</li>
+<li>أضف فحص <code>CHANGELOG</code> يتأكد أن آخر إصدار في <code>CHANGELOG.md</code> يطابق آخر وسم في Git — تمرين
+  ممتاز على دمج الأتمتة مع التوثيق.</li>
+</ul></div>
+<div class="footer-note"><span>دليل المدرّب — حلول ورقة 06 · ورشة Git وGitHub</span><span class="en">Instructor key · Worksheet 06 solutions</span></div>
+</div>
+</body>
+</html>

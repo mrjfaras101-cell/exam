@@ -1,0 +1,37 @@
+name: validate
+
+# يعمل هذا الفحص تلقائياً عند كل طلب سحب إلى main وعند كل دفع إليها.
+# Runs automatically on every pull request into main and on every push to main.
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: فحص البطاقات والفهرس
+    runs-on: ubuntu-latest
+    steps:
+      - name: تنزيل المستودع / checkout
+        uses: actions/checkout@v4
+
+      - name: تجهيز Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: التحقق من أن الفهرس مُحدَّث / index is up to date
+        run: node tools/build-index.mjs --check
+
+      - name: فحص بطاقات الأعضاء / validate member cards
+        run: node tests/validate-members.mjs
+
+      - name: البحث عن آثار تعارض غير محلول / no conflict markers left
+        run: |
+          if grep -rInE "^(<{7}|={7}|>{7})( |$)" --exclude-dir=.git --exclude-dir=node_modules . ; then
+            echo "::error::يوجد تعارض غير محلول في الملفات أعلاه / unresolved conflict markers found"
+            exit 1
+          fi
+          echo "لا علامات تعارض — الملفات نظيفة."

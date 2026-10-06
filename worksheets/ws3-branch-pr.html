@@ -50,8 +50,8 @@ is exactly how professional teams work.</p></div></div>
 <table>
 <thead>
 <tr>
-<th>✅ اسم فرع صحيح</th>
-<th>❌ اسم فرع خطأ</th>
+<th>✔ اسم فرع صحيح</th>
+<th>✘ اسم فرع خطأ</th>
 <th>السبب</th>
 </tr>
 </thead>
@@ -78,7 +78,7 @@ is exactly how professional teams work.</p></div></div>
 </tr>
 </tbody>
 </table>
-<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">حدّث main وافتح مطالبة عمل (Issue) لمهمتك</div><div class="en">Update main and open an issue for your task</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 10 نقطة</span><span class="chip">git pull</span><span class="chip">GitHub Issues</span></div><p><strong>الهدف:</strong> أن يبدأ العمل من أحدث نسخة، وأن يكون لعملك رقم مرجعي في المشروع.</p>
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">حدّث main وافتح مطالبة عمل (Issue) لمهمتك</div><div class="en">Update main and open an issue for your task</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 15 دقيقة</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 10 نقطة</span><span class="chip">git pull</span><span class="chip">GitHub Issues</span></div><p><strong>الهدف:</strong> أن يبدأ العمل من أحدث نسخة، وأن يكون لعملك رقم مرجعي في المشروع.</p>
 <p><strong>الخطوة 1 — زامن نسختك المحلية قبل أي شيء:</strong></p>
 <div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — مزامنة قبل العمل</span></div><pre><span class="p">$</span> <span class="k">cd ~/projects/class-team-hub</span>
 <span class="p">$</span> <span class="k">git switch main</span>
@@ -112,7 +112,7 @@ is exactly how professional teams work.</p></div></div>
 </ul>
 <pre class="plain"><span class="ph">$ git pull --ff-only</span>
 </pre></div></div></div>
-<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">أنشئ فرعك وتحقق من موقعك</div><div class="en">Create your branch and verify where you are</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 10 دقائق</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 10 نقطة</span><span class="chip">git switch</span><span class="chip">git branch</span></div><div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — إنشاء الفرع</span></div><pre><span class="p">$</span> <span class="k">git switch -c feature/&lt;username&gt;-card</span>
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">أنشئ فرعك وتحقق من موقعك</div><div class="en">Create your branch and verify where you are</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 10 دقائق</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 10 نقطة</span><span class="chip">git switch</span><span class="chip">git branch</span></div><div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — إنشاء الفرع</span></div><pre><span class="p">$</span> <span class="k">git switch -c feature/&lt;username&gt;-card</span>
 <span class="o">Switched to a new branch &#x27;feature/omar-qa-card&#x27;</span>
 <span class="o"></span>
 <span class="p">$</span> <span class="k">git branch</span>
@@ -137,7 +137,7 @@ Before every command ask yourself: <strong>على أي فرع أنا الآن؟<
 </pre></div></div></div>
 <div class="band "><span class="ar">الجزء الثاني · الكتابة والالتزام</span><span class="en">Part 2 · Write and commit</span></div>
 
-<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">اكتب ملف بطاقتك</div><div class="en">Write your card file</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 20 نقطة</span><span class="chip">VS Code</span><span class="chip">JSON</span></div><p><strong>الخطوة 1 — انسخ القالب باسم مستخدمك:</strong></p>
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">اكتب ملف بطاقتك</div><div class="en">Write your card file</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 20 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 20 نقطة</span><span class="chip">VS Code</span><span class="chip">JSON</span></div><p><strong>الخطوة 1 — انسخ القالب باسم مستخدمك:</strong></p>
 <div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — نسخ القالب</span></div><pre><span class="p">$</span> <span class="k">cp data/members/00-template.json data/members/omar-qa.json</span>
 <span class="p">$</span> <span class="k">ls data/members/</span>
 <span class="o">00-template.json  01-example-student.json  99-you-instructor.json  ali-h.json  nour-dev.json  omar-qa.json</span></pre></div>
@@ -159,8 +159,8 @@ Before every command ask yourself: <strong>على أي فرع أنا الآن؟<
 <tr>
 <th>الحقل</th>
 <th>الشرط</th>
-<th>صحيح ✅</th>
-<th>خطأ ❌</th>
+<th>صحيح ✔</th>
+<th>خطأ ✘</th>
 </tr>
 </thead>
 <tbody>
@@ -229,7 +229,7 @@ Before every command ask yourself: <strong>على أي فرع أنا الآن؟<
 </ul>
 <pre class="plain">
 </pre></div></div></div>
-<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">التزم وارفع فرعك</div><div class="en">Commit and push your branch</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 20 نقطة</span><span class="chip">git add</span><span class="chip">git commit</span><span class="chip">git push</span></div><p><strong>الخطوة 1 — افحص ما ستلتزم به قبل الالتزام:</strong></p>
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">التزم وارفع فرعك</div><div class="en">Commit and push your branch</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 20 نقطة</span><span class="chip">git add</span><span class="chip">git commit</span><span class="chip">git push</span></div><p><strong>الخطوة 1 — افحص ما ستلتزم به قبل الالتزام:</strong></p>
 <div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الفحص قبل الالتزام</span></div><pre><span class="p">$</span> <span class="k">git status -sb</span>
 <span class="c">## feature/omar-qa-card</span>
 <span class="o"> M data/members-bundle.js</span>
@@ -324,7 +324,7 @@ Before every command ask yourself: <strong>على أي فرع أنا الآن؟<
 </pre></div></div></div>
 <div class="band violet"><span class="ar">الجزء الثالث · طلب السحب والمراجعة</span><span class="en">Part 3 · Pull request &amp; review</span></div>
 
-<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">افتح طلب سحب واطلب مراجعة زميل</div><div class="en">Open a pull request and request a peer review</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 20 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 20 نقطة</span><span class="chip">GitHub</span><span class="chip">Pull Request</span></div><p><strong>الخطوة 1 — افتح طلب السحب:</strong></p>
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">افتح طلب سحب واطلب مراجعة زميل</div><div class="en">Open a pull request and request a peer review</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 20 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 20 نقطة</span><span class="chip">GitHub</span><span class="chip">Pull Request</span></div><p><strong>الخطوة 1 — افتح طلب السحب:</strong></p>
 <ol>
 <li>افتح الرابط الذي ظهر في مخرجات <code>git push</code> (أو تبويب <code>Pull requests</code> ← <code>New pull request</code>).</li>
 <li>تأكد: <code>base: main</code> ← <code>compare: feature/omar-qa-card</code>.</li>
@@ -345,8 +345,8 @@ Before every command ask yourself: <strong>على أي فرع أنا الآن؟<
 <table>
 <thead>
 <tr>
-<th>افعل ✅</th>
-<th>لا تفعل ❌</th>
+<th>افعل ✔</th>
+<th>لا تفعل ✘</th>
 </tr>
 </thead>
 <tbody>
@@ -359,7 +359,7 @@ Before every command ask yourself: <strong>على أي فرع أنا الآن؟<
 <td>«افعله بشكل صحيح»</td>
 </tr>
 <tr>
-<td>«ممتاز، البطاقة تظهر بشكل نظيف ✅»</td>
+<td>«ممتاز، البطاقة تظهر بشكل نظيف ✔»</td>
 <td>«موافق» بلا أي تفصيل</td>
 </tr>
 <tr>
@@ -403,7 +403,7 @@ Before every command ask yourself: <strong>على أي فرع أنا الآن؟<
 <p>الصق نص تعليق المراجعة الذي كتبته لزميلك:</p>
 <pre class="plain"><span class="ph">…………………………………………………………………………………………………………</span>
 </pre></div></div></div>
-<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">استجب للملاحظات وأكمل مهمتك</div><div class="en">Respond to feedback and finish</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">⏱ 10 دقائق</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 10 نقطة</span><span class="chip">git commit</span><span class="chip">git push</span></div><p><strong>الهدف:</strong> تجربة دورة المراجعة الفعلية: ملاحظة ← تصحيح ← التزام إضافي ← إعادة فحص.</p>
+<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">استجب للملاحظات وأكمل مهمتك</div><div class="en">Respond to feedback and finish</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 10 دقائق</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 10 نقطة</span><span class="chip">git commit</span><span class="chip">git push</span></div><p><strong>الهدف:</strong> تجربة دورة المراجعة الفعلية: ملاحظة ← تصحيح ← التزام إضافي ← إعادة فحص.</p>
 <div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — تصحيح بعد مراجعة</span></div><pre><span class="c"># مثال: المراجع طلب إضافة وسم JavaScript إلى بطاقتك</span>
 <span class="p">$</span> <span class="k">nano data/members/omar-qa.json       # أو افتحه في VS Code وعدّل tags</span>
 <span class="p">$</span> <span class="k">node tools/validate-members.mjs</span>

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 420" font-family="'IBM Plex Sans Arabic','Segoe UI',sans-serif">
+  <defs>
+    <marker id="ci" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#1E3A5F"/>
+    </marker>
+    <marker id="ci-r" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#B3261E"/>
+    </marker>
+    <marker id="ci-g" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#128A5B"/>
+    </marker>
+  </defs>
+
+  <text x="490" y="30" text-anchor="middle" font-size="16.5" font-weight="700" fill="#12203C">مسار الفحص الآلي: من دفعك إلى قرار الدمج</text>
+  <text x="490" y="52" text-anchor="middle" font-size="11.5" fill="#8494A8">Automated quality gate — push → CI → verdict → merge</text>
+
+  <!-- student side -->
+  <rect x="20" y="86" width="180" height="104" rx="12" fill="#FFF1E6" stroke="#E8620C" stroke-width="1.6"/>
+  <text x="110" y="114" text-anchor="middle" font-size="13.5" font-weight="700" fill="#9A420A">1) جهاز الطالب</text>
+  <text x="110" y="138" text-anchor="middle" font-size="11" fill="#22303F">git add · commit · push</text>
+  <text x="110" y="160" text-anchor="middle" font-size="11" fill="#22303F">node tools/ci-local.mjs</text>
+  <text x="110" y="180" text-anchor="middle" font-size="10" fill="#8494A8">فحص استباقي محلي</text>
+
+  <!-- github -->
+  <rect x="228" y="86" width="180" height="104" rx="12" fill="#F2ECFD" stroke="#6D3BB5" stroke-width="1.6"/>
+  <text x="318" y="114" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4B2683">2) GitHub</text>
+  <text x="318" y="138" text-anchor="middle" font-size="11" fill="#22303F">حدث (on: pull_request)</text>
+  <text x="318" y="160" text-anchor="middle" font-size="11" fill="#22303F">يشغّل سير العمل</text>
+  <text x="318" y="180" text-anchor="middle" font-size="10" fill="#8494A8">workflow trigger</text>
+
+  <!-- runner -->
+  <rect x="436" y="86" width="220" height="104" rx="12" fill="#EEF4FD" stroke="#1E3A5F" stroke-width="1.6"/>
+  <text x="546" y="114" text-anchor="middle" font-size="13.5" font-weight="700" fill="#1C4B86">3) جهاز افتراضي نظيف</text>
+  <text x="546" y="138" text-anchor="middle" font-size="11" fill="#22303F">checkout ← setup-node ← الفحوص</text>
+  <text x="546" y="160" text-anchor="middle" font-size="11" fill="#22303F">ubuntu-latest</text>
+  <text x="546" y="180" text-anchor="middle" font-size="10" fill="#8494A8">isolated runner</text>
+
+  <!-- verdict -->
+  <rect x="684" y="86" width="276" height="104" rx="12" fill="#E7F7F0" stroke="#128A5B" stroke-width="1.6"/>
+  <text x="822" y="114" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0B6244">4) الحكم</text>
+  <text x="822" y="140" text-anchor="middle" font-size="12" font-weight="700" fill="#0B6244">✔ نجحت → الدمج مسموح</text>
+  <text x="822" y="164" text-anchor="middle" font-size="12" font-weight="700" fill="#8C1D17">✘ فشلت → الدمج محظور</text>
+  <text x="822" y="182" text-anchor="middle" font-size="10" fill="#8494A8">status check result</text>
+
+  <g stroke="#1E3A5F" stroke-width="2">
+    <line x1="202" y1="138" x2="224" y2="138" marker-end="url(#ci)"/>
+    <line x1="410" y1="138" x2="432" y2="138" marker-end="url(#ci)"/>
+    <line x1="658" y1="138" x2="680" y2="138" marker-end="url(#ci)"/>
+  </g>
+
+  <!-- the three checks -->
+  <rect x="228" y="228" width="432" height="132" rx="12" fill="#F5F8FB" stroke="#D6DDE6"/>
+  <text x="644" y="252" text-anchor="end" font-size="12.5" font-weight="700" fill="#12203C">الفحوص الثلاثة التي يشغّلها المشروع:</text>
+  <g font-size="12" fill="#22303F" font-family="'JetBrains Mono',monospace" direction="ltr" text-anchor="end">
+    <text x="644" y="280">node tools/build-index.mjs --check</text>
+    <text x="644" y="306">node tests/validate-members.mjs</text>
+    <text x="644" y="332">grep -rInE "^(<{7}|={7}|>{7})( |$)" .</text>
+  </g>
+  <g font-size="11" fill="#5C6875" text-anchor="end">
+    <text x="644" y="282"> </text>
+  </g>
+
+  <!-- blocking -->
+  <rect x="20" y="228" width="180" height="132" rx="12" fill="#FDECEA" stroke="#B3261E" stroke-width="1.5"/>
+  <text x="110" y="256" text-anchor="middle" font-size="13" font-weight="700" fill="#8C1D17">أثر الفشل</text>
+  <text x="110" y="282" text-anchor="middle" font-size="11" fill="#22303F">لا دمج قبل نجاح الفحوص</text>
+  <text x="110" y="302" text-anchor="middle" font-size="11" fill="#22303F">لا دفع مباشر إلى main</text>
+  <text x="110" y="322" text-anchor="middle" font-size="11" fill="#22303F">لا قوة تُعيد التاريخ</text>
+  <text x="110" y="344" text-anchor="middle" font-size="10" fill="#8494A8">protected branch</text>
+
+  <!-- merge -->
+  <rect x="684" y="228" width="276" height="132" rx="12" fill="#F7F4FE" stroke="#6D3BB5" stroke-width="1.5"/>
+  <text x="822" y="256" text-anchor="middle" font-size="13" font-weight="700" fill="#4B2683">شرط الدمج الكامل</text>
+  <g font-size="11.5" fill="#22303F" text-anchor="middle">
+    <text x="822" y="282">✔ فحوص ناجحة (CI)</text>
+    <text x="822" y="304">✔ موافقة مراجع (Review)</text>
+    <text x="822" y="326">✔ كل المحادثات محلولة</text>
+    <text x="822" y="348" fill="#8494A8" font-size="10.5">ثم فقط: Merge pull request</text>
+  </g>
+
+  <text x="490" y="400" text-anchor="middle" font-size="12.5" font-weight="600" fill="#12203C">
+    القاعدة: الجودة تُبنى في المسار (Pipeline) لا في الذاكرة — والفحص الذي لا يفشل أبداً أسوأ من عدم وجود فحص.
+  </text>
+</svg>

@@ -8,7 +8,7 @@
 </head>
 <body>
 <div class="sheet">
-<div class="doc-head"><div class="top"><div class="badge"><div class="n">00</div><div class="l">دليل البرنامج</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — البرنامج التدريبي العملي</div><h1>دليل البرنامج والمشروع</h1><div class="sub">Programme &amp; Project Handbook — class-team-hub</div></div></div><div class="meta"><div><span class="k">عدد الجلسات / Sessions</span><span class="v">5 جلسات</span></div><div><span class="k">المدة الكلية / Total time</span><span class="v">7.5 ساعة تدريب موجّه</span></div><div><span class="k">المشروع / Project</span><span class="v">class-team-hub — موقع فريق الصف</span></div><div><span class="k">المخرجات / Deliverables</span><span class="v">5 أوراق عمل + موقع منشور</span></div><div><span class="k">الدرجة الكلية / Total points</span><span class="v">500 نقطة</span></div><div><span class="k">المتطلبات / Requirements</span><span class="v">حاسوب + إنترنت + حساب GitHub</span></div></div></div>
+<div class="doc-head"><div class="top"><div class="badge"><div class="n">00</div><div class="l">دليل البرنامج</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — البرنامج التدريبي العملي</div><h1>دليل البرنامج والمشروع</h1><div class="sub">Programme &amp; Project Handbook — class-team-hub</div></div></div><div class="meta"><div><span class="k">عدد الجلسات / Sessions</span><span class="v">5 جلسات + وحدة متقدمة 06</span></div><div><span class="k">المدة الكلية / Total time</span><span class="v">7.5 ساعة تدريب موجّه</span></div><div><span class="k">المشروع / Project</span><span class="v">class-team-hub — موقع فريق الصف</span></div><div><span class="k">المخرجات / Deliverables</span><span class="v">6 أوراق عمل + عروض الجلسات + موقع منشور</span></div><div><span class="k">الدرجة الكلية / Total points</span><span class="v">500 نقطة (+100 للوحدة المتقدمة)</span></div><div><span class="k">المتطلبات / Requirements</span><span class="v">حاسوب + إنترنت + حساب GitHub</span></div></div></div>
 
 <div class="identity">
   <div class="fld"><span class="k">اسم الطالب / Student</span><span class="dots"></span></div>
@@ -110,6 +110,12 @@ Node، حزم مفقودة). اخترنا موقعاً ثابتاً ليكون �
 <td>التعارضات والنشر</td>
 <td>صنع تعارض عن قصد وحلّه، rebase والدفع الآمن، النشر على GitHub Pages</td>
 <td>موقع منشور + تسليم نهائي</td>
+</tr>
+<tr>
+<td><strong>06</strong></td>
+<td>الأتمتة وحماية الجودة <em>(وحدة متقدمة اختيارية)</em></td>
+<td>سير عمل GitHub Actions، حماية الفرع وCODEOWNERS، الإصدارات والوسوم</td>
+<td>فحص أخضر + إصدار v1.0.0</td>
 </tr>
 </tbody>
 </table>
@@ -240,6 +246,11 @@ Node، حزم مفقودة). اخترنا موقعاً ثابتاً ليكون �
 <td>إجابات بفهمك، وتقرير بأرقام حقيقية من المستودع</td>
 </tr>
 <tr>
+<td>الأتمتة (اختياري — ورقة 06)</td>
+<td>100 نقطة إضافية</td>
+<td>فحص أخضر، حالة فاشلة موثّقة، إصدار مرقّم</td>
+</tr>
+<tr>
 <td>التعاون والاحتراف</td>
 <td>5%</td>
 <td>الالتزام بالاتفاقيات، جودة المراجعة، أمان بيانات الفريق</td>
@@ -258,8 +269,8 @@ Node، حزم مفقودة). اخترنا موقعاً ثابتاً ليكون �
 
 <div class="box info"><div class="h">مسار مقترح لمن يريد التقدّم<span class="en">Optional advanced path</span></div><ol>
 <li><strong>إضافة ميزة للموقع</strong>: بحث بالوسوم (<code>tags</code>) أو ترتيب البطاقات أو وضع ليلي — عبر فرع وطلب سحب.</li>
-<li><strong>التحقق التلقائي (CI)</strong>: أضف ملف GitHub Actions يشغّل <code>node tests/validate-members.mjs</code>
-   على كل طلب سحب، فيُرفض الطلب الخطأ قبل وصوله للمراجع البشري.</li>
+<li><strong>التحقق التلقائي (CI)</strong>: موجود أصلاً في المشروع (<code>.github/workflows/validate.yml</code>) —
+   ادرسه في الورقة 06، وأضف إليه فحصاً جديداً لخطأ يتكرر في فريقك.</li>
 <li><strong>المساهمة في مشروع مفتوح</strong>: مستودع <code>first-contributions</code> أو ترجمة توثيق مشروع تحبه —
    بنفس الدورة التي أتقنتها: fork ← فرع ← التزام ← طلب سحب.</li>
 </ol></div>

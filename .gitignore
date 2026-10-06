@@ -6,3 +6,7 @@ assets/fonts-src/
 # نسخ النظام / OS noise
 .DS_Store
 Thumbs.db
+
+# ذاكرة بايثون المؤقتة / python bytecode
+__pycache__/
+*.pyc

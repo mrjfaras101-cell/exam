@@ -41,6 +41,19 @@ WORK.mkdir(parents=True, exist_ok=True)
 
 MD_EXTENSIONS = ["tables", "attr_list", "md_in_html", "sane_lists", "def_list"]
 
+# استبدال الإيموجي برموز مطبعية آمنة: لا يوجد خط إيموجي في بيئات التوليد/الطباعة،
+# فتظهر الإيموجي كمربعات فارغة (tofu). الرموز البديلة مضمونة في خطوط النص.
+SAFE_GLYPHS = {
+    "✅": "✔", "❌": "✘", "🟢": "●", "🔴": "●", "🟡": "●", "🔒": "▣", "🔗": "➜",
+    "⬜": "☐", "⚠️": "⚠", "⏱️": "★", "⏱": "★", "🛑": "✘",
+}
+
+
+def safen(html_text: str) -> str:
+    for bad, good in SAFE_GLYPHS.items():
+        html_text = html_text.replace(bad, good)
+    return html_text
+
 # ---------------------------------------------------------------------------
 # حماية كتل HTML من ماركداون
 # ---------------------------------------------------------------------------
@@ -352,6 +365,7 @@ def build_html(src_file: Path, kind: str) -> Path:
     if meta.get("footer"):
         footer = (f'<div class="footer-note"><span>{esc(meta["footer"])}</span>'
                   f'<span class="en">{esc(meta.get("en_footer",""))}</span></div>')
+    body_html = safen(body_html)
     doc = DOC_TEMPLATE.format(
         title=esc(meta.get("title", src_file.stem)),
         css="../assets/print.css",
@@ -399,9 +413,32 @@ await browser.close();
 """
 
 
+EXTRACT_LIBS = r"""
+import fs from 'node:fs';
+import zlib from 'node:zlib';
+import { execSync } from 'node:child_process';
+const base = 'node_modules/@sparticuz/chromium/bin/';
+fs.mkdirSync('/tmp/chlibs', { recursive: true });
+const out = '/tmp/al2023.tar';
+fs.writeFileSync(out, zlib.brotliDecompressSync(fs.readFileSync(base + 'al2023.tar.br')));
+execSync(`tar -xf ${out} -C /tmp/chlibs`);
+console.log('chromium libs extracted');
+"""
+
+
+def ensure_chromium_libs() -> None:
+    """يستخرج مكتبات Chromium المشتركة إن كانت مفقودة (بيئة جديدة)."""
+    if Path("/tmp/chlibs/lib/libnspr4.so").exists():
+        return
+    script = WORK / "extract-libs.mjs"
+    script.write_text(EXTRACT_LIBS, encoding="utf-8")
+    subprocess.run(["node", str(script)], cwd=WORK, check=True)
+
+
 def run_pdfs(html_files: list[Path]) -> None:
     if not html_files:
         return
+    ensure_chromium_libs()
     script = WORK / "pdf.mjs"
     script.write_text(PDF_SCRIPT, encoding="utf-8")
     if not (WORK / "node_modules").exists():

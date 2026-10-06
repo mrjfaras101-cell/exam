@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الأتمتة وحماية الجودة وحماية الفرع</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top"><div class="badge"><div class="n">06</div><div class="l">ورقة متقدمة</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — وحدة إتقان اختيارية</div><h1>الأتمتة وحماية الجودة وحماية الفرع</h1><div class="sub">Workshop 6 · Automation, Quality Gates &amp; Branch Protection</div></div></div><div class="meta"><div><span class="k">المدة / Duration</span><span class="v">100 دقيقة</span></div><div><span class="k">المستوى / Level</span><span class="v">متقدم — بعد إتمام الأوراق 01–05</span></div><div><span class="k">المتطلبات / Prerequisites</span><span class="v">بطاقة مدموجة + صلاحية في المستودع</span></div><div><span class="k">المخرجات / Deliverable</span><span class="v">فحص أخضر + إصدار v1.0.0 + حماية فرع</span></div><div><span class="k">المهام / Tasks</span><span class="v">6 مهام</span></div><div><span class="k">الدرجة / Points</span><span class="v">100 نقطة</span></div></div></div>
+
+<div class="identity">
+  <div class="fld"><span class="k">اسم الطالب / Student</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">اسم المستخدم / GitHub username</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">المجموعة / Group</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">التاريخ / Date</span><span class="dots"></span></div>
+</div>
+<div class="band "><span class="ar">الفكرة: اجعل الآلة تحرس المشروع بدلاً منك</span><span class="en">The idea: let the machine guard the project</span></div>
+
+<div class="bi "><div class="ar"><p>حتى الآن كان الفحص يحدث بعد أن يرفع الطالب، وبجهد بشري. في الفرق الحقيقية، <strong>الآلة تفحص
+قبل الإنسان</strong>: عند كل طلب سحب يبدأ سير عمل آلي (GitHub Actions) يشغّل الفحوص، وإن فشلت
+لا يُسمح بالدمج. النتيجة: المراجع البشري يقرأ الكود والتصميم، لا الأخطاء الميكانيكية.
+هذه الورقة تحوّل مشروع فريقك من «مشروع طلابي» إلى <strong>مشروع هندسي منضبط</strong>.</p></div><div class="eng"><p>Until now, checking happened after a push and by human effort. Real teams let the machine
+check first: every pull request triggers an automated workflow, and a failing check blocks the
+merge. Reviewers then read design, not typos.</p></div></div>
+
+<div class="goal-list"><strong>أهداف التعلّم<span class="muted tiny"> / Learning objectives</span></strong><ul>
+<li>فهم ما هي <strong>CI</strong> (التكامل المستمر) ولماذا لا تُقبل المشاريع المهنية بدونها.</li>
+<li>قراءة ملف سير عمل GitHub Actions بفهم: الأحداث (<code>on</code>)، المهام (<code>jobs</code>)، الخطوات (<code>steps</code>).</li>
+<li>تشغيل <strong>نفس</strong> الفحوص محلياً قبل الرفع بـ <code>node tools/ci-local.mjs</code>.</li>
+<li><strong>اختبار الفحص نفسه</strong>: التأكد أن الفحص يفشل فعلاً عند وجود خلل (الفحص الذي لا يفشل أبداً = لا فحص).</li>
+<li>فهم حماية الفرع (Branch protection) و<code>CODEOWNERS</code>: من يراجع أي ملف، وما شروط الدمج.</li>
+<li>إصدار نسخة بالوسوم الدلالية (SemVer) + Release على GitHub + تحديث <code>CHANGELOG.md</code>.</li>
+</ul></div>
+
+<div class="box rule"><div class="h">المبدأ الذي ستخرج به من هذه الورقة<span class="en">The takeaway principle</span></div><p><strong>الجودة لا تُطلَب بالكلام، بل تُبنى في المسار.</strong> لا تقل للفريق «افحصوا قبل الرفع»، بل
+اجعل الفحص شرطاً تقنياً يمنع الدمج. هذا الفرق بين فريق يعتمد على ذاكرة الناس، وفريق
+يعتمد على نظام.</p></div>
+
+<div class="band alt"><span class="ar">الجزء الأول · فهم الأتمتة</span><span class="en">Part 1 · Understanding automation</span></div>
+
+<h2>ما هي الفحوص الآلية (CI)؟</h2>
+<div class="bi "><div class="ar"><p>CI اختصار <strong>Continuous Integration</strong> (التكامل المستمر): كل تعديل يُدمج تلقائياً مع فحص
+آلي فوري. في GitHub يُنفَّذ ذلك عبر <strong>GitHub Actions</strong>، وهو خادم يعمل عند أحداث محددة
+(فتح طلب سحب، دفع، جدولة زمنية) ويشغّل خطوات مرتبة تُسمّى «سير عمل» (workflow).</p></div><div class="eng"><p>CI means Continuous Integration: every change is verified automatically. On GitHub this is
+GitHub Actions — a server that runs a workflow of ordered steps when chosen events occur.</p></div></div>
+
+<figure class="dia"><img src="../assets/img/ci-flow.svg" alt="مسار الفحص الآلي"><figcaption>شكل 1: من دفع الطالب إلى قرار الدمج — من يفحص ومتى <span class="en">— push → CI → verdict → merge</span></figcaption></figure>
+
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">اقرأ سير العمل في مشروعك</div><div class="en">Read the workflow in your project</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 15 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 12 نقطة</span><span class="chip">.github/workflows/validate.yml</span></div><p><strong>الهدف:</strong> أن تعرف بالضبط ما سيحدث على الخادم عندما ترفع تعديلك.</p>
+<p><strong>الخطوة 1 — اقرأ الملف:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — فتح سير العمل</span></div><pre><span class="p">$</span> <span class="k">cat .github/workflows/validate.yml</span>
+<span class="o">name: validate</span>
+<span class="o"></span>
+<span class="o">on:</span>
+<span class="o">  pull_request:</span>
+<span class="o">    branches: [main]</span>
+<span class="o">  push:</span>
+<span class="o">    branches: [main]</span>
+<span class="o">  workflow_dispatch:</span>
+<span class="o"></span>
+<span class="o">jobs:</span>
+<span class="o">  validate:</span>
+<span class="o">    name: فحص البطاقات والفهرس</span>
+<span class="o">    runs-on: ubuntu-latest</span>
+<span class="o">    steps:</span>
+<span class="o">      - uses: actions/checkout@v4</span>
+<span class="o">      - uses: actions/setup-node@v4</span>
+<span class="o">        with:</span>
+<span class="o">          node-version: &quot;20&quot;</span>
+<span class="o">      - run: node tools/build-index.mjs --check</span>
+<span class="o">      - run: node tests/validate-members.mjs</span>
+<span class="o">      - run: |</span>
+<span class="o">          if grep -rInE &quot;^(&lt;{7}|={7}|&gt;{7})( |$)&quot; --exclude-dir=.git . ; then</span>
+<span class="o">            echo &quot;::error::يوجد تعارض غير محلول&quot;</span>
+<span class="o">            exit 1</span>
+<span class="o">          fi</span></pre></div>
+
+<p><strong>الخطوة 2 — املأ جدول التحليل:</strong></p>
+<table>
+<thead>
+<tr>
+<th>المفتاح في الملف</th>
+<th>معناه</th>
+<th>القيمة عندك</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>اسم سير العمل الظاهر في تبويب Actions</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>on:</code></td>
+<td>الأحداث التي تُشغّله</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>jobs:</code></td>
+<td>المهام التي تُنفَّذ</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>runs-on</code></td>
+<td>نظام التشغيل على خادم GitHub</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>steps</code></td>
+<td>الخطوات بالترتيب</td>
+<td>عددها: ………</td>
+</tr>
+<tr>
+<td><code>actions/checkout</code></td>
+<td>……………………</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>actions/setup-node</code></td>
+<td>……………………</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<div class="box info"><div class="h">لماذا يوجد خادم كامل لكل فحص؟<span class="en">Why a whole server per check?</span></div><p>لأن GitHub يمنح كل تشغيل <strong>جهازاً جديداً نظيفاً</strong> (Ubuntu)، يستنسخ عليه مستودعك، ثم ينفّذ
+الخطوات. هذه ميزة مهمة: النتيجة لا تتأثر بجهازك ولا بإعداداتك — «يعمل عندي» ليست حجة.</p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>الأحداث الثلاثة التي تُشغّل الفحص: ………………………………………………………</li>
+<li>عدد الخطوات: ………… — وما تفعله <code>actions/checkout</code> في جملة: ………………………………</li>
+</ul></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">شغّل الفحص نفسه محلياً</div><div class="en">Run the very same checks locally</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 12 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 15 نقطة</span><span class="chip">tools/ci-local.mjs</span></div><div class="bi "><div class="ar"><p>لأن انتظار الخادم يستهلك الوقت، أضفنا في المشروع محاكياً محلياً ينفّذ <strong>نفس</strong> الخطوات:
+<code>node tools/ci-local.mjs</code>. درّب نفسك على تشغيله قبل <strong>كل</strong> <code>git push</code>.</p></div><div class="eng"><p>Waiting for the server wastes time, so the project ships a local mirror of the CI steps.
+Run it before every push.</p></div></div>
+
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الفحص المحلي على فرع نظيف</span></div><pre><span class="p">$</span> <span class="k">git switch main</span>
+<span class="p">$</span> <span class="k">git pull --ff-only</span>
+<span class="p">$</span> <span class="k">git switch -c feature/&lt;username&gt;-card</span>
+<span class="o"></span>
+<span class="c"># … أضف بطاقتك ثم ولّد الفهرس:</span>
+<span class="p">$</span> <span class="k">node tools/build-index.mjs</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">node tools/ci-local.mjs</span>
+<span class="o"></span>
+<span class="o">=== فحص محلي يشبه GitHub Actions / Local CI simulation ===</span>
+<span class="o"></span>
+<span class="o">▸ الفهرس مُحدَّث / index up to date … ✔ نجح</span>
+<span class="o">    [build-index] ✓ الفهرس محدَّث بالفعل.</span>
+<span class="o">▸ بطاقات الأعضاء صحيحة / member cards valid … ✔ نجح</span>
+<span class="o">    --- النتيجة / Result: 3 بطاقة، 0 خطأ، 0 تحذير ---</span>
+<span class="o">▸ لا علامات تعارض / no conflict markers … ✔ نجح</span>
+<span class="o"></span>
+<span class="o">────────────────────────────────────────────────────────────</span>
+<span class="o">✔ كل الفحوص نجحت — آمن للرفع (git push) / All checks passed.</span>
+<span class="o">────────────────────────────────────────────────────────────</span></pre></div>
+
+<div class="box tip"><div class="h">اجعلها عادة واحدة<span class="en">One habit to build</span></div><p>أمر واحد يحمي سمعتك كمطوّر:</p>
+<pre class="plain"><span class="ph">node tools/ci-local.mjs &amp;&amp; git push</span>
+</pre>
+
+<p>بفضل <code>&amp;&amp;</code> لن يُنفَّذ الرفع إن فشل الفحص. هذا سطر واحد يمنع 90% من طلبات السحب الحمراء.</p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><p>الصق مخرجات <code>node tools/ci-local.mjs</code> على فرعك (يجب أن تكون كلها ✔):</p>
+<pre class="plain">
+</pre>
+
+<p>اذكر أسماء الفحوص الثلاثة بالترتيب: …………………………………………………………</p></div></div></div>
+<div class="band "><span class="ar">الجزء الثاني · اكسر ثم أصلح</span><span class="en">Part 2 · Break it, then fix it</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">اكسر المشروع عن قصد وشاهد الفحص يفشل</div><div class="en">Break it on purpose and watch the check fail</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 20 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 18 نقطة</span><span class="chip">git</span><span class="chip">ci-local</span><span class="chip">GitHub Actions</span></div><p><strong>الهدف:</strong> أن ترى بأنفسك أن الحماية تعمل فعلاً — وهذا أهم درس في الأتمتة.</p>
+<div class="bi "><div class="ar"><p><strong>قاعدة مهنية:</strong> الفحص الذي لا يفشل أبداً أسوأ من عدم وجود فحص، لأنه يمنحك ثقة زائفة.
+لذلك عند كتابة أي فحص، <strong>جرّبه على حالة معطوبة عن قصد</strong> أولاً، وتأكد أنه يرفضها.</p></div><div class="eng"><p>A check that never fails is worse than no check — it gives false confidence. Always test your
+check against a deliberately broken case first.</p></div></div>
+
+<p><strong>الخطوة 1 — جرّب ثلاث حالات معطوبة، واحدة واحدة:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الحالة 1: فهرس قديم (بطاقة غير مُفهرسة)</span></div><pre><span class="p">$</span> <span class="k">cp data/members/00-template.json data/members/test-bad.json</span>
+<span class="c"># املأه سريعاً بأي بيانات صحيحة، ثم لا تولّد الفهرس:</span>
+<span class="p">$</span> <span class="k">node tools/ci-local.mjs</span>
+<span class="o"></span>
+<span class="o">▸ الفهرس مُحدَّث / index up to date … ✘ فشل</span>
+<span class="o">    [build-index] ✗ الفهرس غير محدَّث. شغّل: node tools/build-index.mjs</span>
+<span class="o">▸ بطاقات الأعضاء صحيحة / member cards valid … ✘ فشل</span>
+<span class="o">      ✗ data/members-index.json: البطاقة &quot;test-bad.json&quot; غير مُفهرسة</span>
+<span class="o">    --- النتيجة / Result: 4 بطاقة، 1 خطأ، 0 تحذير ---</span>
+<span class="o">▸ لا علامات تعارض / no conflict markers … ✔ نجح</span>
+<span class="o"></span>
+<span class="o">✘ 2 من 3 فحص فشل — لا ترفع قبل الإصلاح.      (exit=1)</span></pre></div>
+
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الحالة 2: بطاقة بمحتوى مخالف</span></div><pre><span class="p">$</span> <span class="k">rm data/members/test-bad.json &amp;&amp; node tools/build-index.mjs &gt;/dev/null</span>
+<span class="c"># عدّل بطاقتك عن قصد: أمر لا يبدأ بـ git، ورسالة قصيرة</span>
+<span class="p">$</span> <span class="k">node tools/ci-local.mjs</span>
+<span class="o"></span>
+<span class="o">▸ بطاقات الأعضاء صحيحة / member cards valid … ✘ فشل</span>
+<span class="o">      ✗ omar-qa.json: اسم مستخدم غير صالح / invalid username: &quot;Omar_QA&quot;</span>
+<span class="o">      ⚠ omar-qa.json: دور غير معتاد / unusual role: &quot;سوبرمان&quot;</span>
+<span class="o">      ✗ omar-qa.json: الامر المفضل يجب ان يبدا بـ &quot;git &quot;</span>
+<span class="o">      ✗ omar-qa.json: tags يجب أن تكون مصفوفة / tags must be an array</span>
+<span class="o">      ✗ sara-design.json: طول الرسالة 5 — يجب أن يكون بين 10 و140 حرفاً</span>
+<span class="o">    --- النتيجة / Result: 4 بطاقة، 5 خطأ، 2 تحذير ---</span></pre></div>
+
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الحالة 3: علامات تعارض باقية بعد دمج</span></div><pre><span class="p">$</span> <span class="k">printf &#x27;شعار الفريق\n&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD\nسارة\n=======\nعمر\n&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/omar-slogan\n&#x27; &gt; sandbox/team-slogan.txt</span>
+<span class="p">$</span> <span class="k">node tools/ci-local.mjs</span>
+<span class="o"></span>
+<span class="o">▸ لا علامات تعارض / no conflict markers … ✘ فشل</span>
+<span class="o">    ./sandbox/team-slogan.txt:2:&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="o">    ./sandbox/team-slogan.txt:4:=======</span>
+<span class="o">    ./sandbox/team-slogan.txt:6:&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/omar-slogan</span>
+<span class="o">    ↳ الحل المقترح: ابحث عن &lt;&lt;&lt;&lt;&lt;&lt;&lt; واحذف العلامات واترك النتيجة الصحيحة</span>
+<span class="o"></span>
+<span class="o">✘ 1 من 3 فحص فشل — لا ترفع قبل الإصلاح.      (exit=1)</span></pre></div>
+
+<div class="box warn"><div class="h">درس عميق: كيف يخدعك فحص ضعيف؟<span class="en">A deeper lesson: how a weak check fools you</span></div><p>الفحص أعلاه استخدم في الإصدار الأول من المشروع نمط بحث غير دقيق:
+<code>grep -rInE "^(&lt;&lt;&lt;&lt;&lt;&lt;&lt;|&gt;&gt;&gt;&gt;&gt;&gt;&gt;|=======)$"</code> — ونتيجته أنه <strong>كان يمرّ بنجاح</strong> رغم وجود
+علامات تعارض حقيقية، لأن العلامات الفعلية تكون <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> (مع اسم الفرع بعدها)،
+ولأن البحث كان محدوداً بامتدادات ملفات معيّنة فأهمل <code>sandbox/team-slogan.txt</code>.
+<strong>النتيجة:</strong> فحص يجتاز حالة معطوبة = ثقة زائفة. الدرس: اختبر فحصك على حالة مكسورة،
+ووسّع نطاقه ليشمل كل الملفات النصية:</p>
+<pre class="plain"><span class="ph">grep -rInE &quot;^(&lt;{7}|={7}|&gt;{7})( |$)&quot; --exclude-dir=.git --exclude-dir=node_modules .</span>
+</pre></div>
+
+<p><strong>الخطوة 2 — ارفع الفرع المعطوب وافتح طلب سحب، وشاهد النتيجة على GitHub:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">GitHub — ما تراه في صفحة طلب السحب</span></div><pre><span class="o">✘ All checks have failed</span>
+<span class="o">   1 failing check</span>
+<span class="o">   validate / فحص البطاقات والفهرس (pull_request) — Failing after 14s   [Details]</span>
+<span class="o"></span>
+<span class="o">▣ Merging is blocked</span>
+<span class="o">   Required statuses must pass before merging.</span></pre></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><p>املأ جدول الحالات الثلاث التي جرّبتها (الصق السطر الأول من كل فشل):</p>
+<table>
+<thead>
+<tr>
+<th>الحالة المعطوبة</th>
+<th>الفحص الذي فشل</th>
+<th>أول سطر من رسالة الفشل</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>فهرس قديم</td>
+<td>………………………</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td>بطاقة مخالفة</td>
+<td>………………………</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td>علامات تعارض</td>
+<td>………………………</td>
+<td>………………………</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>رابط تشغيل الفحص الفاشل على GitHub (<code>Actions</code>) : …………………………………………</li>
+<li>الصق صورة شاشة أو نص ما ظهر فيbox «Merging is blocked»: …………………………………………</li>
+</ul></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">أصلح حتى يصبح الفحص أخضر</div><div class="en">Fix it until the check is green</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 15 نقطة</span><span class="chip">ci-local</span><span class="chip">git push</span></div><p><strong>الخطوة 1 — أصلح الأخطاء الثلاثة:</strong></p>
+<table>
+<thead>
+<tr>
+<th>الخطأ</th>
+<th>الإصلاح الصحيح</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>فهرس قديم</td>
+<td><code>node tools/build-index.mjs</code> ثم <code>git add data/members-index.json data/members-bundle.js</code></td>
+</tr>
+<tr>
+<td>بطاقة مخالفة</td>
+<td>افتح الملف وصحّح الحقل المشار إليه في الرسالة، ثم أعد الفحص</td>
+</tr>
+<tr>
+<td>علامات تعارض</td>
+<td>احذف الأسطر الثلاثة للعلامات ودمج النص الصحيح، ثم <code>git add</code></td>
+</tr>
+</tbody>
+</table>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الفحص بعد الإصلاح</span></div><pre><span class="p">$</span> <span class="k">node tools/build-index.mjs</span>
+<span class="o">[build-index] ✓ تم توليد الفهرس: 4 بطاقة.</span>
+<span class="o">   • ali-h                  مطوّر</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">node tools/ci-local.mjs</span>
+<span class="o">▸ الفهرس مُحدَّث … ✔ نجح</span>
+<span class="o">▸ بطاقات الأعضاء صحيحة … ✔ نجح</span>
+<span class="o">▸ لا علامات تعارض … ✔ نجح</span>
+<span class="o">✔ كل الفحوص نجحت — آمن للرفع (git push) / All checks passed.    (exit=0)</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git add -A</span>
+<span class="p">$</span> <span class="k">git commit -m &quot;fix(members): correct card fields and regenerate index&quot;</span>
+<span class="p">$</span> <span class="k">git push</span>
+<span class="o">   89f5cff..3c7d9e1  feature/omar-qa-card -&gt; feature/omar-qa-card</span></pre></div>
+
+<p><strong>الخطوة 2 — تحقق من النتيجة على GitHub:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">GitHub — بعد الدفع</span></div><pre><span class="o">✔ All checks have passed</span>
+<span class="o">   1 successful check</span>
+<span class="o">   validate / فحص البطاقات والفهرس (pull_request) — Successful in 12s   [Details]</span>
+<span class="o"></span>
+<span class="o">● This branch has no conflicts with the base branch.</span>
+<span class="o">   Merging can be performed automatically.</span></pre></div>
+
+<div class="box tip"><div class="h">مهارة تُقيَّم عليها<span class="en">A graded skill</span></div><p>لاحظ أن الفحص يحمل <strong>نفس الاسم</strong> قبل الإصلاح وبعده (<code>validate / فحص البطاقات والفهرس</code>)،
+لكن حالته تغيّرت من ✘ إلى ✔. لذلك لا يُقبل في المشاريع المهنية قول «الفحص كان يعطي خطأ»
+بلا لقطة أو رابط — الدليل هو تبويب <code>Checks</code> في طلب السحب.</p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>الصق مخرجات <code>node tools/ci-local.mjs</code> بعد الإصلاح (كل الفحوص ✔):</li>
+</ul>
+<pre class="plain">
+</pre>
+
+<ul>
+<li>رابط الفحص الناجح على GitHub: ………………………………………………………………</li>
+<li>كم استغرق الفحص على الخادم؟ ………… ثانية — وعلى جهازك؟ ………… ثانية</li>
+</ul></div></div></div>
+<div class="band violet"><span class="ar">الجزء الثالث · حماية الفرع والإصدارات</span><span class="en">Part 3 · Protection &amp; releases</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">حماية الفرع وملّاك الكود</div><div class="en">Branch protection and code owners</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 18 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 15 نقطة</span><span class="chip">Settings</span><span class="chip">CODEOWNERS</span></div><div class="bi "><div class="ar"><p>حماية الفرع تعني: «لا يمكن الكتابة في <code>main</code> إلا عبر طلب سحب مستوفٍ للشروط». أما
+<code>CODEOWNERS</code> فيعني: «هذا الملف لا يُعدَّل بلا مراجعة صاحبه». معاً يحوّلان الاتفاقات
+الشفهية إلى قواعد يفرضها GitHub نفسه.</p></div><div class="eng"><p>Branch protection turns agreements into enforced rules: no direct writes to main, only PRs
+that satisfy the conditions. CODEOWNERS routes each path to the right reviewer.</p></div></div>
+
+<p><strong>الخطوة 1 — افحص قواعد الحماية المطلوبة:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">GitHub — Settings ← Branches ← main</span></div><pre><span class="o">✔ Require a pull request before merging</span>
+<span class="o">     ✔ Require approvals: 1</span>
+<span class="o">     ✔ Dismiss stale pull request approvals when new commits are pushed</span>
+<span class="o">✔ Require status checks to pass before merging</span>
+<span class="o">     → الفحص المطلوب: validate / فحص البطاقات والفهرس</span>
+<span class="o">✔ Require conversation resolution before merging</span>
+<span class="o">✔ Do not allow bypassing the above settings</span>
+<span class="o">☐ Allow force pushes            ← يجب أن يبقى معطّلاً دائماً</span>
+<span class="o">☐ Allow deletions               ← يبقى معطّلاً</span></pre></div>
+
+<p><strong>الخطوة 2 — اقرأ <code>CODEOWNERS</code> واربطه بالتجربة:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — محتوى ملف ملّاك الكود</span></div><pre><span class="p">$</span> <span class="k">cat .github/CODEOWNERS</span>
+<span class="c"># الملفات المشتركة الحساسة → قائد الفريق</span>
+<span class="o">/data/site-config.json      @you-instructor</span>
+<span class="o">/js/                        @you-instructor</span>
+<span class="o">/css/                       @you-instructor</span>
+<span class="o">/tools/                     @you-instructor</span>
+<span class="o">/tests/                     @you-instructor</span>
+<span class="o">/.github/                   @you-instructor</span>
+<span class="o">/docs/                      @you-instructor</span>
+<span class="o">*                           @you-instructor</span>
+<span class="o">/data/members/              @you-instructor</span></pre></div>
+
+<p><strong>جرّب عملياً:</strong> افتح فرعاً وعدّل ملفاً مشتركاً (<code>js/app.js</code> مثلاً — تعديل تعليق فقط)،
+ثم ارفعه وافتح طلب سحب، ولاحظ أن GitHub أضاف المراجع المذكور تلقائياً.</p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">GitHub — ما يظهر في طلب السحب</span></div><pre><span class="o">Reviewers</span>
+<span class="o">  @you-instructor  —  Awaiting review  (requested automatically by CODEOWNERS)</span></pre></div>
+
+<table>
+<thead>
+<tr>
+<th>الملف / المسار</th>
+<th>من يراجعه إلزامياً؟</th>
+<th>لماذا؟</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>js/</code> و<code>css/</code></td>
+<td>………………………</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>data/members/&lt;username&gt;.json</code></td>
+<td>………………………</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>data/site-config.json</code></td>
+<td>………………………</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>tools/</code> و<code>tests/</code></td>
+<td>………………………</td>
+<td>………………………</td>
+</tr>
+</tbody>
+</table>
+<div class="box err"><div class="h">لا تُعطّل الحماية لإكمال عملك<span class="en">Never disable protection to get unblocked</span></div><p>أشهر خطأ: طالب عالق الفحص عنده فيعطّل حماية <code>main</code> «مؤقتاً» ثم ينسى. النتيجة: مشروع
+بلا حماية ودَين تقني أمني. الحل الصحيح: أصلح السبب، أو استخدم استثناءً موثقاً من
+المدرّب (Bypass) يُسجَّل في سجل المستودع ويُعاد فوراً.</p></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>هل حماية الفرع مفعّلة على <code>main</code>؟ ☐ نعم ☐ لا</li>
+<li>الفحوص المطلوبة للدمج (Required checks): ……………………………………………………</li>
+<li>من يراجع الملفات المشتركة حسب <code>CODEOWNERS</code>؟ ……………………………………………………</li>
+<li>الصق لقطة/وصفاً لطلب سحب ظهر فيه المراجع مضافاً تلقائياً: …………………………………………</li>
+</ul></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">أصدر نسعة v1.0.0: وسم + Release + سجل تغييرات</div><div class="en">Release v1.0.0: tag, release notes, changelog</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 15 دقيقة</span><span class="chip o">◆ متقدم</span><span class="chip t">★ 15 نقطة</span><span class="chip">git tag</span><span class="chip">GitHub Releases</span><span class="chip">CHANGELOG</span></div><p><strong>الخطوة 1 — أنشئ وسم الإصدار (Annotated tag):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الوسم والإصدار</span></div><pre><span class="p">$</span> <span class="k">git switch main</span>
+<span class="p">$</span> <span class="k">git pull --ff-only</span>
+<span class="p">$</span> <span class="k">git log --oneline -4</span>
+<span class="o">e20b664 (HEAD -&gt; main) Merge pull request #32 from ali-h/feature/ali-card</span>
+<span class="o">eb1df06 feat(members): add card for ali-h</span>
+<span class="o">388e173 feat(members): add card for leen-docs</span>
+<span class="o">ccbdca2 chore: initial commit of class-team-hub</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git tag -a v1.0.0 -m &quot;الإصدار الأول: موقع دليل فريق الصف مع 4 بطاقات وسير تحقق تلقائي&quot;</span>
+<span class="p">$</span> <span class="k">git tag -l</span>
+<span class="o">v1.0.0</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git describe --tags</span>
+<span class="o">v1.0.0</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git push origin main</span>
+<span class="o">Everything up-to-date</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git push origin v1.0.0</span>
+<span class="o">To https://github.com/school-git-workshop/class-team-hub.git</span>
+<span class="o"> * [new tag]         v1.0.0 -&gt; v1.0.0</span></pre></div>
+
+<div class="box warn"><div class="h">الوسوم لا تُرفع مع الفروع!<span class="en">Tags are not pushed with branches</span></div><p><code>git push</code> يرفع الالتزامات فقط. الوسم يحتاج <code>git push origin v1.0.0</code> أو <code>git push origin
+--tags</code> لرفع كل الوسوم. وهذا أشهر سبب لسؤال: «أنشأت الوسم ولا يظهر على GitHub».</p></div>
+
+<p><strong>الخطوة 2 — أنشئ Release على GitHub:</strong></p>
+<pre class="plain"><span class="ph">من صفحة المستودع: Releases ← Draft a new release
+Choose a tag: v1.0.0        Target: main
+Release title: v1.0.0 — دليل فريق الصف
+Describe this release (ملاحظات الإصدار):
+
+  ## الإضافات
+  - موقع دليل فريق الصف مع بطاقة لكل عضو.
+  - فحص تلقائي للبطاقات والفهرس عند كل طلب سحب.
+  - حماية فرع main وملّاك الكود (CODEOWNERS).
+
+  ## الإصلاحات
+  - تصحيح نطاق فحص علامات التعارض ليشمل كل الملفات النصية.
+
+  ## ملاحظات الترقية
+  - لا يوجد تغيير يكسر التوافق.</span>
+</pre>
+
+<p><strong>الخطوة 3 — أنشئ وسم إصدار ثانٍ ثم افحص الفرق:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — وسم لاحق ووصفه</span></div><pre><span class="p">$</span> <span class="k">git tag -a v1.1.0 -m &quot;ميزة الفلترة بالوسوم&quot;</span>
+<span class="p">$</span> <span class="k">git tag -n1</span>
+<span class="o">v1.0.0          الإصدار الأول: موقع دليل فريق الصف مع 4 بطاقات وسير تحقق تلقائي</span>
+<span class="o">v1.1.0          ميزة الفلترة بالوسوم</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git push origin v1.1.0</span>
+<span class="o"> * [new tag]         v1.1.0 -&gt; v1.1.0</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git ls-remote --tags origin</span>
+<span class="o">1105c78548ddcafca65f03d9ea10f58ecddd0d15        refs/tags/v1.0.0</span>
+<span class="o">e20b6644b539bbb22200dde76ea5e5015d826b86        refs/tags/v1.0.0^{}</span></pre></div>
+
+<p><strong>أكمل <code>CHANGELOG.md</code>:</strong> انقل ما تحت <code>[Unreleased]</code> إلى قسم الإصدار بتاريخه، وابدأ قسماً
+جديداً فارغاً. هذا ما يفعله أي فريق محترف عند كل إصدار.</p>
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>اسم الإصدار: <code>v……………………</code> — رابط الإصدار على GitHub: …………………………………………</li>
+<li>الصق مخرجات <code>git tag -n1</code>:</li>
+</ul>
+<pre class="plain"><span class="ph">$ git tag -n1</span>
+</pre>
+
+<ul>
+<li>الصق قسم الإصدار من <code>CHANGELOG.md</code> بعد التحديث: …………………………………………</li>
+<li>هل ظهر الوسم على GitHub بعد الدفع؟ ☐ نعم ☐ لا — وإن لا، فما الأمر الذي كان ناقصاً؟ …………</li>
+</ul></div></div></div>
+<div class="band green"><span class="ar">أسئلة تحقّق ختامية</span><span class="en">Final knowledge checks</span></div>
+
+<p><strong>س1.</strong> ما الفرق بين «حماية الفرع» و«فحص CI» من حيث ما يمنعه كل واحد منهما؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س2.</strong> طالب قال: «الفحص يمرّ دائماً، إذاً مشروعنا سليم». ما الخلل المنطقي في عبارته؟ وكيف تختبر الفحص؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س3.</strong> ما الفرق بين وسم بسيط (<code>git tag v1.0.0</code>) ووسم مع تعليق (<code>git tag -a v1.0.0 -m "…"</code>)؟ وأيّهما يُستحسن للإصدارات؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س4.</strong> ما فائدة أن يمنع المشروع «الدفع القسري» (Allow force pushes) على <code>main</code>؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<div class="write"><strong>قائمة الفحص النهائية<span class="muted tiny"> / Final checklist</span></strong><ul class="checklist">
+<li>[ ] قرأت <code>validate.yml</code> وأعرف أحداثه وعدد خطواته</li>
+<li>[ ] شغّلت <code>node tools/ci-local.mjs</code> قبل الرفع وأصبحت كل الفحوص ✔</li>
+<li>[ ] جرّبت ثلاث حالات معطوبة وتأكدت أن الفحص يفشل فيها فعلاً</li>
+<li>[ ] أصلحت الأخطاء حتى صار الفحص أخضر على GitHub (وبرابط دليل)</li>
+<li>[ ] حماية الفرع مفعّلة، والفحص المطلوب للدمج محدَّد</li>
+<li>[ ] <code>CODEOWNERS</code> مطبَّق، ولاحظت المراجع يُضاف تلقائياً</li>
+<li>[ ] أصدرت <code>v1.0.0</code> مع ملاحظات إصدار، وحدّثت <code>CHANGELOG.md</code></li>
+</ul></div>
+
+<div class="write"><div class="lbl">تقييم ذاتي للوحدة المتقدمة / Self-assessment</div><div class="scale"><div class="s"><span class="b">1</span>لم أبدأ</div><div class="s"><span class="b">2</span>بدأت</div><div class="s"><span class="b">3</span>أنجزت</div><div class="s"><span class="b">4</span>أتقنت</div></div></div>
+
+<div class="evidence"><div class="h">بطاقة التسليم<span class="en">/ Submission card</span></div><table>
+<thead>
+<tr>
+<th>البند</th>
+<th>القيمة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>رابط تشغيل ناجح في Actions</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>رابط تشغيل فاشل (الحالة المعطوبة)</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>رابط الإصدار</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>هل أنشأت فرعاً للتجربة (تجربة الجودة)؟</td>
+<td>☐ نعم ☐ لا</td>
+</tr>
+<tr>
+<td>أصعب فحص فهمته ولماذا؟</td>
+<td>…………………………………</td>
+</tr>
+<tr>
+<td>الوقت المستغرق</td>
+<td>…………</td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box ok"><div class="h">ما بعد الأتمتة؟<span class="en">What comes after automation</span></div><p>أصبح مشروعك الآن: بطاقات موثّقة، وفحص آلي، وحماية فرع، وإصدار مرقّم. الخطوة التالية
+مهنياً هي <strong>المراقبة والتحسين</strong>: قياس زمن الفحص، وتقليل تكرار الأعطال بنوع واحد (مثل
+خطأ JSON)، وإضافة فحص جديد لكل عطل يتكرر مرتين — هذا هو جوهر التحسين المستمر
+(Continuous Improvement).</p></div>
+
+<p class="center"><span class="stamp green">أتممت الوحدة المتقدمة — مستوى عمل الفريق الهندسي ✓</span></p>
+<div class="footer-note"><span>ورشة Git وGitHub · ورقة عمل 06 — الأتمتة وسير العمل الاحترافي</span><span class="en">Git &amp; GitHub Workshop · Worksheet 06 — Automation</span></div>
+</div>
+</body>
+</html>

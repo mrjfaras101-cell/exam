@@ -1,9 +1,10 @@
 # ورشة Git وGitHub — البرنامج التدريبي العملي
 
-> حزمة تدريبية كاملة (5 أوراق عمل + نماذج حلول + دليل مدرّب + مستودع تدريبي جاهز)
+> حزمة تدريبية كاملة (6 أوراق عمل + نماذج حلول + دليل مدرّب + عروض جلسات + مستودع تدريبي جاهز)
 > لتدريب الطلبة على استخدام Git وGitHub من الصفر حتى النشر، عبر مشروع فريق حقيقي.
 >
-> A complete bilingual (Arabic/English) workshop package: five progressive worksheets,
+> A complete bilingual (Arabic/English) workshop package: six progressive worksheets,
+> presentation decks for every session,
 > instructor solution keys, a trainer playbook, and a ready-to-use classroom repository.
 
 ---
@@ -12,13 +13,14 @@
 
 | المجلد / Folder | المحتوى | الصيغ |
 |---|---|---|
-| `worksheets/` | **أوراق العمل الخمس** + دليل البرنامج (00) | PDF + HTML |
+| `worksheets/` | **أوراق العمل الست** + دليل البرنامج (00) | PDF + HTML |
 | `solutions/` | **نماذج الحلول والتقييم** لكل ورقة (للمدرّب) | PDF + HTML |
 | `trainer/` | **دليل المدرّب الشامل** (تخطيط، إدارة صف، أخطاء شائعة، سكربتات إنقاذ) | PDF + HTML |
 | `docx/` | النسخ القابلة للتعديل من كل ما سبق | DOCX |
+| `slides/` | **عروض الجلسات الستة** (16:9، جاهزة للشاشة) | PPTX |
 | `project/` | **المستودع التدريبي** `class-team-hub` الذي ينسخه الطلبة ويعدّلونه | كود + بيانات |
 | `source/` | ملفات المصدر (Markdown بصيغة مختصرة) لتعديل المحتوى | MD |
-| `tools/` | أدوات توليد المستندات (PDF/DOCX) من المصادر | Python |
+| `tools/` | أدوات توليد المستندات (PDF/DOCX) والعروض (PPTX) + فاحص جودة العروض | Python |
 | `assets/` | التنسيقات، الخطوط العربية، والرسومات التوضيحية | CSS/SVG/PNG |
 
 ## 2) أوراق العمل الخمس | The five worksheets
@@ -30,6 +32,7 @@
 | 03 | فرعي الأول وطلب السحب الأول | 90 د | 6 | فرع → بطاقة JSON → التزام مهني → `push` → Pull Request → مراجعة زميل |
 | 04 | مزامنة الفريق وكيف يرى تعديلات زملائه | 90 د | 6 | `fetch/pull`، استراتيجيات الدمج الثلاث، التراجع الآمن، تقرير الفريق |
 | 05 | حل التعارضات النهائية والنشر | 120 د | 6 | تعارض سطر واحد، تعارض ملف مُولَّد، `rebase` و`--force-with-lease`، GitHub Pages |
+| 06 | الأتمتة الاحترافية *(وحدة متقدمة اختيارية)* | 100 د | 6 | GitHub Actions، فحص آلي عند كل PR، حماية الفرع، CODEOWNERS، الوسوم والإصدارات وCHANGELOG |
 
 **الخيوط البيداغوجية الخمسة المتدرّجة:** التعريف → الاستكشاف → المساهمة → المزامنة والدمج →
 حل التعارض والنشر. كل ورقة تعتمد على مخرجات الورقة السابقة، وتنتهي بأدلة تسليم قابلة للتصحيح.
@@ -67,7 +70,9 @@ python3 -m http.server 8000           # تشغيل الموقع على http://lo
 3. **فعّل حماية الفرع:** `Settings ← Branches ← main ← Require a pull request before merging`.
 4. **اطبع** أوراق `worksheets/*.pdf` للطلبة (كل ورقة ~9–11 صفحة A4).
 5. **احتفظ** بـ `solutions/*.pdf` و`trainer/*.pdf` لنفسك — **لا توزّعها على الطلبة**.
-6. **صحّح** بجدول التقييم المُجمَّع (500 نقطة) الموجود في كل نموذج حل.
+6. **صحّح** بجدول التقييم المُجمَّع (500 نقطة، +100 للوحدة المتقدمة 06) الموجود في كل نموذج حل.
+7. **اعرض** شرائح كل جلسة من `slides/s‹n›-….pptx` (11–18 شريحة لكل جلسة) قبل التنفيذ العملي:
+   عرض 10–20 دقيقة ثم المهمة مباشرة على الجهاز.
 
 ## 5) تعديل المحتوى أو ترجمته | Customising & translating
 
@@ -78,6 +83,10 @@ python3 tools/build.py                 # بناء الكل (HTML + PDF + DOCX + 
 python3 tools/build.py ws1             # ورقة واحدة
 python3 tools/build.py --no-docx       # بدون DOCX (أسرع)
 python3 tools/build.py --no-pdf        # بدون PDF
+
+python3 tools/build_slides.py          # بناء عروض الجلسات → slides/*.pptx
+python3 tools/build_slides.py s3       # عرض واحد
+python3 tools/check_slides.py          # فاحص جودة العروض (يجب أن يخرج بلا ملاحظات)
 ```
 
 **بنية أوراق العمل (واجهة التنسيق المختصرة):**
@@ -91,6 +100,10 @@ python3 tools/build.py --no-pdf        # بدون PDF
 :::evidence{ar="…"} ::: :::check{ar="…"} ::: :::scale{ar="…"} :::
 ```
 
+**بنية مصادر العروض (PPTX):** موثّقة بالتفصيل في `source/slides/README.md`
+(`:::slide{}` + `:::bullets` / `:::code{size}` / `:::callout{type}` / `:::img{name}` /
+`:::cols` / `:::table`، مع دعم `**عريض**` و`` `كود` `` داخل السطر).
+
 **لتغيير الهوية البصرية:** عدّل الألوان في `assets/print.css` (المتغيرات `--navy`,
 `--orange` …)، والخطوط في `assets/fonts/`.
 
@@ -98,19 +111,23 @@ python3 tools/build.py --no-pdf        # بدون PDF
 
 ## 6) الرسومات التوضيحية | Diagrams
 
-6 رسومات SVG متجهة (قابلة لتعديل الألوان مباشرة) + نسخ PNG للـ DOCX:
+8 رسومات SVG متجهة (قابلة لتعديل الألوان مباشرة) + نسخ PNG للـ DOCX والعروض:
 
 `git-vs-github` · `flow-stages` (المناطق الثلاث) · `branch-merge` (دورة الفريق) ·
 `pr-flow` (رحلة طلب السحب) · `data-flow` (مسار البيانات في المشروع) ·
-`conflict-markers` (بنية التعارض) · `fetch-vs-pull`
+`conflict-markers` (بنية التعارض) · `fetch-vs-pull` · `ci-flow` (مسار الفحص الآلي)
 
 ## 7) ملاحظات تقنية | Technical notes
 
 - الخطوط العربية **مدمجة محلياً** في `assets/fonts/` ← الطباعة والتصدير يعملان بلا إنترنت.
 - PDF بمقاس A4 مع ترقيم صفحات تلقائي، مُولَّد عبر Chromium (نص قابل للبحث والنسخ، لا صور).
 - ملفات DOCX مضبوطة على الاتجاه RTL (فقرة `bidi` + تشغيل `rtl`) وتتضمن الرسومات.
-- مصادر التوليد تحتاج: Python 3 + `markdown` + `pypandoc` + `python-docx` (وكلها قابلة
-  للتثبيت عبر `pip`)، مع Chromium/Puppeteer لتوليد PDF.
+- عروض PPTX بمقاس 16:9، فقرات `rtl="1"` وخط `Cairo` (يُستعمل `a:cs` لتشكيل العربية).
+  لا يحتاج بناؤها إلى Word/LibreOffice، ويفحصها `tools/check_slides.py` بنيوياً.
+- الرموز التعبيرية (emoji) تُستبدل تلقائياً في كل المخرجات لأنها تظهر مربعات فارغة
+  في بعض البيئات — المجموعة الآمنة: `✔ ✘ ✓ ✗ ★ ◆ ● ■ ▲ ☐ → ⇒ ⚠ ← •` (مع رموز الأشجار).
+- مصادر التوليد تحتاج: Python 3 + `markdown` + `pypandoc` + `python-docx` + `python-pptx`
+  + `pillow` (وكلها قابلة للتثبيت عبر `pip`)، مع Chromium/Puppeteer لتوليد PDF.
 
 ## 8) ترخيص الاستخدام | Licence
 
@@ -123,12 +140,13 @@ python3 tools/build.py --no-pdf        # بدون PDF
 
 ```text
 .
-├── worksheets/   ws1…ws5 + program-overview      (PDF + HTML)   ← تُطبع للطلبة
-├── solutions/    solutions-ws1…ws5               (PDF + HTML)   ← للمدرّب فقط
+├── worksheets/   ws1…ws6 + program-overview      (PDF + HTML)   ← تُطبع للطلبة
+├── solutions/    solutions-ws1…ws6               (PDF + HTML)   ← للمدرّب فقط
 ├── trainer/      trainer-guide                   (PDF + HTML)   ← للمدرّب فقط
 ├── docx/         نفس المستندات بجميع أنواعها     (DOCX)         ← للتعديل
+├── slides/       عروض الجلسات s1…s6              (PPTX)         ← للشاشة
 ├── project/      class-team-hub — المستودع التدريبي
-├── source/       مصادر Markdown
-├── tools/        build.py · rasterize.mjs
+├── source/       مصادر Markdown (+ source/slides/ للعروض)
+├── tools/        build.py · build_slides.py · check_slides.py · rasterize.mjs
 └── assets/       print.css · fonts/ · img/ (SVG + PNG) · cover-hero.png
 ```

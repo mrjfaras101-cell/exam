@@ -41,6 +41,11 @@ class-team-hub/
 │   └── team-slogan.txt     شعار الفريق (سطر واحد يعدّله الجميع) / shared one-liner
 ├── tools/build-index.mjs   إعادة توليد الفهرس تلقائياً / regenerate the index
 ├── tests/validate-members.mjs  فحص صحة بطاقات الأعضاء / validate member cards
+├── .github/
+│   ├── workflows/validate.yml  الفحص التلقائي عند كل طلب سحب / CI checks
+│   ├── CODEOWNERS          من يراجع أي ملف / who reviews which file
+│   └── PULL_REQUEST_TEMPLATE.md
+├── CHANGELOG.md            سجل الإصدارات / release history
 └── docs/                   أوراق مرجعية / reference docs
 ```
 
@@ -70,7 +75,31 @@ node tests/validate-members.mjs
 > القاعدة الذهبية: **لا تعمل مباشرة على `main` أبداً**. الفرع المحمي (Protected branch)
 > يمنع الدفع المباشر، فلا بد من طلب سحب ومراجعة.
 
-## 5) طريقة إضافة بطاقتك | How to add your card
+## 5) الأتمتة | Automation
+
+كل طلب سحب يخضع تلقائياً لفحص على GitHub (`.github/workflows/validate.yml`):
+
+```bash
+node tools/build-index.mjs --check     # الفهرس محدَّث؟
+node tests/validate-members.mjs        # البطاقات صحيحة؟
+grep -rn "^<<<<<<<" .                  # لا آثار تعارض؟
+```
+
+افحص محلياً قبل الرفع بنفس الأوامر، فلا تُفاجأ بفحص أحمر:
+
+```bash
+node tools/build-index.mjs --check && node tests/validate-members.mjs && git diff --check
+```
+
+| الملف | الوظيفة |
+|---|---|
+| `.github/workflows/validate.yml` | تشغيل الفحوص على كل طلب سحب ودفع إلى `main` |
+| `.github/CODEOWNERS` | يطلب مراجعة قائد الفريق عند تعديل الملفات المشتركة |
+| `CHANGELOG.md` | توثيق كل إصدار (SemVer) |
+
+التفاصيل الكاملة في [`docs/ci.md`](docs/ci.md).
+
+## 6) طريقة إضافة بطاقتك | How to add your card
 
 1. انسخ الملف `data/members/00-template.json` إلى ملف جديد باسم مستخدمك:
    `data/members/<github-username>.json`
@@ -85,7 +114,7 @@ node tests/validate-members.mjs
    git push -u origin feature/<github-username>-card
    ```
 
-## 6) الأخطاء الشائعة | Troubleshooting
+## 7) الأخطاء الشائعة | Troubleshooting
 
 | المشكلة / Problem | الحل / Fix |
 |---|---|
@@ -95,12 +124,12 @@ node tests/validate-members.mjs
 | تعارض في ملف الفهرس | أعد توليده: `node tools/build-index.mjs` ثم `git add` و`git commit` |
 | نسيت كلمة مرور GitHub | استخدم رمز وصول شخصي (PAT) أو GitHub Desktop بدل كلمة المرور |
 
-## 7) قواعد السلوك | Code of conduct
+## 8) قواعد السلوك | Code of conduct
 
 - لا تضع أي بيانات شخصية حساسة (عنوان، هاتف، رقم الهوية، كلمات مرور، رموز وصول).
 - احترم عمل زملائك، واكتب ملاحظات المراجعة بأسلوب مهني.
 - لا تحذف ملفات الآخرين ولا تعدّل ملفات لا تخص مهمتك.
 
-## 8) الترخيص | License
+## 9) الترخيص | License
 
 MIT — انظر `LICENSE`.
