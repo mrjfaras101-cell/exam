@@ -425,7 +425,7 @@ $ git log --oneline
 :::band{type="green" ar="قبل التسليم" en="Before you submit"}
 :::
 
-## أسئلة تحقّق سريعة
+## أسئلة تحقّق سريعة (10 نقاط)
 
 **س1.** ما الفرق بين `git switch -c feature/x` و`git switch feature/x`؟
 

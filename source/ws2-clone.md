@@ -61,7 +61,7 @@ document it with evidence.
 remote connection settings — into a local repository that knows its remote as `origin`.
 :::
 
-:::task{num="1" ar="جهّز مكان العمل ثم استنسخ مستودع الفريق" en="Prepare a workspace and clone the team repository" time="15 دقيقة" level="مبتدئ" pts="15" tools="git clone|git remote"}
+:::task{num="1" ar="جهّز مكان العمل ثم استنسخ مستودع الفريق" en="Prepare a workspace and clone the team repository" time="15 دقيقة" level="مبتدئ" pts="10" tools="git clone|git remote"}
 **الهدف:** مجلد مشاريع منظّم + نسخة كاملة من مستودع الفريق على جهازك.
 
 **الخطوة 1 — أنشئ مجلداً واحداً لكل مشاريعك (سنسمّيه `projects`):**
@@ -219,7 +219,7 @@ $ cat data/members/00-template.json
 ```
 :::
 
-:::task{num="3" ar="شغّل الموقع على جهازك" en="Run the site on your machine" time="15 دقيقة" level="متوسط" pts="20" tools="المتصفح|Python http.server|Live Server"}
+:::task{num="3" ar="شغّل الموقع على جهازك" en="Run the site on your machine" time="15 دقيقة" level="متوسط" pts="15" tools="المتصفح|Python http.server|Live Server"}
 
 **الهدف:** رؤية المشروع يعمل فعلاً، وفهم لماذا قد تفشل طريقة الفتح المباشر.
 
@@ -277,7 +277,7 @@ Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
 - ضع صورة شاشة للموقع يعمل (أو اكتب اسم الملف الذي حفظت فيه الصورة): ……………………………………
 :::
 
-:::task{num="4" ar="تتبّع مسار البيانات من ملف JSON إلى الشاشة" en="Trace the data path from JSON to screen" time="15 دقيقة" level="متوسط" pts="20" tools="js/app.js|data/"}
+:::task{num="4" ar="تتبّع مسار البيانات من ملف JSON إلى الشاشة" en="Trace the data path from JSON to screen" time="15 دقيقة" level="متوسط" pts="15" tools="js/app.js|data/"}
 
 **الهدف:** فهم كيف يقرأ الكود ملفات البطاقات ويبني الواجهة — وهو الملف الذي ستطوّره لاحقاً.
 

@@ -33,7 +33,8 @@ SLIDES = ROOT / "slides"
 
 EMU_CM = 360000.0
 # الرموز المضمون ظهورها في كل البيئات (لا تُعدّ مشكلة)
-SAFE_GLYPHS = set("✔✘✓✗★◆●■▲☐→⇒⚠←•─│┌┐└┘├┤┬┴┼━")
+SAFE_GLYPHS = set("✔✘✓✗★◆●■▲☐→⇒⚠←•─│┌┐└┘├┤┬┴┼━"
+                    "▣➜▸↳−≥≠⟶▶✱⊳…·▪▫–—")
 EMOJI_RE = re.compile("[\U0001F000-\U0001FAFF\u2190-\u2BFF\uFE0F]")
 LEFTOVER_RE = re.compile(r":::|^\s*---\s*$|\*\*|`|name=|\{type=", re.M)
 AR_RE = re.compile("[\u0600-\u06FF]")

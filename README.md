@@ -21,7 +21,7 @@
 | `project/` | **المستودع التدريبي** `class-team-hub` الذي ينسخه الطلبة ويعدّلونه | كود + بيانات |
 | `source/` | ملفات المصدر (Markdown بصيغة مختصرة) لتعديل المحتوى | MD |
 | `index.html` | **فهرس الحزمة** — كل المخرجات في صفحة واحدة بروابط مباشرة | HTML |
-| `tools/` | أدوات التوليد (PDF/DOCX/PPTX/HTML) + فاحص جودة العروض | Python + Node |
+| `tools/` | أدوات التوليد (PDF/DOCX/PPTX/HTML) + فاحص جودة العروض + مدقّق سلامة الحزمة | Python + Node |
 | `assets/` | التنسيقات، الخطوط العربية، والرسومات التوضيحية | CSS/SVG/PNG |
 
 ## 2) أوراق العمل الخمس | The five worksheets
@@ -98,6 +98,7 @@ python3 tools/build_slides_html.py         # نسخة المتصفح → slides/
 python3 tools/build_slides_html.py --pdf   # + PDF بمقاس الشريحة → slides/pdf/*.pdf
 python3 tools/check_slides.py              # فاحص جودة العروض (يجب أن يخرج بلا ملاحظات)
 python3 tools/serve_slides.py              # معاينة محلية: http://localhost:8110/slides/html/
+python3 tools/verify_package.py            # تدقيق سلامة الحزمة قبل التوزيع
 ```
 
 **بنية أوراق العمل (واجهة التنسيق المختصرة):**
@@ -137,6 +138,9 @@ python3 tools/serve_slides.py              # معاينة محلية: http://loc
   لا يحتاج بناؤها إلى Word/LibreOffice، ويفحصها `tools/check_slides.py` بنيوياً.
 - `index.html` (فهرس الحزمة) يُولَّد آلياً بمسح مجلدات الحزمة (`tools/make_hub.py`)، فلا يتقادم
   عند إضافة ملفات جديدة. ومعاينته المحلية عبر `tools/serve_slides.py` (يضبط أنواع MIME الناقصة).
+- `tools/verify_package.py` يفشل عند أي خلل: ورقة بلا نموذج حل، مجموع نقاط لا يساوي 100،
+  كتلة غير مغلقة، رمز غير مدعوم، مخرج ناقص، عرض بعدد شرائح مختلف عن PDF، أو رابط مكسور
+  في الفهرس. شغّله قبل كل توزيع للفصل (وقبل كل فصل جديد).
 - الرموز التعبيرية (emoji) تُستبدل تلقائياً في كل المخرجات لأنها تظهر مربعات فارغة
   في بعض البيئات — المجموعة الآمنة: `✔ ✘ ✓ ✗ ★ ◆ ● ■ ▲ ☐ → ⇒ ⚠ ← •` (مع رموز الأشجار).
 - مصادر التوليد تحتاج: Python 3 + `markdown` + `pypandoc` + `python-docx` + `python-pptx`
@@ -162,6 +166,7 @@ python3 tools/serve_slides.py              # معاينة محلية: http://loc
 ├── project/      class-team-hub — المستودع التدريبي
 ├── source/       مصادر Markdown (+ source/slides/ للعروض)
 ├── tools/        build_all.sh · build.py · make_hub.py · build_slides.py ·
-│                 build_slides_html.py · check_slides.py · serve_slides.py · rasterize.mjs
+│                 build_slides_html.py · check_slides.py · verify_package.py ·
+│                 serve_slides.py · rasterize.mjs
 └── assets/       print.css · fonts/ · img/ (SVG + PNG) · cover-hero.png
 ```
