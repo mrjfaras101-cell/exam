@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الجلسة 04 — المزامنة والدمج</title>
+<style>
+@font-face{font-family:CairoAr;src:url("../../assets/fonts/cairo-arabic-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:CairoAr;src:url("../../assets/fonts/cairo-arabic-700-normal.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:CairoLat;src:url("../../assets/fonts/cairo-latin-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:CairoLat;src:url("../../assets/fonts/cairo-latin-700-normal.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:JBMono;src:url("../../assets/fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2")}
+:root{--navy:#12203c;--navy2:#1e3a5f;--orange:#e8620c;--teal:#0e7c7b;--green:#128a5b;
+ --red:#b3261e;--violet:#6d3bb5;--ink:#12161c;--body:#22303f;--muted:#6b7684;--light:#f4f7fa;--line:#d6dde6}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0b1220;color:var(--ink);
+ font-family:CairoAr,CairoLat,"Segoe UI",system-ui,sans-serif}
+.deck{display:flex;flex-direction:column;align-items:center;gap:26px;padding:26px 10px 90px}
+.slide{width:1280px;height:720px;background:#fff;border-radius:10px;overflow:hidden;
+ box-shadow:0 18px 44px rgba(0,0,0,.45);position:relative;flex:0 0 auto;
+ transform-origin:top center}
+.slide>*{position:relative;z-index:1}
+.thead{height:88px;background:var(--navy);display:flex;align-items:center;justify-content:space-between;
+ padding:0 42px;gap:20px}
+.thead h1{margin:0;color:#fff;font-size:27px;font-weight:700}
+.thead .idx{color:#9fc0e6;font-size:12.5px;font-family:JBMono,monospace;direction:ltr;white-space:nowrap}
+.body{padding:24px 42px;display:flex;flex-direction:column;gap:14px;height:632px;overflow:hidden}
+.body p{margin:0;font-size:19px;line-height:1.65;color:var(--body)}
+.body ul{margin:0;padding:0 22px 0 0;list-style:none}
+.body ul li{position:relative;font-size:18px;line-height:1.75;color:var(--body);padding-right:22px}
+.body ul li:before{content:"•";position:absolute;right:0;color:var(--orange);font-weight:700}
+.code{background:#0f172a;border-radius:9px;padding:14px 18px;margin:0;direction:ltr;text-align:left;
+ font-family:JBMono,Consolas,monospace;font-size:14.5px;line-height:1.62;color:#e6edf7;overflow:hidden;white-space:pre-wrap}
+.code .cmd{color:#7fd1a8}.code .cm{color:#7d8ca3}.code .err{color:#f08c7a}
+.callout{border-radius:9px;padding:13px 18px;font-size:16.5px;line-height:1.6}
+.callout p{margin:0 0 4px;font-size:16.5px}
+.callout p:last-child{margin-bottom:0}
+.callout.info{background:#eef4fd;color:#1c4b86}.callout.tip{background:#e6f5f5;color:#0a5d5c}
+.callout.warn{background:#fff8e8;color:#8a5a06}.callout.err{background:#fdecea;color:#8c1d17}
+.callout.ok{background:#e7f7f0;color:#0b6244}.callout.rule{background:#f7f4fe;color:#4b2683}
+figure{margin:0;display:flex;justify-content:center}
+figure img{max-width:100%;max-height:430px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.cols ul{background:var(--light);border-radius:9px;padding:14px 20px 14px 14px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{background:var(--navy2);color:#fff;padding:9px 10px;font-size:15px}
+td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--body);vertical-align:top}
+tbody tr:nth-child(even){background:#fafcfe}
+b{font-weight:700}
+code{font-family:JBMono,Consolas,monospace;font-size:.92em;background:#eef2f7;border-radius:4px;padding:0 4px;direction:ltr;unicode-bidi:embed}
+/* شريحة العنوان */
+.slide.title{background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;
+ text-align:center;padding:0 70px;color:#fff;border-bottom:26px solid var(--orange)}
+.slide.title .kick{color:#9fc0e6;font-size:17px;margin-bottom:22px}
+.slide.title h1{font-size:52px;margin:0 0 18px;line-height:1.25}
+.slide.title .sub{color:#d3e2f2;font-size:22px;direction:ltr;font-family:JBMono,monospace}
+.slide.title .foot{position:absolute;bottom:34px;color:#cbdff0;font-size:14px}
+nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:rgba(11,18,32,.86);
+ border:1px solid #26364f;border-radius:999px;padding:8px 14px;display:flex;gap:10px;align-items:center;z-index:9}
+nav button{background:#1e3a5f;color:#fff;border:0;border-radius:999px;padding:8px 16px;font:inherit;font-size:14px;cursor:pointer}
+nav button:hover{background:#2b5486}
+nav .pos{color:#9fc0e6;font-size:13px;font-family:JBMono,monospace}
+html:fullscreen nav{opacity:.15}html:fullscreen nav:hover{opacity:1}
+.idx-page{max-width:1040px;margin:0 auto;padding:40px 22px 80px;color:#e8eef7;font-family:CairoLat,CairoAr,system-ui,sans-serif;direction:rtl}
+.idx-page h1{color:#fff;font-size:30px;margin:0 0 6px}
+.idx-page p.sub{color:#9fb6d4;margin:0 0 26px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{background:#152340;border:1px solid #26364f;border-radius:13px;padding:18px 20px;text-decoration:none;color:#e8eef7;display:block}
+.card:hover{border-color:var(--orange);transform:translateY(-2px)}
+.card b{display:block;font-size:19px;margin-bottom:8px}
+.card span{color:#9fb6d4;font-size:13.5px;font-family:JBMono,monospace;direction:ltr}
+@media print{
+ @page{size:338mm 190mm;margin:0}
+ html,body{background:#fff}
+ .deck{gap:0;padding:0}
+ .slide{box-shadow:none;border-radius:0;transform:none!important;page-break-after:always;width:338mm;height:190mm}
+ nav{display:none}
+ .thead{height:24mm}.body{height:calc(190mm - 24mm);padding:7mm 11mm}
+ .body p,.body ul li{font-size:15pt}.code{font-size:11.5pt}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+<section class="slide title"><div class="kick">ورشة GIT وGITHUB</div><h1>مزامنة الفريق: كيف أرى تعديلات زملائي؟</h1><div class="sub">Session 04 · Sync, Merge &amp; Undo</div><div class="foot">ورشة Git وGitHub · الجلسة 04 — المزامنة والدمج</div></section>
+<section class="slide"><div class="thead"><h1>سؤال كل فريق مبتدئ</h1><span class="idx">الجلسة 04 — المزامنة والدمج · 2/13</span></div><div class="body"><ul><li>«زميلي أضاف تعديلاً… وأنا لا أراه!» — لماذا؟</li><li>ثلاثة أسباب شائعة: لم يرفع (<code>push</code>)، أو رفع على فرع لم يُدمج، أو نسختك لم تُحدَّث (<code>pull</code>)</li><li>اليوم نتقن الطرف الثالث ونفهم كيف يعمل الدمج فعلاً</li><li>ونضيف مهارة أهم: <b>التراجع الآمن</b> عندما يفسد شيء</li></ul>
+<div class="callout info"><p>هدف اليوم ليس تنفيذ أوامر، بل <b>قراءة</b> مخرجاتها: أين أنا؟ ما الجديد؟ ما الفرق؟ من فعل هذا؟</p></div></div></section>
+<section class="slide"><div class="thead"><h1>fetch مقابل pull — الفرق في خطوة</h1><span class="idx">الجلسة 04 — المزامنة والدمج · 3/13</span></div><div class="body"><figure><img src="../../assets/img/png/fetch-vs-pull.png" alt="fetch-vs-pull"></figure></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 1 — اعرف أين أنت قبل أن تدمج</h1><span class="idx">الجلسة 04 — المزامنة والدمج · 4/13</span></div><div class="body"><pre class="code"><span class="cmd">$ git switch main</span>
+<span class="cmd">$ git fetch origin</span>
+remote: Enumerating objects: 9, done.
+From https://github.com/&lt;org&gt;/class-team-hub
+   a1b2c3d..f9e8d7c  main       -&gt; origin/main
+&nbsp;
+<span class="cmd">$ git status -sb</span>
+<span class="cm">## main...origin/main [behind 2]</span>
+&nbsp;
+<span class="cmd">$ git log --oneline HEAD..origin/main</span>
+f9e8d7c feat(members): add card for leen-docs
+3c7d9e1 Merge pull request #7 from nour-dev/feature/nour-card</pre>
+<ul><li><code>behind 2</code> = عند الزملاء التزامان لم تجلبهما بعد</li><li>العادة الاحترافية: افحص بـ fetch ثم اقرأ، ثم ادمج بوعي</li></ul></div></section>
+<section class="slide"><div class="thead"><h1>حالات ستراها كثيراً</h1><span class="idx">الجلسة 04 — المزامنة والدمج · 5/13</span></div><div class="body"><table><thead><tr><th>الحالة في git status</th><th>المعنى</th><th>الأمر السليم</th></tr></thead><tbody><tr><td>ahead 2</td><td>عندك التزامات غير مرفوعة</td><td>git push</td></tr><tr><td>behind 3</td><td>عند الزملاء التزامات لم تجلبها</td><td>git pull --ff-only</td></tr><tr><td>ahead 1, behind 3</td><td>التاريخان افترقا</td><td>git pull --rebase</td></tr><tr><td>diverged</td><td>افتراق ثم محاولة دفع</td><td>pull --rebase ثم push</td></tr></tbody></table>
+<div class="callout tip"><p>تصفية الحالة: <code>git status -sb</code> — سطر واحد يخبرك بكل شيء، قبل أي أمر آخر.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 2 — أنواع الدمج الثلاثة</h1><span class="idx">الجلسة 04 — المزامنة والدمج · 6/13</span></div><div class="body"><pre class="code"><span class="cm"># 1) دمج سريع (لا عمل متبادل):</span>
+<span class="cmd">$ git merge --ff-only origin/main</span>
+Updating a1b2c3d..f9e8d7c
+Fast-forward
+&nbsp;
+<span class="cm"># 2) دمج بعقدة (عمل متبادل):</span>
+<span class="cmd">$ git merge feature/omar-qa-card</span>
+Merge made by the &#x27;ort&#x27; strategy.
+ 1 file changed, 9 insertions(+)
+&nbsp;
+<span class="cm"># 3) الدمج المضغوط:</span>
+<span class="cmd">$ git merge --squash feature/sara-fixes</span>
+Squash commit -- not updating HEAD
+<span class="cmd">$ git commit -m &quot;feat(ui): improve member card layout (#9)&quot;</span></pre></div></section>
+<section class="slide"><div class="thead"><h1>أي استراتيجية نختار؟</h1><span class="idx">الجلسة 04 — المزامنة والدمج · 7/13</span></div><div class="body"><table><thead><tr><th>الاستراتيجية</th><th>شكل التاريخ</th><th>متى نستخدمها</th></tr></thead><tbody><tr><td>Merge commit</td><td>فروع وعُقد واضحة</td><td>فرع طويل بمهام متعددة</td></tr><tr><td>Squash and merge</td><td>التزام واحد نظيف</td><td>فرع صغير أو إصلاحات متتابعة</td></tr><tr><td>Rebase and merge</td><td>خط مستقيم بلا عُقد</td><td>تاريخ خطّي للمراجعة</td></tr></tbody></table>
+<div class="callout rule"><p>القاعدة: <b>rebase للفروع الشخصية فقط، merge للفروع المشتركة.</b> إعادة تشكيل فرع يعمل عليه زميل تُتلف عمله.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 4 — افحص تعديلات زملائك</h1><span class="idx">الجلسة 04 — المزامنة والدمج · 8/13</span></div><div class="body"><pre class="code"><span class="cmd">$ git log --oneline --all --graph --decorate -8   # شجرة الفريق</span>
+<span class="cmd">$ git log -p -- data/members/leen-docs.json       # تاريخ ملف واحد</span>
+<span class="cmd">$ git blame data/members/leen-docs.json           # من كتب كل سطر</span>
+<span class="cmd">$ git shortlog -sn --all                          # ترتيب المساهمين</span>
+<span class="cmd">$ git diff main..feature/x --stat                 # ما سيدخل فعلاً</span></pre>
+<ul><li>سؤال: أي ملف عدّله <b>كل</b> الأعضاء؟ الجواب: <code>data/members-index.json</code></li><li>ولهذا هو مُولَّد آلياً: لا يُكتب يدوياً ولا يُحلّ تعارضه يدوياً</li></ul></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 5 — مختبر التراجع الآمن</h1><span class="idx">الجلسة 04 — المزامنة والدمج · 9/13</span></div><div class="body"><table><thead><tr><th>الحالة</th><th>الأمر الصحيح</th><th>يحذف عملاً؟</th></tr></thead><tbody><tr><td>تعديل غير مُلتزم</td><td>git restore &lt;file&gt;</td><td>نعم (هو المقصود)</td></tr><tr><td>ملف مُمرَّر للمرحلة خطأً</td><td>git restore --staged &lt;file&gt;</td><td>لا</td></tr><tr><td>آخر التزام لم يُرفع</td><td>git commit --amend</td><td>لا</td></tr><tr><td>التزام مرفوع خاطئ</td><td>git revert &lt;sha&gt;</td><td>لا (يعكسه)</td></tr><tr><td>تبديل فرع وعملك ناقص</td><td>git stash ثم git stash pop</td><td>لا</td></tr><tr><td>حذفت شيئاً ولا تدري</td><td>git reflog ثم switch -c rescue</td><td>لا</td></tr></tbody></table></div></section>
+<section class="slide"><div class="thead"><h1>لماذا revert لا reset على التاريخ المشترك؟</h1><span class="idx">الجلسة 04 — المزامنة والدمج · 10/13</span></div><div class="body"><pre class="code"><span class="cmd">$ git revert --no-edit 8de1e7a</span>
+[main 6f7e8d9] Revert &quot;feat(ui): change card colors&quot;
+&nbsp;
+<span class="cmd">$ git log --oneline -3</span>
+6f7e8d9 (HEAD -&gt; main) Revert &quot;feat(ui): change card colors&quot;
+2b3c4d5 docs(readme): add FAQ section
+8de1e7a feat(ui): change card colors</pre>
+<ul><li><code>revert</code> ينشئ التزاماً جديداً يعكس الأول ← التاريخ يبقى صحيحاً لكل من سحب المشروع</li><li><code>reset --hard</code> يحذف الالتزامات ← من بنى عليها عملاً ينهار مشروعه</li></ul></div></section>
+<section class="slide"><div class="thead"><h1>شبكة الأمان الأخيرة: reflog</h1><span class="idx">الجلسة 04 — المزامنة والدمج · 11/13</span></div><div class="body"><pre class="code"><span class="cmd">$ git reflog -5</span>
+6f7e8d9 HEAD@{0}: revert: Revert &quot;feat(ui): change card colors&quot;
+2b3c4d5 HEAD@{1}: commit (amend): docs(readme): add FAQ section
+1e1682a HEAD@{2}: commit: docs(readme): add faq
+5aaeef2 HEAD@{3}: reset: moving to origin/main
+&nbsp;
+<span class="cmd">$ git switch -c rescue 5aaeef2      # استرجاع أي حالة سابقة</span></pre>
+<div class="callout tip"><p><code>reflog</code> سجل <b>محلي</b> لا يُرفع إلى GitHub — فهو ينقذك على جهازك، لكنه لا ينقذ زميلاً على جهاز آخر.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 6 — نظّف فروعك بأمان</h1><span class="idx">الجلسة 04 — المزامنة والدمج · 12/13</span></div><div class="body"><pre class="code"><span class="cmd">$ git branch --merged main        # الفروع التي اندمج عملها فعلاً</span>
+  feature/ali-card
+  feature/leen-card
+* main
+&nbsp;
+<span class="cmd">$ git branch -d feature/ali-card feature/leen-card</span>
+Deleted branch feature/ali-card (was 1a2b3c4).
+&nbsp;
+<span class="cmd">$ git fetch --prune</span>
+ - [deleted]         (none)     -&gt; origin/feature/ali-card</pre>
+<div class="callout warn"><p>احذف الفروع المدموجة فقط. الفرع غير المدموج يحتاج <code>-D</code> (حذف قسري) — لا تستخدمه إلا بعد التأكد أن عملك محفوظ أو مرفوع.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>قبل الجلسة القادمة</h1><span class="idx">الجلسة 04 — المزامنة والدمج · 13/13</span></div><div class="body"><ul><li><code>main</code> عندك محدَّث ومساوٍ لـ <code>origin/main</code></li><li>نفّذت الدمج بالاستراتيجيات الثلاث وتعرف الفرق بينها عملياً</li><li>جرّبت <code>stash</code> و<code>amend</code> و<code>revert</code> و<code>reflog</code></li><li>تقرير الفريق مملوء بالأرقام الحقيقية من المستودع</li><li>الجلسة القادمة: <b>التعارضات والنشر</b> — سنصنع تعارضاً عن قصد ونحلّه، ثم ننشر الموقع للعالم</li></ul>
+<div class="callout ok"><p>تذكّر: التعارض ليس خطأً. هو رسالة من Git تقول «هنا تعديلان، اختر أنت» — والجلسة القادمة تجعل هذا الاختيار سهلاً.</p></div></div></section>
+</div>
+<nav>
+<button onclick="go(cur-1)">السابق ‹</button>
+<span class="pos">1 / 13</span>
+<button onclick="go(cur+1)">› التالي</button>
+<button onclick="document.documentElement.requestFullscreen()">ملء الشاشة</button>
+<button onclick="window.print()">طباعة / PDF</button>
+</nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let cur=0;
+function fit(){const s=Math.min(1,(window.innerWidth-40)/1280,(window.innerHeight-70)/720);
+ document.querySelectorAll('.slide').forEach(el=>el.style.transform='scale('+s+')');}
+function go(n){cur=Math.max(0,Math.min(slides.length-1,n));
+ slides[cur].scrollIntoView({behavior:'smooth',block:'center'});show();}
+function show(){const p=document.querySelector('nav .pos');
+ if(p)p.textContent=(cur+1)+' / '+slides.length;
+ slides.forEach((el,i)=>el.style.outline=i===cur?'3px solid #e8620c':'none');}
+addEventListener('keydown',e=>{
+ if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','PageUp','PageDown'].includes(e.key))e.preventDefault();
+ if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '||e.key==='PageDown')go(cur+1);
+ else if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp')go(cur-1);
+ else if(e.key==='Home')go(0); else if(e.key==='End')go(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}});
+addEventListener('resize',fit);
+addEventListener('scroll',()=>{const mid=innerHeight/2;let best=0,bd=1e9;
+ slides.forEach((el,i)=>{const r=el.getBoundingClientRect();const d=Math.abs(r.top+r.height/2-mid);if(d<bd){bd=d;best=i;}});
+ if(best!==cur){cur=best;show();}},{passive:true});
+fit();show();
+</script>
+</body>
+</html>

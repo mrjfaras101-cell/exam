@@ -406,6 +406,8 @@ def build_body(slide_data: dict) -> list[tuple]:
         line = raw.rstrip()
         m = BLOCK_RE.match(line)
         if m:
+            if buf_bullets:                      # أفرغ أي قائمة سابقة قبل الكتلة (حفظ الترتيب)
+                out.append(("bullets", buf_bullets)); buf_bullets = []
             name = m.group("name").lower(); attrs = parse_attrs(m.group("attrs"))
             # اجمع حتى نهاية الكتلة
             inner = []

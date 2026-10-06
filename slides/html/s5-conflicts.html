@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الجلسة 05 — حل التعارضات والنشر</title>
+<style>
+@font-face{font-family:CairoAr;src:url("../../assets/fonts/cairo-arabic-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:CairoAr;src:url("../../assets/fonts/cairo-arabic-700-normal.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:CairoLat;src:url("../../assets/fonts/cairo-latin-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:CairoLat;src:url("../../assets/fonts/cairo-latin-700-normal.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:JBMono;src:url("../../assets/fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2")}
+:root{--navy:#12203c;--navy2:#1e3a5f;--orange:#e8620c;--teal:#0e7c7b;--green:#128a5b;
+ --red:#b3261e;--violet:#6d3bb5;--ink:#12161c;--body:#22303f;--muted:#6b7684;--light:#f4f7fa;--line:#d6dde6}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0b1220;color:var(--ink);
+ font-family:CairoAr,CairoLat,"Segoe UI",system-ui,sans-serif}
+.deck{display:flex;flex-direction:column;align-items:center;gap:26px;padding:26px 10px 90px}
+.slide{width:1280px;height:720px;background:#fff;border-radius:10px;overflow:hidden;
+ box-shadow:0 18px 44px rgba(0,0,0,.45);position:relative;flex:0 0 auto;
+ transform-origin:top center}
+.slide>*{position:relative;z-index:1}
+.thead{height:88px;background:var(--navy);display:flex;align-items:center;justify-content:space-between;
+ padding:0 42px;gap:20px}
+.thead h1{margin:0;color:#fff;font-size:27px;font-weight:700}
+.thead .idx{color:#9fc0e6;font-size:12.5px;font-family:JBMono,monospace;direction:ltr;white-space:nowrap}
+.body{padding:24px 42px;display:flex;flex-direction:column;gap:14px;height:632px;overflow:hidden}
+.body p{margin:0;font-size:19px;line-height:1.65;color:var(--body)}
+.body ul{margin:0;padding:0 22px 0 0;list-style:none}
+.body ul li{position:relative;font-size:18px;line-height:1.75;color:var(--body);padding-right:22px}
+.body ul li:before{content:"•";position:absolute;right:0;color:var(--orange);font-weight:700}
+.code{background:#0f172a;border-radius:9px;padding:14px 18px;margin:0;direction:ltr;text-align:left;
+ font-family:JBMono,Consolas,monospace;font-size:14.5px;line-height:1.62;color:#e6edf7;overflow:hidden;white-space:pre-wrap}
+.code .cmd{color:#7fd1a8}.code .cm{color:#7d8ca3}.code .err{color:#f08c7a}
+.callout{border-radius:9px;padding:13px 18px;font-size:16.5px;line-height:1.6}
+.callout p{margin:0 0 4px;font-size:16.5px}
+.callout p:last-child{margin-bottom:0}
+.callout.info{background:#eef4fd;color:#1c4b86}.callout.tip{background:#e6f5f5;color:#0a5d5c}
+.callout.warn{background:#fff8e8;color:#8a5a06}.callout.err{background:#fdecea;color:#8c1d17}
+.callout.ok{background:#e7f7f0;color:#0b6244}.callout.rule{background:#f7f4fe;color:#4b2683}
+figure{margin:0;display:flex;justify-content:center}
+figure img{max-width:100%;max-height:430px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.cols ul{background:var(--light);border-radius:9px;padding:14px 20px 14px 14px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{background:var(--navy2);color:#fff;padding:9px 10px;font-size:15px}
+td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--body);vertical-align:top}
+tbody tr:nth-child(even){background:#fafcfe}
+b{font-weight:700}
+code{font-family:JBMono,Consolas,monospace;font-size:.92em;background:#eef2f7;border-radius:4px;padding:0 4px;direction:ltr;unicode-bidi:embed}
+/* شريحة العنوان */
+.slide.title{background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;
+ text-align:center;padding:0 70px;color:#fff;border-bottom:26px solid var(--orange)}
+.slide.title .kick{color:#9fc0e6;font-size:17px;margin-bottom:22px}
+.slide.title h1{font-size:52px;margin:0 0 18px;line-height:1.25}
+.slide.title .sub{color:#d3e2f2;font-size:22px;direction:ltr;font-family:JBMono,monospace}
+.slide.title .foot{position:absolute;bottom:34px;color:#cbdff0;font-size:14px}
+nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:rgba(11,18,32,.86);
+ border:1px solid #26364f;border-radius:999px;padding:8px 14px;display:flex;gap:10px;align-items:center;z-index:9}
+nav button{background:#1e3a5f;color:#fff;border:0;border-radius:999px;padding:8px 16px;font:inherit;font-size:14px;cursor:pointer}
+nav button:hover{background:#2b5486}
+nav .pos{color:#9fc0e6;font-size:13px;font-family:JBMono,monospace}
+html:fullscreen nav{opacity:.15}html:fullscreen nav:hover{opacity:1}
+.idx-page{max-width:1040px;margin:0 auto;padding:40px 22px 80px;color:#e8eef7;font-family:CairoLat,CairoAr,system-ui,sans-serif;direction:rtl}
+.idx-page h1{color:#fff;font-size:30px;margin:0 0 6px}
+.idx-page p.sub{color:#9fb6d4;margin:0 0 26px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{background:#152340;border:1px solid #26364f;border-radius:13px;padding:18px 20px;text-decoration:none;color:#e8eef7;display:block}
+.card:hover{border-color:var(--orange);transform:translateY(-2px)}
+.card b{display:block;font-size:19px;margin-bottom:8px}
+.card span{color:#9fb6d4;font-size:13.5px;font-family:JBMono,monospace;direction:ltr}
+@media print{
+ @page{size:338mm 190mm;margin:0}
+ html,body{background:#fff}
+ .deck{gap:0;padding:0}
+ .slide{box-shadow:none;border-radius:0;transform:none!important;page-break-after:always;width:338mm;height:190mm}
+ nav{display:none}
+ .thead{height:24mm}.body{height:calc(190mm - 24mm);padding:7mm 11mm}
+ .body p,.body ul li{font-size:15pt}.code{font-size:11.5pt}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+<section class="slide title"><div class="kick">ورشة GIT وGITHUB</div><h1>حل التعارضات ونشر الموقع</h1><div class="sub">Session 05 · Merge Conflicts &amp; GitHub Pages</div><div class="foot">ورشة Git وGitHub · الجلسة 05 — حل التعارضات والنشر</div></section>
+<section class="slide"><div class="thead"><h1>هدف اليوم — ثلاث مهارات يطلبها سوق العمل</h1><span class="idx">الجلسة 05 — حل التعارضات والنشر · 2/13</span></div><div class="body"><ul><li>حل التعارضات بثقة: نفهم لماذا حدث، ولا نخاف منه</li><li>إدارة الإصدارات: وسم الإصدار الأول من المشروع</li><li>النشر: الموقع يظهر على رابط عام يراه أي شخص</li><li>التعارض ليس فشلاً: هو دعوة من Git لاتخاذ قرار واعٍ</li></ul>
+<div class="callout info"><p>اليوم <b>الدمج</b> لا يُنهى إلا بعد فهمه: كل تعارض حلّيته ستشرحه في تقرير التسليم بجملة واحدة واضحة.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>متى يحدث التعارض؟</h1><span class="idx">الجلسة 05 — حل التعارضات والنشر · 3/13</span></div><div class="body"><figure><img src="../../assets/img/png/conflict-markers.png" alt="conflict-markers"></figure>
+<ul><li>شرطان معاً: تعديلان متوازيان + نفس الأسطر</li><li>تعديلان في ملفين مختلفين ← لا تعارض</li><li>تعديلان في نفس الملف لكن أسطراً مختلفة ← لا تعارض (يحدث دمج تلقائي)</li><li>تعديلان في نفس السطر ← تعارض</li></ul>
+<div class="callout rule"><p>حلّ التعارض = <b>قرار محتوى</b>، والجهاز يساعد لكن القرار لك ولفريقك.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 2 — صنع تعارض متعمد داخل الفرع المشترك</h1><span class="idx">الجلسة 05 — حل التعارضات والنشر · 4/13</span></div><div class="body"><pre class="code"><span class="cmd">$ git switch main &amp;&amp; git pull --ff-only</span>
+<span class="cmd">$ git switch -c sandbox/conflict-&lt;team&gt;</span>
+&nbsp;
+<span class="cmd">$ nano data/site-config.json     # الفريق الأول: h1Title = &quot;دليل صف 2026&quot;</span>
+<span class="cmd">$ node tests/validate-members.mjs</span>
+<span class="cmd">$ git add data/site-config.json</span>
+<span class="cmd">$ git commit -m &quot;content(config): set team headline (team A)&quot;</span>
+<span class="cmd">$ git push -u origin sandbox/conflict-&lt;team&gt;</span></pre>
+<ul><li>تكرار التعارض <b>بشكل مقصود</b> في بيئة آمنة هو أسرع طريق لإتقانه</li><li>ملف <code>data/site-config.json</code> هو ميدان التدريب: يتغير بسرعة، ولن يضر الموقع</li></ul></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 3 — التعارض يظهر، ماذا أرى؟</h1><span class="idx">الجلسة 05 — حل التعارضات والنشر · 5/13</span></div><div class="body"><pre class="code"><span class="cmd">$ git switch main &amp;&amp; git pull --ff-only</span>
+<span class="cmd">$ git merge sandbox/conflict-&lt;team&gt;</span>
+Auto-merging data/site-config.json
+<span class="err">CONFLICT (content): Merge conflict in data/site-config.json</span>
+Automatic merge failed; fix conflicts and then commit the result.
+&nbsp;
+<span class="cmd">$ git status -sb</span>
+<span class="cm">## main</span>
+UU data/site-config.json</pre>
+<pre class="code">{
+  &quot;siteName&quot;: &quot;دليل فريق الصف&quot;,
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+  &quot;h1Title&quot;: &quot;دليل صف 2026&quot;,
+=======
+  &quot;h1Title&quot;: &quot;دليل فريق الصف&quot;,
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; sandbox/conflict-team-a
+  &quot;contactEmail&quot;: &quot;team@example.com&quot;
+}</pre></div></section>
+<section class="slide"><div class="thead"><h1>العلامات الثلاث — ترجمتها</h1><span class="idx">الجلسة 05 — حل التعارضات والنشر · 6/13</span></div><div class="body"><table><thead><tr><th>العلامة</th><th>تعني</th></tr></thead><tbody><tr><td>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</td><td>بداية منطقة التعديل الموجود على فرعك الحالي</td></tr><tr><td>=======</td><td>الخط الفاصل بين الرأيين</td></tr><tr><td>&gt;&gt;&gt;&gt;&gt;&gt;&gt; name</td><td>بداية تعديل الطرف الآخر</td></tr></tbody></table>
+<div class="callout err"><p>✘ خطأ قاتل: ترك أي من العلامات الثلاث في الملف. المشروع لن يعمل، وهذه أسرع طريقة لرفض طلبك في المراجعة.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 4 — القرار ثم إغلاق التعارض</h1><span class="idx">الجلسة 05 — حل التعارضات والنشر · 7/13</span></div><div class="body"><pre class="code">{
+  &quot;siteName&quot;: &quot;دليل فريق الصف&quot;,
+  &quot;h1Title&quot;: &quot;دليل صف 2026&quot;,
+  &quot;contactEmail&quot;: &quot;team@example.com&quot;
+}</pre>
+<pre class="code"><span class="cmd">$ grep -rInE &quot;^(&lt;{7}|={7}|&gt;{7})( |$)&quot; --exclude-dir=.git .</span>
+   ← لا مخرجات = لا علامات متبقية ✔
+&nbsp;
+<span class="cmd">$ node tests/validate-members.mjs</span>
+--- النتيجة / Result: 6 بطاقة، 0 خطأ، 0 تحذير ---
+&nbsp;
+<span class="cmd">$ git add data/site-config.json</span>
+<span class="cmd">$ git commit -m &quot;merge: resolve site-config headline conflict&quot;</span>
+<span class="cmd">$ git push</span></pre>
+<ul><li>القرار هنا: نريد عنوان «دليل صف 2026» — لأن الأحدث هو الأصح</li><li>الحل الأفضل ليس «خذ رأيي»، بل <b>ماذا سيرى الزائر؟</b></li></ul></div></section>
+<section class="slide"><div class="thead"><h1>الأدوات البصرية تُسهّل، لا تُقرّر</h1><span class="idx">الجلسة 05 — حل التعارضات والنشر · 8/13</span></div><div class="body"><table><thead><tr><th>الأداة</th><th>القيمة عند التعارض</th></tr></thead><tbody><tr><td>VS Code</td><td>تلوين الطرفين وأزرار Accept Current/Incoming — مع معاينة مباشرة</td></tr><tr><td>GitHub Desktop</td><td>فتح الملف في محرر والخيارات الأربعة، ثم Continue merge</td></tr><tr><td>git diff</td><td>رؤية الفرق بنص واضح قبل أي قرار</td></tr><tr><td>git mergetool</td><td>فتح أداة الفروق الثلاثية (ثلاثة أعمدة) عند الحاجة</td></tr></tbody></table>
+<div class="callout tip"><p>مهما استخدمت من أدوات: <b>القرار قرارك</b>، والأداة تعرض لا تحكم. اقرأ الطرفين قبل الموافقة.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 6 — علّم إصدارك الأول</h1><span class="idx">الجلسة 05 — حل التعارضات والنشر · 9/13</span></div><div class="body"><pre class="code"><span class="cmd">$ git tag -a v1.0.0 -m &quot;الإصدار الأول: بطاقات الفريق العشرة + صفحة الأسئلة الشائعة&quot;</span>
+<span class="cmd">$ git push origin v1.0.0</span>
+To https://github.com/&lt;org&gt;/class-team-hub.git
+ * [new tag]         v1.0.0 -&gt; v1.0.0
+&nbsp;
+<span class="cmd">$ git show v1.0.0 --stat --no-patch</span>
+tag v1.0.0
+Tagger: Omar Al-Qasem &lt;omar@example.com&gt;
+Date:   Tue Nov 3 11:20:14 2026 +0300
+&nbsp;
+الإصدار الأول: بطاقات الفريق العشرة + صفحة الأسئلة الشائعة</pre>
+<ul><li>الوسم <b>معنون</b> (<code>-a</code>) يحمل: من وسم، ومتى، ولماذا — لأنه مرجع رسمي للفريق</li></ul></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 7 — انشر الموقع على GitHub Pages</h1><span class="idx">الجلسة 05 — حل التعارضات والنشر · 10/13</span></div><div class="body"><pre class="code">Settings → Pages
+  Source:  Deploy from a branch
+  Branch:  main  /  (root)
+  → Save
+&nbsp;
+<span class="cm"># بعد دقيقة:</span>
+https://&lt;org&gt;.github.io/class-team-hub/</pre>
+<div class="callout warn"><p>الصفحة قد تحتاج 1–3 دقائق حتى تظهر أول مرة. حدّث الصفحة، وإن استمر الخطأ فتحقق من: اسم الفرع، ومجلد الإخراج، وأن <code>index.html</code> في الجذر.</p></div>
+<div class="callout ok"><p>عند نجاح النشر: ضع الرابط في وصف المستودع (About → Website) وفي رسالة الالتزام النهائي.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>اختبار نهائي للفريق — «السؤال الكبير»</h1><span class="idx">الجلسة 05 — حل التعارضات والنشر · 11/13</span></div><div class="body"><ul><li>افتح رابط الموقع من هاتف زميلك: هل تظهر البطاقات كلها؟</li><li>نادِ ثلاثة أعضاء باسم كل واحد: هل بطاقته تظهر ببياناته الصحيحة وترتيبه الصحيح؟</li><li>افتح <code>git log --oneline --graph --all</code> واسأل: أي عقدة جمعت عمل كل الفريق؟</li><li>تحقق من <code>git tag -l</code> ثم <code>git ls-remote --tags origin</code>: هل الوسم على الخادم فعلاً؟</li></ul>
+<div class="callout info"><p>الوسم المحلي وحده <b>لا يُرفع تلقائياً</b> مع <code>git push</code> — يحتاج <code>git push origin v1.0.0</code> أو <code>git push origin --tags</code>.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>ختام البرنامج الأساسي</h1><span class="idx">الجلسة 05 — حل التعارضات والنشر · 12/13</span></div><div class="body"><ul><li>عندك الآن: مهارة يطلبها كل فريق برمجي، ومشروع حقيقي على الإنترنت باسمك</li><li>أتقنت: الالتزام، الفرع، طلب السحب، المراجعة، المزامنة، الدمج، حل التعارض، النشر</li><li>الخطوة التالية (اختيارية متقدمة): <b>الوحدة 06 — الأتمتة الاحترافية</b> (<code>ws6-automation</code>)</li><li>فيها: GitHub Actions، حماية الفرع، CODEOWNERS، الإصدارات، وسجل التغييرات</li></ul>
+<div class="callout tip"><p>هذه المهارات تُختبر في المقابلات العملية. احتفظ بمستودع المشروع في سيرتك، واربطه بحساب GitHub.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>شكراً — أسئلتكم؟</h1><span class="idx">الجلسة 05 — حل التعارضات والنشر · 13/13</span></div><div class="body"><div class="callout ok"><p>لا تنسَ: كل ما تعلمته اليوم يستخدمه المهندسون كل يوم في العمل الفعلي. الفرق بينك وبينهم اليوم: عدد المحاولات، لا الموهبة.</p></div></div></section>
+</div>
+<nav>
+<button onclick="go(cur-1)">السابق ‹</button>
+<span class="pos">1 / 13</span>
+<button onclick="go(cur+1)">› التالي</button>
+<button onclick="document.documentElement.requestFullscreen()">ملء الشاشة</button>
+<button onclick="window.print()">طباعة / PDF</button>
+</nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let cur=0;
+function fit(){const s=Math.min(1,(window.innerWidth-40)/1280,(window.innerHeight-70)/720);
+ document.querySelectorAll('.slide').forEach(el=>el.style.transform='scale('+s+')');}
+function go(n){cur=Math.max(0,Math.min(slides.length-1,n));
+ slides[cur].scrollIntoView({behavior:'smooth',block:'center'});show();}
+function show(){const p=document.querySelector('nav .pos');
+ if(p)p.textContent=(cur+1)+' / '+slides.length;
+ slides.forEach((el,i)=>el.style.outline=i===cur?'3px solid #e8620c':'none');}
+addEventListener('keydown',e=>{
+ if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','PageUp','PageDown'].includes(e.key))e.preventDefault();
+ if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '||e.key==='PageDown')go(cur+1);
+ else if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp')go(cur-1);
+ else if(e.key==='Home')go(0); else if(e.key==='End')go(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}});
+addEventListener('resize',fit);
+addEventListener('scroll',()=>{const mid=innerHeight/2;let best=0,bd=1e9;
+ slides.forEach((el,i)=>{const r=el.getBoundingClientRect();const d=Math.abs(r.top+r.height/2-mid);if(d<bd){bd=d;best=i;}});
+ if(best!==cur){cur=best;show();}},{passive:true});
+fit();show();
+</script>
+</body>
+</html>
