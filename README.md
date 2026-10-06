@@ -17,7 +17,7 @@
 | `solutions/` | **نماذج الحلول والتقييم** لكل ورقة (للمدرّب) | PDF + HTML |
 | `trainer/` | **دليل المدرّب الشامل** (تخطيط، إدارة صف، أخطاء شائعة، سكربتات إنقاذ) | PDF + HTML |
 | `docx/` | النسخ القابلة للتعديل من كل ما سبق | DOCX |
-| `slides/` | **عروض الجلسات الستة** (16:9، جاهزة للشاشة) | PPTX |
+| `slides/` | **عروض الجلسات الستة** (16:9، جاهزة للشاشة) + نسخة متصفح + PDF | PPTX + HTML + PDF |
 | `project/` | **المستودع التدريبي** `class-team-hub` الذي ينسخه الطلبة ويعدّلونه | كود + بيانات |
 | `source/` | ملفات المصدر (Markdown بصيغة مختصرة) لتعديل المحتوى | MD |
 | `tools/` | أدوات توليد المستندات (PDF/DOCX) والعروض (PPTX) + فاحص جودة العروض | Python |
@@ -71,8 +71,8 @@ python3 -m http.server 8000           # تشغيل الموقع على http://lo
 4. **اطبع** أوراق `worksheets/*.pdf` للطلبة (كل ورقة ~9–11 صفحة A4).
 5. **احتفظ** بـ `solutions/*.pdf` و`trainer/*.pdf` لنفسك — **لا توزّعها على الطلبة**.
 6. **صحّح** بجدول التقييم المُجمَّع (500 نقطة، +100 للوحدة المتقدمة 06) الموجود في كل نموذج حل.
-7. **اعرض** شرائح كل جلسة من `slides/s‹n›-….pptx` (11–18 شريحة لكل جلسة) قبل التنفيذ العملي:
-   عرض 10–20 دقيقة ثم المهمة مباشرة على الجهاز.
+7. **اعرض** شرائح كل جلسة قبل التنفيذ العملي (10–20 دقيقة ثم المهمة على الجهاز) — ثلاث صيغ:
+   `slides/*.pptx` (تعديل)، `slides/html/index.html` (متصفح أو طباعة)، `slides/pdf/*.pdf` (عرض/أرشفة).
 
 ## 5) تعديل المحتوى أو ترجمته | Customising & translating
 
@@ -84,9 +84,12 @@ python3 tools/build.py ws1             # ورقة واحدة
 python3 tools/build.py --no-docx       # بدون DOCX (أسرع)
 python3 tools/build.py --no-pdf        # بدون PDF
 
-python3 tools/build_slides.py          # بناء عروض الجلسات → slides/*.pptx
-python3 tools/build_slides.py s3       # عرض واحد
-python3 tools/check_slides.py          # فاحص جودة العروض (يجب أن يخرج بلا ملاحظات)
+python3 tools/build_slides.py              # عروض الجلسات → slides/*.pptx
+python3 tools/build_slides.py s3           # عرض واحد
+python3 tools/build_slides_html.py         # نسخة المتصفح → slides/html/*.html
+python3 tools/build_slides_html.py --pdf   # + PDF بمقاس الشريحة → slides/pdf/*.pdf
+python3 tools/check_slides.py              # فاحص جودة العروض (يجب أن يخرج بلا ملاحظات)
+python3 tools/serve_slides.py              # معاينة محلية: http://localhost:8110/slides/html/
 ```
 
 **بنية أوراق العمل (واجهة التنسيق المختصرة):**
@@ -144,9 +147,10 @@ python3 tools/check_slides.py          # فاحص جودة العروض (يجب 
 ├── solutions/    solutions-ws1…ws6               (PDF + HTML)   ← للمدرّب فقط
 ├── trainer/      trainer-guide                   (PDF + HTML)   ← للمدرّب فقط
 ├── docx/         نفس المستندات بجميع أنواعها     (DOCX)         ← للتعديل
-├── slides/       عروض الجلسات s1…s6              (PPTX)         ← للشاشة
+├── slides/       عروض الجلسات s1…s6   (PPTX + html/ + pdf/)  ← للشاشة
 ├── project/      class-team-hub — المستودع التدريبي
 ├── source/       مصادر Markdown (+ source/slides/ للعروض)
-├── tools/        build.py · build_slides.py · check_slides.py · rasterize.mjs
+├── tools/        build.py · build_slides.py · build_slides_html.py ·
+│                 check_slides.py · serve_slides.py · rasterize.mjs
 └── assets/       print.css · fonts/ · img/ (SVG + PNG) · cover-hero.png
 ```

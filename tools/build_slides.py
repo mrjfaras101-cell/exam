@@ -395,6 +395,43 @@ def slide_content(prs, s, meta, idx, total, body_lines):
 
 
 # ---------------- تحويل نص الشريحة إلى عناصر ----------------
+def extract_notes(slide_data: dict) -> None:
+    """يفصل كتلة :::notes (ملاحظات المُحاضر) عن جسم الشريحة — تُكتب في notes slide."""
+
+    lines = slide_data["body"]
+    keep, notes, i = [], [], 0
+    while i < len(lines):
+        m = BLOCK_RE.match(lines[i].rstrip())
+        if m and m.group("name").lower() == "notes":
+            i += 1
+            while i < len(lines) and lines[i].strip() != ":::":
+                notes.append(lines[i].rstrip())
+                i += 1
+            i += 1
+            continue
+        keep.append(lines[i])
+        i += 1
+    slide_data["body"] = keep
+    slide_data["notes"] = [n for n in notes if n.strip()]
+
+
+def add_notes(sl, notes: list[str]) -> None:
+    """يكتب ملاحظات المُحاضر في صفحة الملاحظات الخاصة بالشريحة."""
+    if not notes:
+        return
+    tf = sl.notes_slide.notes_text_frame
+    tf.text = safen("\n".join(notes))
+    for p in tf.paragraphs:
+        p.alignment = PP_ALIGN.RIGHT
+        pPr = p._p.get_or_add_pPr()
+        pPr.set("rtl", "1")
+        if not p.runs:
+            r = p.add_run(); r.text = ""
+        for r in p.runs:
+            r.font.size = Pt(14)
+            apply_font(r, AR_FONT)
+
+
 def build_body(slide_data: dict) -> list[tuple]:
     out: list[tuple] = []
     buf_text: list[str] = []
@@ -466,11 +503,13 @@ def build_deck(path: Path) -> Path:
     prs.slide_height = SLIDE_H
     total = len(slides)
     for idx, s in enumerate(slides, start=1):
+        extract_notes(s)
         layout = s["attrs"].get("layout", "content")
         if layout == "title" or idx == 1:
-            slide_title(prs, s, meta, idx, total)
+            sl = slide_title(prs, s, meta, idx, total)
         else:
-            slide_content(prs, s, meta, idx, total, build_body(s))
+            sl = slide_content(prs, s, meta, idx, total, build_body(s))
+        add_notes(sl, s.get("notes", []))
     OUT.mkdir(exist_ok=True)
     dest = OUT / (path.stem + ".pptx")
     prs.save(str(dest))

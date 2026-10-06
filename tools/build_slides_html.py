@@ -11,6 +11,7 @@ build_slides_html.py — نسخة HTML من عروض الجلسات (للعرض 
 الاستخدام:
     python3 tools/build_slides_html.py            # كل العروض + صفحة فهرس
     python3 tools/build_slides_html.py s3         # عرض واحد
+    python3 tools/build_slides_html.py --pdf      # + تصدير slides/pdf/*.pdf (صفحة لكل شريحة)
 
 المولّد يعيد استعمال محلّل المصدر من tools/build_slides.py (مصدر حقيقة واحد للصيغة).
 """
@@ -27,6 +28,7 @@ import build_slides as bs
 ROOT = bs.ROOT
 SRC = bs.SRC
 OUT = ROOT / "slides" / "html"
+PDFDIR = ROOT / "slides" / "pdf"
 
 CSS = """
 @font-face{font-family:CairoAr;src:url("../../assets/fonts/cairo-arabic-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -126,6 +128,40 @@ addEventListener('scroll',()=>{const mid=innerHeight/2;let best=0,bd=1e9;
  if(best!==cur){cur=best;show();}},{passive:true});
 fit();show();
 """
+
+
+def export_pdf(files: list[Path]) -> None:
+    """يصدّر العروض HTML إلى PDF بمقاس الشريحة (نفس آلية build.py الذاتية الإصلاح)."""
+    import os
+    import shutil
+    import subprocess
+
+    import build as bld  # إعادة استعمال: استخراج مكتبات Chromium + المسارات
+
+    if not shutil.which("node"):
+        print("…… تُخطّى PDF: node غير متوفّر في هذه البيئة.")
+        return
+    try:
+        bld.ensure_chromium_libs()
+    except Exception as exc:  # noqa: BLE001
+        print(f"…… تُخطّى PDF: تعذّر تجهيز مكتبات Chromium ({exc}).")
+        return
+    if not (bld.WORK / "node_modules").exists():
+        print("…… تثبيت chromium/puppeteer مرة واحدة لهذا التصدير")
+        try:
+            subprocess.run(["npm", "install", "--silent", "@sparticuz/chromium", "puppeteer-core"],
+                           cwd=bld.WORK, check=True)
+        except Exception as exc:  # noqa: BLE001
+            print(f"…… تُخطّى PDF: تعذّر تثبيت الحزم ({exc}).")
+            return
+    script = bld.WORK / "decks_to_pdf.mjs"
+    script.write_text((ROOT / "tools" / "decks_to_pdf.mjs").read_text(encoding="utf-8"),
+                      encoding="utf-8")
+    env = os.environ.copy()
+    env["LD_LIBRARY_PATH"] = "/tmp/chlibs/lib:" + env.get("LD_LIBRARY_PATH", "")
+    PDFDIR.mkdir(parents=True, exist_ok=True)
+    subprocess.run(["node", str(script), "--out", str(PDFDIR), *[str(f) for f in files]],
+                   cwd=bld.WORK, env=env, check=True)
 
 
 def inline(t: str) -> str:
@@ -255,7 +291,9 @@ def build_index(decks: list[tuple[str, str, int]]) -> Path:
 
 
 def main() -> None:
-    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    raw = sys.argv[1:]
+    want_pdf = any(a in ("--pdf", "-p") for a in raw)
+    args = [a for a in raw if not a.startswith("-")]
     files = sorted(f for f in SRC.glob("*.md") if f.name.lower() not in ("readme.md", "index.md"))
     if args:
         files = [f for f in files if any(a in f.name for a in args)]
@@ -270,6 +308,9 @@ def main() -> None:
     if not args:
         idx = build_index(made)
         print(f"HTML ✓ {idx.relative_to(ROOT)}")
+    if want_pdf:
+        pages = [ROOT / "slides" / "html" / name for name, _, _ in made]
+        export_pdf(pages)
 
 
 if __name__ == "__main__":
