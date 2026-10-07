@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 300" font-family="'IBM Plex Sans Arabic','Segoe UI',sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#1E3A5F"/>
+    </marker>
+    <marker id="ar2" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#E8620C"/>
+    </marker>
+  </defs>
+
+  <!-- boxes -->
+  <g>
+    <rect x="20" y="80" width="200" height="120" rx="12" fill="#F5F8FB" stroke="#1E3A5F" stroke-width="1.6"/>
+    <text x="120" y="112" text-anchor="middle" font-size="17" font-weight="700" fill="#12203C">مجلد العمل</text>
+    <text x="120" y="134" text-anchor="middle" font-size="12" fill="#5C6875">Working Directory</text>
+    <text x="120" y="160" text-anchor="middle" font-size="12" fill="#22303F">الملفات التي تعدّلها الآن</text>
+    <text x="120" y="180" text-anchor="middle" font-size="11" fill="#8494A8">your edited files</text>
+  </g>
+
+  <g>
+    <rect x="270" y="80" width="200" height="120" rx="12" fill="#FFF1E6" stroke="#E8620C" stroke-width="1.6"/>
+    <text x="370" y="112" text-anchor="middle" font-size="17" font-weight="700" fill="#9A420A">منطقة الانتظار</text>
+    <text x="370" y="134" text-anchor="middle" font-size="12" fill="#5C6875">Staging Area</text>
+    <text x="370" y="160" text-anchor="middle" font-size="12" fill="#22303F">ما اخترته للالتزام</text>
+    <text x="370" y="180" text-anchor="middle" font-size="11" fill="#8494A8">what will be committed</text>
+  </g>
+
+  <g>
+    <rect x="520" y="80" width="200" height="120" rx="12" fill="#E7F7F0" stroke="#128A5B" stroke-width="1.6"/>
+    <text x="620" y="112" text-anchor="middle" font-size="17" font-weight="700" fill="#0B6244">المستودع المحلي</text>
+    <text x="620" y="134" text-anchor="middle" font-size="12" fill="#5C6875">Local Repository</text>
+    <text x="620" y="160" text-anchor="middle" font-size="12" fill="#22303F">سجل الالتزامات على جهازك</text>
+    <text x="620" y="180" text-anchor="middle" font-size="11" fill="#8494A8">.git history</text>
+  </g>
+
+  <g>
+    <rect x="770" y="80" width="190" height="120" rx="12" fill="#EEF4FD" stroke="#1E3A5F" stroke-width="1.6" stroke-dasharray="6 4"/>
+    <text x="865" y="112" text-anchor="middle" font-size="17" font-weight="700" fill="#1C4B86">GitHub</text>
+    <text x="865" y="134" text-anchor="middle" font-size="12" fill="#5C6875">Remote Repository</text>
+    <text x="865" y="160" text-anchor="middle" font-size="12" fill="#22303F">نسخة الفريق على السحابة</text>
+    <text x="865" y="180" text-anchor="middle" font-size="11" fill="#8494A8">shared on the cloud</text>
+  </g>
+
+  <!-- arrows top -->
+  <line x1="222" y1="118" x2="266" y2="118" stroke="#1E3A5F" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="472" y1="118" x2="516" y2="118" stroke="#1E3A5F" stroke-width="2" marker-end="url(#ar)"/>
+  <line x1="722" y1="118" x2="766" y2="118" stroke="#1E3A5F" stroke-width="2" marker-end="url(#ar)"/>
+
+  <text x="244" y="108" text-anchor="middle" font-size="11" font-weight="700" fill="#E8620C">git add</text>
+  <text x="494" y="108" text-anchor="middle" font-size="11" font-weight="700" fill="#E8620C">git commit</text>
+  <text x="744" y="108" text-anchor="middle" font-size="11" font-weight="700" fill="#E8620C">git push</text>
+
+  <!-- arrows bottom -->
+  <line x1="766" y1="172" x2="726" y2="172" stroke="#0E7C7B" stroke-width="2" marker-end="url(#ar2)"/>
+  <text x="745" y="196" text-anchor="middle" font-size="11" font-weight="700" fill="#0E7C7B">git pull / fetch</text>
+
+  <line x1="516" y1="172" x2="476" y2="172" stroke="#0E7C7B" stroke-width="2" marker-end="url(#ar2)"/>
+  <text x="494" y="196" text-anchor="middle" font-size="11" font-weight="700" fill="#0E7C7B">git restore --staged</text>
+
+  <line x1="266" y1="172" x2="226" y2="172" stroke="#0E7C7B" stroke-width="2" marker-end="url(#ar2)"/>
+  <text x="244" y="196" text-anchor="middle" font-size="11" font-weight="700" fill="#0E7C7B">git restore</text>
+
+  <!-- bottom note -->
+  <text x="490" y="252" text-anchor="middle" font-size="12.5" fill="#12203C" font-weight="600">القاعدة: لكل التزام رسالة واضحة، ولكل تعديل كبير فرع خاص.</text>
+  <text x="490" y="274" text-anchor="middle" font-size="11" fill="#8494A8">Rule: every commit needs a clear message; every big change gets its own branch.</text>
+</svg>

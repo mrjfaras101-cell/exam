@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حلول ورقة العمل 05: التعارضات والنشر</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top" style="background:#7A1220"><div class="badge"><div class="n">05</div><div class="l">نموذج حل</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — دليل المدرّب المرجعي</div><h1>حلول ورقة العمل 05: التعارضات والنشر</h1><div class="sub">Solutions · Worksheet 05 — Conflicts &amp; Deployment</div></div></div><div class="meta"><div><span class="k">التقييم الكلي / Total</span><span class="v">100 نقطة</span></div><div><span class="k">زمن التصحيح المقترح / Marking time</span><span class="v">10–12 دقيقة (تقرير + نشر)</span></div><div><span class="k">أدلة إلزامية / Mandatory evidence</span><span class="v">9 بنود</span></div><div><span class="k">معيار النجاح / Pass mark</span><span class="v">70 نقطة</span></div></div></div>
+<div class="box err"><div class="h">نسخة المدرّب — نماذج الحلول والتقييم <span class="en">/ Instructor copy — do not distribute</span></div></div><div class="band "><span class="ar">فرق مهم في هذه الورقة</span><span class="en">A key difference in this worksheet</span></div>
+
+<div class="bi "><div class="ar"><p>الورقة 05 قياس <strong>قدرة على حل مشكلة تحت ضغط</strong>، لا حفظ أوامر. لذلك نجحت المهمة حتى لو
+اختلف الحل عن هذا النموذج، <strong>بشرط أن يكون</strong>: (1) التاريخ سليماً بلا حذف، (2) عمل الزملاء
+محفوظاً، (3) الفحص التلقائي ينجح. علّم طلابك أن هناك حلولاً متعددة صحيحة — وأن الخطأ
+الحقيقي الوحيد هو إتلاف عمل غيرك أو إخفاء علامات تعارض في المشروع.</p></div><div class="eng"><p>This worksheet measures problem-solving under pressure, not recall. Any solution is valid if
+the history is intact, teammates' work preserved, and validation passes.</p></div></div>
+
+<div class="band alt"><span class="ar">جدول التقييم المُجمَّع</span><span class="en">Marking rubric</span></div>
+
+<table class="tbl">
+<thead>
+<tr>
+<th>#</th>
+<th>المهمة</th>
+<th>النقاط</th>
+<th>معيار القبول</th>
+<th>حساسية الأمان</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>تعارض سطر واحد</td>
+<td>20</td>
+<td>تعارض مقصود + حل يُبقي المعلومتين</td>
+<td>لا علامات باقية</td>
+</tr>
+<tr>
+<td>2</td>
+<td>تعارض ملف مُولَّد</td>
+<td>20</td>
+<td>حلّ بإعادة التوليد لا يدوياً</td>
+<td>لا تعديل يدوي للفهرس</td>
+</tr>
+<tr>
+<td>3</td>
+<td>rebase و force-with-lease</td>
+<td>15</td>
+<td>فهم الفرق + دفع آمن</td>
+<td><code>--force</code> = خصم</td>
+</tr>
+<tr>
+<td>4</td>
+<td>الفحوص الستة</td>
+<td>15</td>
+<td>6 فحوص منفّذة بمخرجات</td>
+<td>بحث الأسرار إلزامي</td>
+</tr>
+<tr>
+<td>5</td>
+<td>النشر على Pages</td>
+<td>15</td>
+<td>رابط يعمل + كل البطاقات</td>
+<td>لا بيانات شخصية علنية</td>
+</tr>
+<tr>
+<td>6</td>
+<td>PR نهائي + تقرير</td>
+<td>15</td>
+<td>PR مكتمل + تقرير بأرقام</td>
+<td>مراجعة زميل موثّقة</td>
+</tr>
+<tr>
+<td>—</td>
+<td>الأسئلة التحليلية</td>
+<td>15</td>
+<td>4 أسئلة × ~4</td>
+<td>يقيس الفهم العميق</td>
+</tr>
+</tbody>
+</table>
+<div class="band "><span class="ar">إجابات المهام</span><span class="en">Task solutions</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">تعارض سطر واحد</div><div class="en">Single-line conflict</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 20 نقطة</span></div><p><strong>الشكل الصحيح للتعارض الذي يجب أن ينتجه الطالب:</strong></p>
+<pre class="plain"><span class="ph">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+شعار الفريق: «نتعلّم معاً، ونرفع معاً» — أعضاء الفريق: سارة
+=======
+شعار الفريق: «نتعلّم معاً، ونرفع معاً» — أعضاء الفريق: عمر
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; docs/omar-slogan</span>
+</pre>
+
+<p><strong>الحل النموذجي:</strong></p>
+<pre class="plain"><span class="ph">شعار الفريق: «نتعلّم معاً، ونرفع معاً» — أعضاء الفريق: سارة، عمر
+
+$ git add sandbox/team-slogan.txt
+$ git commit --no-edit
+[main d34a3f6] Merge pull request #22 from omar/slogan
+$ git diff --check          # لا مخرجات</span>
+</pre>
+
+<p><strong>سلّم تقييم الحل (20 نقطة):</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>العنصر</th>
+<th>النقاط</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>أنتج تعارضاً حقيقياً (مخرجات <code>CONFLICT (content)</code>)</td>
+<td>5</td>
+</tr>
+<tr>
+<td>الصق مقطع العلامات كما ظهر على شاشته</td>
+<td>4</td>
+</tr>
+<tr>
+<td>السطر النهائي النظيف بلا أي علامة</td>
+<td>5</td>
+</tr>
+<tr>
+<td><code>git add</code> ثم <code>git commit --no-edit</code> ثم نجاح الإكمال</td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>git diff --check</code> بلا مخرجات (تحقّق ذاتي)</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p><strong>أخطاء متوقعة وخصوماتها:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الخطأ</th>
+<th>النتيجة في المشروع</th>
+<th>الخصم</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>اختار نسخته فقط وحذف اسم الزميل</td>
+<td>ضياع مساهمة زميل</td>
+<td>−8 (خلل تعاوني)</td>
+</tr>
+<tr>
+<td>بقيت <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> داخل الملف</td>
+<td>المشروع مكسور</td>
+<td>−10 إذا لم يلاحظها، −3 إن أصلحها بعد <code>diff --check</code></td>
+</tr>
+<tr>
+<td><code>git add</code> منسي ثم <code>git commit</code></td>
+<td><code>nothing to commit</code></td>
+<td>لا خصم إن فهم السبب وسأل</td>
+</tr>
+<tr>
+<td>استخدم <code>git merge --abort</code> ثم أعاد المحاولة</td>
+<td>سلوك صحيح ومحمود</td>
+<td>لا خصم</td>
+</tr>
+<tr>
+<td>حلّل التعارض بتحرير النص في VS Code</td>
+<td>الأسهل والأفضل</td>
+<td>لا خصم، بل شجّعه</td>
+</tr>
+</tbody>
+</table>
+<div class="box err"><div class="h">فحص إلزامي بعد كل حل تعارض (لا تُسلّم ورقة بلا هذا الفحص)<span class="en">Mandatory post-resolution check</span></div><pre class="plain"><span class="ph">$ grep -rn &quot;&lt;&lt;&lt;&lt;&lt;&lt;&lt;\|&gt;&gt;&gt;&gt;&gt;&gt;&gt;\|=======&quot; --include=&quot;*.json&quot; --include=&quot;*.txt&quot; --include=&quot;*.md&quot; .
+$ git diff --check</span>
+</pre>
+
+<p>إن ظهر أي ملف فيه علامات، فالمشروع <strong>مكسور</strong> ويجب ألا يُقبل التسليم.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">تعارض الملف المُولَّد</div><div class="en">Generated-file conflict</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 20 نقطة</span></div><p><strong>الحل الصحيح الوحيد (وهو مقياس فهم الورقة):</strong></p>
+<pre class="plain"><span class="ph">$ node tools/build-index.mjs
+[build-index] ✔ تم توليد الفهرس: 5 بطاقة.
+   • example-student  • leen-docs  • omar-qa  • sara-design  • you-instructor
+
+$ git add data/members-index.json data/members-bundle.js
+$ git rebase --continue
+[detached HEAD 9a8b7c6] feat(members): add card for omar-qa
+Successfully rebased and updated refs/heads/feature/omar-qa-card.</span>
+</pre>
+
+<p><strong>أخطاء متوقعة وخصوماتها:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الحل الذي كتبه الطالب</th>
+<th>التقييم</th>
+<th>الدرجة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>أعد التوليد ثم <code>add</code> ثم <code>rebase --continue</code></td>
+<td><strong>الحل الاحترافي</strong></td>
+<td>20</td>
+</tr>
+<tr>
+<td>حلّ التعارض يدوياً بكتابة السطرين معاً (<code>"leen-docs.json", "omar-qa.json",</code>)</td>
+<td>ينجح الآن ويفشل لاحقاً — ناقص المفهوم</td>
+<td>12</td>
+</tr>
+<tr>
+<td>ألغى <code>rebase</code> كاملاً (<code>--abort</code>) وأعاد العمل من الصفر على فرع جديد</td>
+<td>مقبول عدا خسارة تجربة</td>
+<td>14</td>
+</tr>
+<tr>
+<td>اختار نسخته وحذف مدخل الزميل</td>
+<td>يتسبب باختفاء بطاقة زميل من الموقع</td>
+<td><strong>−10</strong></td>
+</tr>
+<tr>
+<td>لم يفرّق بين <code>rebase --continue</code> و<code>merge --continue</code></td>
+<td>خطأ إجرائي</td>
+<td>−3</td>
+</tr>
+<tr>
+<td>لم يفهم لماذا الحدث (لماذا هذا الملف مشترك)</td>
+<td>يكرر الخطأ</td>
+<td>تعليق إلزامي في التقييم</td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">السؤال الذي يفرز الفهم<span class="en">The separating question</span></div><p>اسأل: «لماذا كان حلّ <code>members-index.json</code> يدوياً صحيحاً تقنياً وخطأ منهجياً؟» الإجابة
+الكاملة: «لأن الملف <strong>نتيجة</strong> لا مصدر — تولّده الأداة من محتوى المجلد. وأي تعديل يدوي
+سيُطمس عند التوليد التالي، وقد يبقى مدخل زميل ناقصاً بلا أن يلاحظ أحد.» من أجاب بهذا
+المنطق فهو جاهز لقيادة فريق.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">rebase والدفع الآمن</div><div class="en">Rebase and safe push</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ فهم أمني</span><span class="chip t">★ 15 نقطة</span></div><p><strong>الإجابة النموذجية:</strong></p>
+<pre class="plain"><span class="ph">$ git push
+ ! [rejected]        feature/omar-qa-card -&gt; feature/omar-qa-card (non-fast-forward)
+...
+$ git push --force-with-lease origin feature/omar-qa-card
+ + 1af7c9b...9a8b7c6 feature/omar-qa-card -&gt; feature/omar-qa-card (forced update)</span>
+</pre>
+
+<p><strong>معيار القبول (15 نقطة):</strong>
+| العنصر | النقاط |
+|---|---|
+| مخرجات رفض الدفع العادي (<code>non-fast-forward</code>) | 4 |
+| نجاح <code>--force-with-lease</code> صحيح الصيغة | 4 |
+| شرح أن الآلية تقارن بحالة الفرع البعيد المعروفة محلياً وترفض إن تغيّرت | 5 |
+| ذكر أن الصلاحية <strong>للفرع الشخصي فقط</strong> وليست لـ <code>main</code> | 2 |</p>
+<p><strong>أخطاء متوقعة:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الخطأ</th>
+<th>الخطورة</th>
+<th>الخصم</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>استخدم <code>git push --force</code></td>
+<td>خطر فقدان عمل زميل</td>
+<td><strong>−8</strong> + إعادة تدريب</td>
+</tr>
+<tr>
+<td>نفّذ <code>--force</code> على <code>main</code></td>
+<td>مخالفة جسيمة</td>
+<td><strong>−15 وإبلاغ</strong></td>
+</tr>
+<tr>
+<td>قال «الفرق أن with-lease أطول»</td>
+<td>لم يفهم</td>
+<td>0 في سؤال الشرح</td>
+</tr>
+<tr>
+<td>استخدم <code>git push -f</code> على فرع زميل</td>
+<td>سلوك مرفوض</td>
+<td><strong>−10</strong></td>
+</tr>
+<tr>
+<td>لم يلاحظ <code>ahead 1, behind 3</code></td>
+<td>لا يعرف قراءة الحالة</td>
+<td>−3</td>
+</tr>
+</tbody>
+</table>
+<div class="box warn"><div class="h">درس أمني أوسع — اربطه بالمشروع<span class="en">Wider security lesson</span></div><p>هذه أول مرة يرى فيها الطالب أن «القوة» في Git قد تدمّر عمل غيره — وهو نفس المنطق في
+<code>git clean -fd</code> و<code>git reset --hard</code> و<code>git branch -D</code>. اجعل القاعدة صريحة على السبورة:</p>
+<p><strong>«أوامر القوة المدمّرة: للفرع الشخصي فقط، وبعد التحقق، ومع نسخة احتياطية من العمل.»</strong></p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">الفحوص الستة قبل المراجعة</div><div class="en">Six pre-review checks</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ منهج</span><span class="chip t">★ 15 نقطة</span></div><p><strong>الإجابات النموذجية:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>#</th>
+<th>الأمر</th>
+<th>النتيجة الصحيحة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>node tests/validate-members.mjs</code></td>
+<td><code>0 خطأ، 0 تحذير</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>git diff --check</code></td>
+<td>لا مخرجات</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>git diff --stat origin/main...HEAD</code></td>
+<td>ملفات البطاقة + الفهرس + الـ bundle فقط</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>git log --oneline origin/main..HEAD</code></td>
+<td>التزام (أو التزامات) بصيغة صحيحة</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>git status -sb</code></td>
+<td>لا <code>behind</code>، ولا <code>diverged</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>git diff origin/main...HEAD | grep -iE "token\|password"</code></td>
+<td>لا نتائج</td>
+</tr>
+</tbody>
+</table>
+<p><strong>معيار القبول:</strong> 2.5 نقطة لكل فحص منفّذ بمخرجات أو بنتيجة مذكورة. الفحص 6 هو <strong>الأهم
+أمنياً</strong>؛ من تركه فارغاً بلا سبب ⇒ لا تُمنح نقاطه حتى لو نجحت الفحوص الأخرى، لأن الدرس
+الأمني مقصود ولا يمكن تقييم غيره مكانه.</p>
+<p><strong>أخطاء متوقعة:</strong> من كتب <code>git diff main..HEAD</code> (نقطتان) بدل <code>...</code> (ثلاث) فيظهر الفرق
+معاكساً ← وجّهه؛ لا تخصم في بند الفحوص لكن اذكرها ملاحظة. من نفّذ <code>git fetch</code> أولاً قبل
+المقارنة ← ممتاز، أضف نقطة تقدير (bonus) وسجّلها.</p>
+<div class="box info"><div class="h">استثمار تعليمي: اجعل الفحص عادة<span class="en">Turn checks into habit</span></div><p>اطلب في كل ورقة قادمة (ولو بنداً واحداً) تنفيذ الفحص <code>git diff --check</code> قبل أي التزام.
+الطلاب الذين يبنون عادة «افحص قبل أن ترفع» يعودون من أي جلسة عمل بلا مفاجآت — وهذه
+المهارة تنقلهم من «متعلمين» إلى «موثوقين».</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">النشر على GitHub Pages</div><div class="en">Deploy to GitHub Pages</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تنفيذ</span><span class="chip t">★ 15 نقطة</span></div><p><strong>الإجابة النموذجية:</strong> رابط من الصيغة <code>https://&lt;org&gt;.github.io/class-team-hub/</code> يعمل،
+وتظهر فيه كل بطاقات الفريق.</p>
+<p><strong>معيار القبول:</strong> 10 نقاط لرابط يعمل ويفتح الشاشة الرئيسية؛ 5 نقاط لظهور <strong>بطاقة الطالب
+نفسه</strong> بين البطاقات (فلا تظهر صورة شاشة للصفحة الرئيسية فقط).</p>
+<p><strong>أخطاء متوقعة ومصفوفة تشخيص سريعة للمدرّب:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>العرض في الرابط</th>
+<th>السبب الفعلي</th>
+<th>علاج فوري في الجلسة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>404</code> ثابت بعد 5 دقائق</td>
+<td>لم يُفعَّل Pages أو المسار خطأ</td>
+<td>Settings ← Pages ← Branch: <code>main</code> / Root ثم Save</td>
+</tr>
+<tr>
+<td>الصفحة تعمل بلا أي بطاقة</td>
+<td><code>fetch</code> فشل بسبب مسار غير مطابق للأحرف</td>
+<td>افتح F12 → Console واقرأ الرسالة الحمراء</td>
+</tr>
+<tr>
+<td>تظهر بطاقات قديمة (من ضمنها مثال)</td>
+<td><code>main</code> لم يُحدَّث بالدمج</td>
+<td><code>git pull</code> ثم فحص الدمج على المستودع</td>
+</tr>
+<tr>
+<td>تظهر بطاقات لكن نقص عددها</td>
+<td>بطاقة فيها JSON خطأ</td>
+<td><code>node tests/validate-members.mjs</code> على جهاز المدرّب</td>
+</tr>
+<tr>
+<td>الصفحة بيضاء تماماً</td>
+<td>تعارض دُمج وترك آثاراً</td>
+<td><code>grep -rn "&lt;&lt;&lt;&lt;&lt;&lt;&lt;" --include="*.js" --include="*.html" .</code></td>
+</tr>
+<tr>
+<td>يعمل لديه ولا يعمل للزائر</td>
+<td>نسي <code>Commit</code> لـ <code>members-index.json</code></td>
+<td>أعد التوليد والتزم وارفع</td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">لحظة تحفيزية استخدمها<span class="en">Use the motivational moment</span></div><p>اجعل الطالب يفتح رابط الموقع المنشور ويُري <strong>بطاقته</strong> لوالده أو صديقه أو يرسلها في
+مجموعة الصف. هذه اللحظة («عمل منشور على الإنترنت باسمي، وفريق عمل عليه معي») أقوى محرّك
+لتعلم المزيد من عشر محاضرات. خصّص لها دقيقتين في نهاية الجلسة.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">طلب السحب النهائي والتقرير</div><div class="en">Final PR and report</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 15 نقطة</span></div><p><strong>معيار القبول للطلب (7 نقاط):</strong> عنوان بصيغة صحيحة، الوصف يشمل <code>Closes #&lt;issue&gt;</code>، طريقة
+الاختبار موثّقة بمخرجات <code>validate-members</code>، وطلب مراجعة من زميل، وتقديم ملف واحد فقط
+(<code>README.md</code> غالباً) بلا خلط مهام.</p>
+<p><strong>معيار القبول للتقرير (8 نقاط):</strong> أن تكون كل القيم حقيقية وقابلة للمطابقة مع المستودع.
+تحقّق ذكياً من سطرين فقط: (1) عدد البطاقات = عدد ملفات <code>data/members/*.json</code> ناقص
+القالب والمثال والمدرّب؛ (2) عدد الالتزامات في <code>main</code> يقارن بـ <code>git log --oneline main | wc -l</code>
+على النسخة المشتركة. التقرير المتفق مع الواقع = درجة كاملة.</p>
+<p><strong>أخطاء متوقعة:</strong>
+- أرقام بلا أي مقابل واقعي (توحي بالتقدير) ← −3 مع إعادة الطلب.
+- «أكبر تعارض واجهته» مكتوب نظرياً («التعارض يحدث عندما…») بدل تجربته ← −2.
+- لا ذكر لأي فرع فشل في دمجه (يبدو الكمال غير الواقعي) ← لا خصم لكن شجّع الصدق.
+- PR نهائي يخلط ثلاثة ملفات مختلفة (README + CSS + بطاقة) ← −2 (خلط مهام).</p>
+<div class="box ok"><div class="h">بوابة الإتمام النهائي — افحصها بنفسك لا بتقرير الطالب<span class="en">Final completion gate</span></div><pre class="plain"><span class="ph">1) افتح رابط GitHub Pages:  بطاقة الطالب ظاهرة هناك؟            ☐
+2) main متساوٍ مع origin/main على جهاز الطالب (git status)      ☐
+3) node tests/validate-members.mjs  →  0 خطأ                     ☐
+4) عدد طلبات السحب التي أنشأها الطالب ≥ 3 (له/مراجعة/أُغلقت)      ☐
+5) لصق دليلين مختلفين لحل تعارضين (سطر + مُولَّد) في الورقة        ☐
+6) لا آثار للعلامات: grep -rn &quot;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&quot; .  →  لا نتائج            ☐
+7) لا أسرار في المستودع: grep -rniE &quot;token|password|secret&quot; بالمجات ☐</span>
+</pre></div></div></div>
+
+<div class="band violet"><span class="ar">إجابات الأسئلة التحليلية</span><span class="en">Analytical answers</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س1</div><div class="task-titles"><div class="ar">لماذا تعارض في نفس السطر فقط</div><div class="en">Why same-line conflicts</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 4 نقطة</span></div><p><strong>الجواب:</strong> Git يدمج على مستوى <strong>الأسطر والكتل</strong>، لا الملفات. عند تعديل أسطر متباعدة، كل
+تعديل يقع في «مقطع» مختلف من الملف فيدمجهما تلقائياً بلا تداخل. أما تعديل نفس السطر من
+الجهتين فينتج <strong>مقطعان متعارضان</strong> لنفس الموضع، ولا يستطيع Git تخمين أيّهما المقصود —
+فيتوقف ويسلّم القرار للإنسان.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س2</div><div class="task-titles"><div class="ar">معنى HEAD في merge مقابل rebase</div><div class="en">HEAD in merge vs rebase</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 4 نقطة</span></div><p><strong>الجواب:</strong> في تعارض <strong>merge</strong>: <code>HEAD</code> يمثّل فرعك الحالي (المتلقّي)، والطرف الآخر هو
+الفرع الذي تحاول دمجه — أي «نسختي» مقابل «القادم». أما في تعارض <strong>rebase</strong>: يعمل Git على
+حالة <code>HEAD</code> منفصلة (detached)، وفيها <code>HEAD</code> يمثّل <strong>الفرع الذي تُبنى عليه</strong> (أي <code>main</code>
+الجديد غالباً)، والطرف الآخر هو التزامك الذي يعيد تشكيله — أي أن المعنى <strong>معكوس</strong>.
+هذا هو سبب أخطاء الطلاب الشائعة: يظنّون سطر <code>HEAD</code> نسختهم دائماً فيختارون الطرف الخطأ
+ويضيع عملهم.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س3</div><div class="task-titles"><div class="ar">لو كان الفهرس يدوياً</div><div class="en">If the index were manual</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 4 نقطة</span></div><p><strong>الجواب:</strong> «كان كل طالب سيعدّل نفس الملف في نفس الموضع تقريباً، فيقع تعارض في كل طلب سحب
+تقريراً، ويحتاج كل دمج إلى تدخل بشري. ومع 20 طالباً كان تاريخ <code>main</code> سيصبح سلسلة تعارضات
+يُحلّ بعضها بالخطأ (حذف مدخل زميل، أو تكراره، أو خروج ترتيب الملف)، وتزداد أخطاء JSON
+ويصبح رفع البطاقة عملية مرهقة بدل أن تكون بسيطة.» <strong>الخلاصة:</strong> لكي يعمل الفريق، اجعل
+الملفات المشتركة أقل ما يمكن، واستخدم ملفات فردية + توليد آلي.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س4</div><div class="task-titles"><div class="ar">تعديل مقترح على سير العمل</div><div class="en">Workflow improvement proposal</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ قيادة</span><span class="chip t">★ 3 نقطة</span></div><p><strong>إجابات ممتازة مقبولة:</strong>
+- تفعيل <strong>Code Owners</strong> بحيث لا يُدمج تعديل ملف مشترك إلا بمراجعة قائد الفريق.
+- توحيد الاجتماع اليومي القصير (Stand-up) لمزامنة الفروع قبل بدء العمل.
+- قاعدة: «لا فرع يعيش أكثر من يومين» — لتقليل التعارضات.
+- إضافة أداة فحص تلقائي (GitHub Actions) تشغّل <code>validate-members</code> على كل طلب سحب،
+  فيرفض الطلب آلياً قبل أن يصل للمراجعة البشرية.
+- تخصيص ملف واحد لكل طالب دائماً، وأي تعديل جماعي يُوضع في ملف جديد لتفادي التعارض.</p>
+<p><strong>معيار الدرجة:</strong> نقطتان لفكرة عملية قابلة للتنفيذ في المشروع + نقطة لربطها بتقليل
+التعارضات تحديداً. الفكرة العامة («نتعاون أكثر») بلا آلية ⇒ نقطة واحدة.</p></div></div>
+
+<div class="band green"><span class="ar">ملخّص التصحيح والتقييم النهائي</span><span class="en">Final marking summary</span></div>
+
+<div class="evidence"><div class="h">سجل الدرجات النهائي<span class="en">/ Final grade sheet</span></div><table class="tbl">
+<thead>
+<tr>
+<th>الاسم</th>
+<th>م1 /20</th>
+<th>م2 /20</th>
+<th>م3 /15</th>
+<th>م4 /15</th>
+<th>م5 /15</th>
+<th>م6 /15</th>
+<th>أسئلة /15</th>
+<th>المجموع /100</th>
+<th>رابط الموقع</th>
+<th>حالة الإتمام</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box rule"><div class="h">معايير الشهادة النهائية (اقتراح)<span class="en">Suggested certification criteria</span></div><table class="tbl">
+<thead>
+<tr>
+<th>المستوى</th>
+<th>الشرط</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>إتمام أساسي</strong></td>
+<td>70+ في المجموع الكلي للورق الخمس، وبطاقة مدموجة على <code>main</code></td>
+</tr>
+<tr>
+<td><strong>إتمام متقدم</strong></td>
+<td>85+ في المجموع، مع 3 طلبات سحب (له/راجع/أُغلق بالمراجعة) ودليل حل تعارضين</td>
+</tr>
+<tr>
+<td><strong>قائد فريق مدرب</strong></td>
+<td>إتمام متقدم + مراجعات مكتوبة عالية الجودة لثلاثة زملاء + تقرير مشروع بأرقام دقيقة، وحل تعارض زميل عملياً أمام المجموعة</td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box info"><div class="h">بعد الورشة — ماذا ترسل للطلاب؟<span class="en">Post-workshop hand-off</span></div><ol>
+<li>رابط المستودع المشترك + رابط الموقع المنشور (للعرض في يوم المدرسة المفتوح).</li>
+<li>ملف <code>docs/git-cheatsheet.md</code> من داخل المشروع نفسه (مرجعهم بعد انتهاء الورشة).</li>
+<li>مهمة إثراء اختيارية: أضف ميزة واحدة للموقع (بحث محسّن، فلترة بالوسوم، وضع ليلي)
+   عبر فرع + طلب سحب — لتستمر المهارة بعد البرنامج.</li>
+</ol></div>
+<div class="footer-note"><span>دليل المدرّب — حلول ورقة 05 · ورشة Git وGitHub</span><span class="en">Instructor key · Worksheet 05 solutions</span></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حلول ورقة العمل 04: المزامنة والدمج</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top" style="background:#7A1220"><div class="badge"><div class="n">04</div><div class="l">نموذج حل</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — دليل المدرّب المرجعي</div><h1>حلول ورقة العمل 04: المزامنة والدمج</h1><div class="sub">Solutions · Worksheet 04 — Sync &amp; Merge</div></div></div><div class="meta"><div><span class="k">التقييم الكلي / Total</span><span class="v">100 نقطة</span></div><div><span class="k">زمن التصحيح المقترح / Marking time</span><span class="v">6–8 دقائق لكل طالب</span></div><div><span class="k">أدلة إلزامية / Mandatory evidence</span><span class="v">8 بنود</span></div><div><span class="k">معيار النجاح / Pass mark</span><span class="v">70 نقطة</span></div></div></div>
+<div class="box err"><div class="h">نسخة المدرّب — نماذج الحلول والتقييم <span class="en">/ Instructor copy — do not distribute</span></div></div><div class="band "><span class="ar">ما تقيسه هذه الورقة فعلاً</span><span class="en">What this worksheet really measures</span></div>
+
+<div class="bi "><div class="ar"><p>تقيس الورقة <strong>الاستقلالية في تشخيص التاريخ</strong>. الطالب الذي يعرف أن يسأل: «أين أنا؟ ما
+الجديد؟ ما الفرق؟ من فعل هذا؟» يستطيع حل 80% من مشكلات الفريق بنفسه. لذلك صُمّمت معظم
+المهام لتُنتج مخرجات أوامر يعرف الطالب قراءتها — لا مجرد تنفيذها.</p></div><div class="eng"><p>This worksheet measures independence in reading history: where am I, what is new, what changed,
+who did it. The evidence expected is command output the student can actually interpret.</p></div></div>
+
+<div class="band alt"><span class="ar">جدول التقييم المُجمَّع</span><span class="en">Marking rubric</span></div>
+
+<table class="tbl">
+<thead>
+<tr>
+<th>#</th>
+<th>المهمة</th>
+<th>النقاط</th>
+<th>معيار القبول</th>
+<th>ملاحظة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>fetch مقابل pull</td>
+<td>15</td>
+<td>مخرجات <code>fetch</code> + تفسير <code>behind N</code></td>
+<td>يقيس الفهم لا الأمر</td>
+</tr>
+<tr>
+<td>2</td>
+<td>الدمج في main</td>
+<td>15</td>
+<td>دمج ناجح + تحديد نوعه (ff/commit)</td>
+<td>الخطأ في النوع = خصم بسيط</td>
+</tr>
+<tr>
+<td>3</td>
+<td>الاستراتيجيات الثلاث</td>
+<td>15</td>
+<td>ثلاث مخرجات مختلفة الشكل + تبرير الاختيار</td>
+<td>سؤال التبرير 5 نقاط</td>
+</tr>
+<tr>
+<td>4</td>
+<td>فحص تعديلات الزملاء</td>
+<td>15</td>
+<td><code>blame</code>/<code>shortlog</code> مع استنتاج صحيح</td>
+<td>استنتاج لا نسخ</td>
+</tr>
+<tr>
+<td>5</td>
+<td>مختبر التراجع</td>
+<td>20</td>
+<td>4 حالات منفّذة على الأقل + <code>reflog</code></td>
+<td>الحالة المدمّرة تُشرح لا تُهدَّد</td>
+</tr>
+<tr>
+<td>6</td>
+<td>التنظيف وتقرير الفريق</td>
+<td>20</td>
+<td>أرقام حقيقية + فرع محذوف بأمان</td>
+<td>الأرقام هي الحكم</td>
+</tr>
+<tr>
+<td>—</td>
+<td>الأسئلة (س1–س4)</td>
+<td>15</td>
+<td>—</td>
+<td>يفضّل شفهياً للأضعف</td>
+</tr>
+</tbody>
+</table>
+<div class="box rule"><div class="h">توزيع الدرجة على نوع الدليل<span class="en">Evidence weighting</span></div><ul>
+<li><strong>مخرجات أمر حقيقية من جهازه</strong> = الدرجة الكاملة.</li>
+<li><strong>مخرجات تبدو منسوخة</strong> (نفس الـ hashes والأسماء في كل الأوراق) = نصف الدرجة + تنبيه.</li>
+<li><strong>شرح صحيح بلا تنفيذ</strong> = ثلث الدرجة (الكفاءة النظرية).</li>
+<li><strong>تنفيذ بلا مخرجات</strong> = لا شيء (لا يستطيع إثباته).</li>
+</ul></div>
+
+<div class="band "><span class="ar">إجابات المهام</span><span class="en">Task solutions</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">fetch مقابل pull</div><div class="en">fetch vs. pull</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ فهم</span><span class="chip t">★ 15 نقطة</span></div><p><strong>الإجابة النموذجية:</strong></p>
+<pre class="plain"><span class="ph">$ git fetch origin
+$ git status -sb
+## main...origin/main [behind 2]
+
+$ git log --oneline HEAD..origin/main
+f9e8d7c feat(members): add card for leen-docs
+3c7d9e1 Merge pull request #7 from nour-dev/feature/nour-card</span>
+</pre>
+
+<p><strong>التفسير المطلوب:</strong> <code>fetch</code> ينزّل الالتزامات الجديدة إلى مرجع <code>origin/main</code> <strong>دون</strong> أن
+يلمس ملفاته أو فرعه المحلي — لذا يظهر <code>behind 2</code> (فرعك متأخر بالتزامين). و<code>pull</code> =
+<code>fetch</code> + دمج فوري (أو rebase)، فتتغيّر ملفاته مباشرة.</p>
+<p><strong>أخطاء متوقعة:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الحالة</th>
+<th>الدلالة</th>
+<th>الدرجة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>نفّذ <code>pull</code> فقط ولم يجرّب <code>fetch</code></td>
+<td>لم يقس الفرق فعلياً</td>
+<td>8 من 15</td>
+</tr>
+<tr>
+<td>لم يفسّر <code>behind N</code></td>
+<td>ينفّذ بلا فهم</td>
+<td>10 من 15</td>
+</tr>
+<tr>
+<td>قال «fetch يرفع و pull ينزّل»</td>
+<td><strong>خلط خطير</strong></td>
+<td>3 من 15 + شرح فوري</td>
+</tr>
+<tr>
+<td>لا يعرف <code>HEAD..origin/main</code></td>
+<td>أدرجه في الشرح الآن</td>
+<td>11 من 15</td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">تشبيه يستوعبه الطالب فوراً<span class="en">Analogy that lands</span></div><p><code>fetch</code> = «الاطلاع على بريد الفريق»، <code>pull</code> = «قراءة البريد وتنفيذ كل ما فيه فوراً».
+اسأله: «أيّهما تفضّل صباح يوم تسليم؟» — الجواب الذي تريد سماعه: <code>fetch</code> أولاً ثم أفحص
+ثم أدمج بوعي.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">الدمج في main</div><div class="en">Merging into main</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 15 نقطة</span></div><p><strong>الإجابة النموذجية — الدمج السريع:</strong></p>
+<pre class="plain"><span class="ph">$ git merge --ff-only origin/main
+Updating a1b2c3d..f9e8d7c
+Fast-forward
+ data/members/leen-docs.json | 9 +++++++++
+ 2 files changed, 13 insertions(+), 4 deletions(-)</span>
+</pre>
+
+<p><strong>الإجابة النموذجية — الدمج بعقدة:</strong></p>
+<pre class="plain"><span class="ph">$ git merge feature/omar-qa-card
+Merge made by the &#x27;ort&#x27; strategy.
+ data/members/omar-qa.json | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+ create mode 100644 data/members/omar-qa.json</span>
+</pre>
+
+<p><strong>معيار القبول:</strong> الدمج حدث ونجح، <strong>والطالب يعرف أي نوع وقع</strong> ولماذا:</p>
+<table class="tbl">
+<thead>
+<tr>
+<th>نوع الدمج</th>
+<th>متى يقع</th>
+<th>كيف يعرفه</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast-forward</td>
+<td>فرعه المحلي لم يتقدّم</td>
+<td>ناتج <code>Updating …..Fast-forward</code> وبلا عقدة</td>
+</tr>
+<tr>
+<td>Merge commit</td>
+<td>الفرعان تقدّما (عمل متبادل)</td>
+<td><code>Merge made by the 'ort' strategy.</code> + عقدة في <code>--graph</code></td>
+</tr>
+<tr>
+<td>Already up to date</td>
+<td>لا جديد</td>
+<td><code>Already up to date.</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>أخطاء متوقعة:</strong> تنفيذ <code>git pull</code> مع تعديلات محلية غير محفوظة ⇒
+<code>error: Your local changes would be overwritten by merge</code> ← الدرس <code>git stash</code>. من رفع
+على <code>main</code> بدل الدمج المحلي ⇒ خصم 5 نقاط + مراجعة إعدادات حماية الفرع مع المدرّب.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">الاستراتيجيات الثلاث</div><div class="en">The three strategies</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 15 نقطة</span></div><p><strong>الإجابة النموذجية (ملخّص المخرجات المتوقع):</strong></p>
+<pre class="plain"><span class="ph"># 1) merge commit
+*   5b6c7d8 (HEAD -&gt; main) Merge pull request #6 from ali-h/feature/ali-card
+|\
+| * 1a2b3c4 feat(members): add card for ali-h
+|/
+
+# 2) squash
+$ git merge --squash feature/sara-fixes
+Squash commit -- not updating HEAD
+$ git commit -m &quot;feat(ui): improve member card layout (#9)&quot;
+7a8b9c0 (HEAD -&gt; main) feat(ui): improve member card layout (#9)
+
+# 3) rebase
+$ git rebase main
+Successfully rebased and updated refs/heads/feature/nour-card.
+* 4d5e6f7 (HEAD -&gt; feature/nour-card) feat(members): add card for nour-dev
+* 5b6c7d8 Merge pull request #6 from ali-h/feature/ali-card</span>
+</pre>
+
+<p><strong>سؤال التبرير (5 نقاط):</strong> الإجابة الممتازة على «أي استراتيجية تفضّل لفريق فيه 20 طالباً
+يضيفون بطاقات؟» = <strong>Squash and merge</strong>، لأن كل بطاقة تصبح التزاماً واحداً نظيفاً على
+<code>main</code>، فيبقى تاريخ المشروع قابلاً للقراءة مع 20 مساهماً، ويُربط كل التزام برقم طلب
+السحب <code>(#12)</code>. والإجابة المقبولة أيضاً: Merge commit مع تبرير «نريد رؤية كل خطوة»،
+<strong>بشرط</strong> ذكر ثمنها: تاريخ مزدحم بعُقد.</p>
+<p><strong>أخطاء متوقعة:</strong>
+- من كتب <code>git merge --squash</code> ثم نسي <code>git commit</code> ← يقول «لم يحدث شيء»؛ هذا هو الصواب
+  التقني لكنه ينتظر خطوة يدوية → وجّهه وأعطه 4 من 5.
+- من نفّذ <code>rebase</code> على فرع مشترك ← <strong>−5</strong> ومناقشة مخاطر إعادة كتابة التاريخ. هذا الدرس
+  سيكون محورياً في الورقة 05.
+- تبرير بلا سبب («لأنها الأفضل») ⇒ نصف نقاط السؤال.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">فحص تعديلات الزملاء</div><div class="en">Inspecting teammates&#x27; changes</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحقيق</span><span class="chip t">★ 15 نقطة</span></div><p><strong>الإجابات النموذجية:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>السؤال</th>
+<th>الجواب</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>من عدّل <code>data/members-index.json</code> آخر مرة؟</td>
+<td>الجواب الصحيح: <strong>عدّله الجميع</strong> — يظهر في كل التزام لكل عضو (وهذا هو جوهر درس الملف المُولَّد)</td>
+</tr>
+<tr>
+<td>عدد الالتزامات لكل زميل</td>
+<td>يُقرأ من <code>git shortlog -sn --all</code> — يقبل الاختلاف حسب توقيت الجلسة، المهم أن يكون من مخرجات فعلية</td>
+</tr>
+<tr>
+<td>هل <code>main</code> متساوٍ مع <code>origin/main</code>؟</td>
+<td>يعتمد على الحالة لحظة التسليم — المهم أن يعرف كيف تحقّق</td>
+</tr>
+</tbody>
+</table>
+<p><strong>أدلة متوقعة:</strong></p>
+<pre class="plain"><span class="ph">$ git blame data/members/leen-docs.json
+f9e8d7c9 (leen-docs 2026-10-06 11:02:40 +0300 1) {
+f9e8d7c9 (leen-docs 2026-10-06 11:02:40 +0300 2)   &quot;fullName&quot;: &quot;لينا حدّاد&quot;,</span>
+</pre>
+
+<p><strong>الاستنتاج الذي تريد رؤيته (سطر واحد):</strong> «ملف البطاقة يخصّ شخصاً واحداً وهو مؤلّفه فقط،
+أما ملف الفهرس فهو مشترك ويتغيّر من الجميع» — هذا الاستنتاج هو الذي يمنح الدرجة الكاملة.</p>
+<p><strong>أخطاء متوقعة:</strong> من كتب أن <code>index.json</code> «يجب أن يحلّه آخر من عدّله» ← مفهوم ناقص، نبّهه
+أن الصواب إعادة التوليد. من نسي <code>--all</code> فلم يرَ فروع الزملاء ⇒ −3.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">مختبر التراجع</div><div class="en">Undo lab</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 20 نقطة</span></div><p><strong>معيار القبول: 4 حالات منفّذة فعلياً على الأقل</strong> من هذه الحالات:</p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الحالة</th>
+<th>الأمر الصحيح</th>
+<th>المخرج المتوقع</th>
+<th>النقاط</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>تعديل غير مُلتزم</td>
+<td><code>git restore &lt;file&gt;</code></td>
+<td><code>git status -s</code> فارغ</td>
+<td>4</td>
+</tr>
+<tr>
+<td>ملف مُمرَّر خطأً</td>
+<td><code>git restore --staged &lt;file&gt;</code></td>
+<td>يعود إلى <code>M</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td>رسالة آخر التزام خاطئة</td>
+<td><code>git commit --amend -m "…"</code></td>
+<td>hash جديد + رسالة صحيحة</td>
+<td>4</td>
+</tr>
+<tr>
+<td>التزام مرفوع خاطئ</td>
+<td><code>git revert &lt;sha&gt;</code></td>
+<td>التزام <code>Revert "…"</code> جديد</td>
+<td>4</td>
+</tr>
+<tr>
+<td>تبديل فرع وعمل ناقص</td>
+<td><code>git stash</code> ثم <code>git stash pop</code></td>
+<td><code>stash list</code> ثم عودة التعديل</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>الإجابة النموذجية للسؤال التحليلي (حذف زميل ملفاً وتزمه ورفعه):</strong>
+لا يجوز <code>reset --hard</code> ولا <code>revert</code> لالتزام زميل قد يكون بُني عليه عمل. الطريقة السليمة:</p>
+<pre class="plain"><span class="ph">$ git show &lt;sha&gt; --stat                    # تأكد من الالتزام الذي حذف الملف
+$ git checkout &lt;sha&gt;^ -- data/members/x.json   # استرجع الملف من الالتزام السابق للحذف
+$ git add data/members/x.json
+$ git commit -m &quot;fix(members): restore deleted card for x&quot;</span>
+</pre>
+
+<p>أو <code>git revert &lt;sha&gt; --no-edit</code> إن كان الالتزام <strong>لم يُبنَ عليه</strong> شيء. التفريق بين
+الحالتين هو معيار الدرجة الكاملة.</p>
+<p><strong>أخطاء متوقعة ووزنها:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الخطأ</th>
+<th>الدلالة</th>
+<th>الدرجة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>جرب <code>reset --hard</code> ثم قال «ضاع عملي»</td>
+<td>تعليمي ومتوقع (إن كان على نسخة جديدة)</td>
+<td>لا خصم إن كان على مستودع التجربة</td>
+</tr>
+<tr>
+<td>استخدم <code>git checkout .</code> لحذف التعديلات</td>
+<td>أمر قديم/خطير</td>
+<td>2 من 4 + شرح <code>restore</code></td>
+</tr>
+<tr>
+<td>لم يعرف <code>reflog</code></td>
+<td>أهم شبكة أمان</td>
+<td>0 في سؤال التحليل + تدريب فوري</td>
+</tr>
+<tr>
+<td>حذف فرع زميل بـ <code>-D</code></td>
+<td>سلوك مرفوض</td>
+<td><strong>−5 وإرشاد مباشر</strong></td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">تمرين دقيقتين لإحياء الصدمة التربوية<span class="en">A two-minute demonstration</span></div><p>الطلب من طالب تجربة <code>git reset --hard</code> ثم استرجاع الحالة بـ <code>git reflog</code> هو أقوى درس
+عملي في هذه الورقة. اجعله يعرضه على المجموعة: يذكّرهم أن Git لا ينسى بسهولة — لكن
+<code>reflog</code> سجل <strong>محلي</strong> لا يُرفع إلى GitHub، فلن ينقذ زميلاً على جهاز آخر.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">التنظيف وتقرير الفريق</div><div class="en">Cleanup and team report</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 20 نقطة</span></div><p><strong>الإجابة النموذجية:</strong></p>
+<pre class="plain"><span class="ph">$ git branch --merged main
+  feature/ali-card
+  feature/leen-card
+* main
+
+$ git branch -d feature/ali-card feature/leen-card
+Deleted branch feature/ali-card (was 1a2b3c4).
+
+$ git fetch --prune
+ - [deleted]         (none)     -&gt; origin/feature/ali-card
+
+$ git shortlog -sn --all
+    11  omar-qa
+     9  sara-design
+     8  leen-docs
+     5  nour-dev
+     4  ali-h</span>
+</pre>
+
+<p><strong>معيار القبول للتقرير:</strong> أن تكون الأرقام <strong>قابلة للتفسير</strong> ومتسقة داخلياً
+(مثال: عدد البطاقات = عدد ملفات <code>data/members/*.json</code> ناقص القالب والمثال والمدرّب)،
+وأن يذكر الطالب استنتاجاً واحداً تعلّمه من التاريخ، لا مجرد أرقام منسوخة.</p>
+<p><strong>الإجابة النموذجية على السؤال التحليلي (لو رفع الجميع على main مباشرة):</strong> «سيصبح <code>main</code>
+غير مستقر: أي خطأ في أي بطاقة يظهر فوراً لكل الفريق؛ ولا يمكن مراجعة أي تعديل قبل دخوله؛
+وسيتعارض الطلاب عند كل رفع في ملف الفهرس ويضيع عمل من يخسر السباق، بلا سجل يبيّن من
+أفسد المشروع.»</p>
+<p><strong>معيار الدرجة:</strong> نقطتان للفكرة الأمنية (عدم استقرار)، نقطتان للفكرة التنظيمية (المراجعة)،
+نقطة لتسمية الملف الحسّاس في المشروع (<code>members-index.json</code>).</p>
+<div class="box info"><div class="h">تقييم الفهم الحقيقي<span class="en">Measuring real understanding</span></div><p>صفِّ الطلاب في هذه الورقة على ثلاثة مستويات:
+<strong>المستوى أ</strong> — ينفّذ ويعرف لماذا (ينتقل للورقة 05 كمستقل).
+<strong>المستوى ب</strong> — ينفّذ بالأوامر لكن لا يقرأ المخرجات (يحتاج مرافقة في التعارضات).
+<strong>المستوى ج</strong> — يحفظ الأوامر بلا فهم (سيحتاج مساعدة فردية في الورقة 05 — رتّبه مع طالب
+من المستوى أ كزوج تدريبي).</p></div></div></div>
+
+<div class="band violet"><span class="ar">إجابات الأسئلة</span><span class="en">Knowledge-check answers</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س1</div><div class="task-titles"><div class="ar">fetch مقابل pull</div><div class="en">fetch vs pull</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ فهم</span><span class="chip t">★ 4 نقطة</span></div><p><strong>الجواب:</strong> <code>fetch</code> يسحب التحديثات فقط إلى <code>origin/&lt;branch&gt;</code> دون تغيير الملفات — أأمن
+لأنه يسمح بالفحص قبل الدمج. <code>pull</code> = <code>fetch</code> + دمج (أو rebase)، فتتغيّر الملفات ويحتمل
+التعارض فوراً. أستعمل <code>fetch</code> قبل أي دمج مهم أو قبل المظاهرة/التسليم.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س2</div><div class="task-titles"><div class="ar">متى Squash ومتى Merge</div><div class="en">Squash vs merge</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 4 نقطة</span></div><p><strong>الجواب الممتاز:</strong> Squash عندما تكون التزامات الفرع صغيرة ومتكررة عن مهمة واحدة (مثل
+بطاقة واحدة أُضيفت ثم صُححت ثلاث مرات) — فنحفظ المشروع نظيفاً. Merge commit عندما يكون
+الفرع طويلاً يحمل مهام متعددة ويُهمنا حفظ تدرّجها للحق. <strong>مثال من مشروعنا:</strong> Squash لوظيفة
+<code>fix(members): fix tag typo</code>، وMerge لفرع الميزة الكبير <code>feature/search-filter</code>.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س3</div><div class="task-titles"><div class="ar">لماذا لا rebase لفرع مشترك</div><div class="en">No rebase on shared branches</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 4 نقطة</span></div><p>لأن rebase <strong>يعيد كتابة التاريخ</strong> (ينشئ التزامات جديدة بنفس المحتوى وhashes مختلفة)؛ فيصبح
+تاريخ زملائك مرتبطاً بتزامات لم تعد موجودة، وتحدث فوضى دفع ورفض وإعادة سحب متكررة. البديل:
+<code>git merge</code>، وإن أردت تاريخاً خطّياً فاستخدم <code>rebase</code> على فرعك الشخصي فقط ثم
+<code>push --force-with-lease</code>.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س4</div><div class="task-titles"><div class="ar">تعديل خاطئ على main</div><div class="en">Bad change on main</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تطبيق</span><span class="chip t">★ 3 نقطة</span></div><p><strong>الجواب:</strong> <code>git revert &lt;sha&gt;</code> (مع <code>--no-edit</code> للتسريع) لإنشاء التزام يعكس الخاطئ بلا حذف
+تاريخ أحد. وإن كان الالتزام آخر التزام ولم يبنِ عليه أحد شيئاً بعد، يمكن <code>git reset
+--soft HEAD~1</code> ثم تصحيح ثم <code>push --force-with-lease</code> — <strong>لكن فقط بعد التنسيق مع الفريق</strong>
+وتأكيد عدم وجود عمل مبني عليه.</p></div></div>
+
+<div class="band green"><span class="ar">ملخّص التصحيح</span><span class="en">Marking summary</span></div>
+
+<div class="evidence"><div class="h">سجل الدرجات<span class="en">/ Grade sheet</span></div><table class="tbl">
+<thead>
+<tr>
+<th>الاسم</th>
+<th>م1 /15</th>
+<th>م2 /15</th>
+<th>م3 /15</th>
+<th>م4 /15</th>
+<th>م5 /20</th>
+<th>م6 /20</th>
+<th>أسئلة /15</th>
+<th>المجموع /100</th>
+<th>المستوى (أ/ب/ج)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box ok"><div class="h">توجيه للورقة الأخيرة<span class="en">Hand-off to the final worksheet</span></div><p>قبل الانتقال، اكتب لكل طالب في المستوى ب/ج مهمة محددة: «تدريب <code>reflog</code>»، «قراءة مخرجات
+<code>git status</code> كل مرة بصوت مسموع»، «إعادة تجربة <code>stash</code>». الورقة 05 تُنتج تعارضاً مقصوداً
+— والطالب الذي لم يفهم <code>stash</code> سيجمّد الفريق عند أول <code>pull</code>.</p></div>
+<div class="footer-note"><span>دليل المدرّب — حلول ورقة 04 · ورشة Git وGitHub</span><span class="en">Instructor key · Worksheet 04 solutions</span></div>
+</div>
+</body>
+</html>

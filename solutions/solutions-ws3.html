@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حلول ورقة العمل 03: الفرع وطلب السحب</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top" style="background:#7A1220"><div class="badge"><div class="n">03</div><div class="l">نموذج حل</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — دليل المدرّب المرجعي</div><h1>حلول ورقة العمل 03: الفرع وطلب السحب</h1><div class="sub">Solutions · Worksheet 03 — Branch &amp; Pull Request</div></div></div><div class="meta"><div><span class="k">التقييم الكلي / Total</span><span class="v">100 نقطة</span></div><div><span class="k">زمن التصحيح المقترح / Marking time</span><span class="v">8–10 دقائق لكل طالب (مع طلبات السحب)</span></div><div><span class="k">أدلة إلزامية / Mandatory evidence</span><span class="v">9 بنود</span></div><div><span class="k">معيار النجاح / Pass mark</span><span class="v">70 نقطة</span></div></div></div>
+<div class="box err"><div class="h">نسخة المدرّب — نماذج الحلول والتقييم <span class="en">/ Instructor copy — do not distribute</span></div></div><div class="band "><span class="ar">هذه أهم ورقة في البرنامج</span><span class="en">The most important worksheet</span></div>
+
+<div class="bi "><div class="ar"><p>هنا ينتقل الطالب من «التعلّم عن Git» إلى <strong>العمل بمنهج فريق حقيقي</strong>. فتّش في تصحيحك عن
+ثلاثة أشياء بالترتيب: <strong>(1)</strong> هل التزم بالفرع وطلبه؟ <strong>(2)</strong> هل الالتزامات واضحة ومفيدة؟
+<strong>(3)</strong> هل شارك في المراجعة بجدية (مكتوبة ومحدّدة) أم كتب «موافق»؟ التقييم يجب أن يرفع
+وزن المراجعة، لأنها المهارة التي تحوّل الطالب إلى عضو فريق لا مجرد كاتب كود.</p></div><div class="eng"><p>This is where students become team members. Prioritise three things: did they follow the
+branch + PR workflow, are their commits meaningful, and did they review a teammate's work
+substantively — not a bare “LGTM”.</p></div></div>
+
+<div class="band alt"><span class="ar">جدول التقييم المُجمَّع</span><span class="en">Marking rubric</span></div>
+
+<table class="tbl">
+<thead>
+<tr>
+<th>#</th>
+<th>المهمة</th>
+<th>النقاط</th>
+<th>معيار القبول الأساسي</th>
+<th>ملاحظة تصحيح</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>مزامنة + Issue</td>
+<td>10</td>
+<td>رقم Issue حقيقي في مستودع الفريق</td>
+<td>Issue مفتوح بوصف واضح</td>
+</tr>
+<tr>
+<td>2</td>
+<td>إنشاء الفرع</td>
+<td>10</td>
+<td>الاسم مطابق للاتفاقية <code>feature/&lt;user&gt;-card</code></td>
+<td>خصم على أسماء غامضة</td>
+</tr>
+<tr>
+<td>3</td>
+<td>ملف البطاقة + الفحص</td>
+<td>20</td>
+<td><code>validate-members.mjs</code> = 0 خطأ</td>
+<td>الفحص هو الحكم لا الشكل</td>
+</tr>
+<tr>
+<td>4</td>
+<td>الالتزام والرفع</td>
+<td>20</td>
+<td>التزام برسالة صحيحة + <code>push -u</code> ناجح</td>
+<td>يقيس جودة الرسالة فعلياً</td>
+</tr>
+<tr>
+<td>5</td>
+<td>طلب السحب + المراجعة</td>
+<td>20</td>
+<td>PR مكتمل + مراجعة زميل مكتوبة</td>
+<td>نصف الدرجة للمراجعة</td>
+</tr>
+<tr>
+<td>6</td>
+<td>الاستجابة للملاحظات</td>
+<td>10</td>
+<td>التزام إضافي على نفس الفرع بعد ملاحظة</td>
+<td>يقيس مهارة العمل الجماعي</td>
+</tr>
+<tr>
+<td>—</td>
+<td>الأسئلة (س1–س4)</td>
+<td>10</td>
+<td>—</td>
+<td>إجابة عملية لا نظرية</td>
+</tr>
+</tbody>
+</table>
+<div class="box rule"><div class="h">معيار «المساهمة الكاملة»<span class="en">Full-contribution standard</span></div><p>لا تُمنح درجة كاملة لمن لم يُدمج أو لم يُراجع. الحد الأدنى للتسليم المقبول: بطاقة صحيحة
+مدموجة/تحت المراجعة، <strong>+</strong> مراجعة مكتوبة واحدة على عمل زميل. المراجعة ليست إضافية —
+هي نصف قيمة هذه الورقة.</p></div>
+
+<div class="band "><span class="ar">إجابات المهام</span><span class="en">Task solutions</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">المزامنة والمهمة (Issue)</div><div class="en">Sync and issue</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ قبول</span><span class="chip t">★ 10 نقطة</span></div><p><strong>معيار القبول:</strong> مخرجات <code>git pull --ff-only</code> (يُقبل <code>Already up to date</code>) + رقم Issue
+حقيقي يمكن فتحه.</p>
+<p><strong>الإجابة النموذجية:</strong></p>
+<pre class="plain"><span class="ph">$ git switch main
+$ git pull --ff-only
+remote: Enumerating objects: 12, done.
+Updating 8de1e7a..a1b2c3d
+Fast-forward
+ data/members/ali-h.json | 9 +++++++++
+ 1 file changed, 9 insertions(+)</span>
+</pre>
+
+<p><strong>أخطاء متوقعة:</strong> بدأ العمل مباشرة دون سحب → <strong>−4</strong> (وسيظهر أثره كتعارض في الورقة 05).
+عنوان Issue عام («مهمة») → −2. لم يفتح Issue إطلاقاً → −6 مع السماح بفتحه أثناء الجلسة.</p>
+<div class="box tip"><div class="h">طريقة تحقّق سريعة<span class="en">Fast verification</span></div><p>افتح تبويب <code>Issues</code> في مستودع الفريق: يجب أن ترى عدداً من المهام يقارب عدد الطلاب، وعنوان
+كل مهمة يذكر اسم المستخدم. هذا يثبت أن الجميع بدأ من نقطة صحيحة — وتكلفته 30 ثانية.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">إنشاء الفرع</div><div class="en">Create the branch</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ قبول</span><span class="chip t">★ 10 نقطة</span></div><p><strong>معيار القبول:</strong> اسم فرع بصيغة <code>type/username-topic</code> وحروف إنجليزية صغيرة وشرطات فقط،
+مع نجمة <code>*</code> على الفرع الصحيح في <code>git branch</code>.</p>
+<p><strong>أمثلة مقبولة:</strong> <code>feature/omar-qa-card</code> · <code>feat/omar-qa-card</code> · <code>add/omar-qa-card</code>
+<strong>أمثلة مرفوضة وخصوماتها:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الاسم</th>
+<th>المشكلة</th>
+<th>الخصم</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>my-branch</code></td>
+<td>لا يدل على صاحبه ولا موضوعه</td>
+<td>−3</td>
+</tr>
+<tr>
+<td><code>omar_card</code></td>
+<td>شرطة سفلية (المعيار = شرطات)</td>
+<td>−1</td>
+</tr>
+<tr>
+<td><code>فرع-عمر</code></td>
+<td>حروف عربية ومسافات تسبب مشاكل في الأدوات</td>
+<td>−2</td>
+</tr>
+<tr>
+<td><code>omar/final/final2</code></td>
+<td>مسارات متعددة وتسمية فوضوية</td>
+<td>−2</td>
+</tr>
+<tr>
+<td><code>main</code> (عمل على الفرع الرئيسي)</td>
+<td><strong>مخالفة جسيمة</strong></td>
+<td>−10 وإعادة فورية</td>
+</tr>
+</tbody>
+</table>
+<p><strong>مهارة يجب التحقق منها:</strong> أن يعرف الطالب الإجابة على «على أي فرع أنا الآن؟» —
+إما <code>git branch</code> أو <code>git branch --show-current</code> أو <code>git status -sb</code>.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">ملف البطاقة والفحص</div><div class="en">Card file and validation</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 20 نقطة</span></div><p><strong>معيار القبول القاطع:</strong> مخرجات
+<code>--- النتيجة / Result: 6 بطاقة، 0 خطأ، 0 تحذير ---</code>.
+التحذيرات لا تمنع القبول لكنها تستحق ملاحظة تصحيح.</p>
+<p><strong>مثال بطاقة صحيحة:</strong></p>
+<pre class="plain"><span class="ph">{
+  &quot;fullName&quot;: &quot;عمر القاسم&quot;,
+  &quot;github&quot;: &quot;omar-qa&quot;,
+  &quot;role&quot;: &quot;مختبر QA&quot;,
+  &quot;favoriteCommand&quot;: &quot;git log --oneline --graph --all&quot;,
+  &quot;message&quot;: &quot;أبحث عن الأخطاء قبل أن يجدها المستخدم، وأثبت كل إصلاح بمخرجات واضحة.&quot;,
+  &quot;tags&quot;: [&quot;Testing&quot;, &quot;JavaScript&quot;],
+  &quot;joinedAt&quot;: &quot;2026-10-06&quot;
+}</span>
+</pre>
+
+<p><strong>خريطة الأخطاء التي يكتشفها الفحص ورموزها:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>رسالة الفحص</th>
+<th>السبب</th>
+<th>الدرجة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>حقل مفقود: "message"</code></td>
+<td>الحقل غير موجود أو فارغ</td>
+<td>−4</td>
+</tr>
+<tr>
+<td><code>اسم مستخدم غير صالح</code></td>
+<td>حرف كبير أو <code>_</code> أو رموز</td>
+<td>−3</td>
+</tr>
+<tr>
+<td><code>الامر المفضل يجب ان يبدا بـ "git "</code></td>
+<td>كتب <code>ls</code> أو <code>npm start</code></td>
+<td>−3</td>
+</tr>
+<tr>
+<td><code>طول الرسالة 8 — يجب أن يكون بين 10 و140</code></td>
+<td>رسالة قصيرة جداً</td>
+<td>−2</td>
+</tr>
+<tr>
+<td><code>دور غير معتاد</code></td>
+<td>دور خارج القائمة المعتمدة</td>
+<td>−2 (تحذير فقط)</td>
+</tr>
+<tr>
+<td><code>بيانات حساسة أو ممنوعة</code></td>
+<td>بريد/هاتف/كلمة مرور</td>
+<td><strong>−8 + تحقيق</strong></td>
+</tr>
+<tr>
+<td><code>البطاقة غير مُفهرسة</code></td>
+<td>لم يُنفّذ <code>build-index.mjs</code></td>
+<td>−4</td>
+</tr>
+<tr>
+<td><code>اسم مستخدم مكرر مع</code></td>
+<td>انتحل اسم زميل</td>
+<td><strong>−10 + إعادة</strong></td>
+</tr>
+<tr>
+<td><code>اسم الملف لا يطابق اسم المستخدم</code></td>
+<td><code>my-card.json</code> بدل <code>omar-qa.json</code></td>
+<td>تحذير −1</td>
+</tr>
+</tbody>
+</table>
+<div class="box err"><div class="h">تنبيه إلزامي على بيانات شخصية<span class="en">Mandatory personal-data check</span></div><p>افحص كل بطاقة بعينك بحثاً عن: بريد شخصي، رقم هاتف، عنوان سكن، اسم مدرسة/جامعة مع تفاصيل
+تعريفية، اسم أحد الوالدين. أي واحدة منها تُحذف من ملف موجود في مستودع عام — وهذا جزء من
+تدريبهم على الخصوصية الرقمية. إن تجاوزت الفحوص ولم تكتشفها، فالمسؤولية على المشروع.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">الالتزام والرفع</div><div class="en">Commit and push</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 20 نقطة</span></div><p><strong>معيار القبول:</strong> التزام برسالة بصيغة <code>Conventional Commits</code> + نجاح <code>git push -u</code> +
+<code>git branch -vv</code> يُظهر الربط <code>[origin/feature/...]</code>.</p>
+<p><strong>الإجابة النموذجية:</strong></p>
+<pre class="plain"><span class="ph">$ git add data/members/omar-qa.json data/members-index.json data/members-bundle.js
+$ git commit -m &quot;feat(members): add card for omar-qa&quot;
+[feature/omar-qa-card 89f5cff] feat(members): add card for omar-qa
+ 3 files changed, 25 insertions(+), 2 deletions(-)
+ create mode 100644 data/members/omar-qa.json
+
+$ git push -u origin feature/omar-qa-card
+ * [new branch]      feature/omar-qa-card -&gt; feature/omar-qa-card
+branch &#x27;feature/omar-qa-card&#x27; set up to track &#x27;origin/feature/omar-qa-card&#x27;.</span>
+</pre>
+
+<p><strong>سلّم تقييم رسالة الالتزام (أهم 6 نقاط في المهمة):</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>المستوى</th>
+<th>مثال</th>
+<th>النقاط</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ممتاز</td>
+<td><code>feat(members): add card for omar-qa</code></td>
+<td>6</td>
+</tr>
+<tr>
+<td>جيد</td>
+<td><code>feat: add omar card</code></td>
+<td>4.5</td>
+</tr>
+<tr>
+<td>مقبول</td>
+<td><code>add my card file</code></td>
+<td>3</td>
+</tr>
+<tr>
+<td>ضعيف</td>
+<td><code>update</code> / <code>changes</code> / <code>add</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td>مرفوض</td>
+<td><code>final</code> / <code>asdf</code> / <code>.</code> / <code>.</code> / رسالة فارغة</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>أخطاء متوقعة:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الخطأ</th>
+<th>العلاج</th>
+<th>الخصم</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>التزم لكن لم يرفع</td>
+<td>أهم خطأ — اسأله: «أين عملك الآن؟»</td>
+<td>−6</td>
+</tr>
+<tr>
+<td>رفع على <code>main</code></td>
+<td>تحقّق أنه يحترم حماية الفرع</td>
+<td>−10</td>
+</tr>
+<tr>
+<td>التزامان برسالتين فوضويّتين لنفس الملف</td>
+<td>يقبل 3 نقاط من 6 للرسائل</td>
+<td>−3</td>
+</tr>
+<tr>
+<td><code>git add .</code> وحده</td>
+<td>أضاف ملفات غير مقصودة</td>
+<td>−2 مع مناقشة الدرس</td>
+</tr>
+<tr>
+<td>نسخ مخرجات الورقة بدل مخرجات جهازه</td>
+<td><strong>صفر</strong> في المهمة + تحقيق شفافية</td>
+<td>−20</td>
+</tr>
+<tr>
+<td>استخدم <code>--force</code> بلا سبب</td>
+<td>ذكر توجيه الورقة 05</td>
+<td>−3</td>
+</tr>
+</tbody>
+</table>
+<div class="box warn"><div class="h">كيف تكتشف أدلة منسوخة من الورقة؟<span class="en">Spotting copy-paste evidence</span></div><p>علامات واضحة: مخرجات المهمة الرقم 4 يظهر فيها بريد <code>nour@example.com</code> أو hash مطابق
+تماماً لحروف الورقة (<code>89f5cff</code>)، أو اسم بطاقة لعضو آخر، أو رسالة <code>feat(members): add card
+for omar-qa</code> بينما الطالب اسمه سارة. اطلب منه تنفيذ الأمر أمامك في جولة سريعة، وسجّل
+ملاحظة «دليل غير شخصي» تخصم فيه من بند الأدلة (لا من فهمه التقني).</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">طلب السحب والمراجعة</div><div class="en">Pull request and review</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 20 نقطة</span></div><p><strong>معيار القبول — خمسة عناصر، كل عنصر 4 نقاط:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>#</th>
+<th>العنصر</th>
+<th>ما أراقبه</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>PR مفتوح للفرع الصحيح</td>
+<td><code>base: main</code> ← <code>compare: feature/&lt;username&gt;-card</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>عنوان مطابق للاتفاقية</td>
+<td>نفس صيغة رسالة الالتزام</td>
+</tr>
+<tr>
+<td>3</td>
+<td>القالب مملوء</td>
+<td>ماذا تغيّر + الأدلة + طريقة الاختبار</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>Closes #&lt;issue&gt;</code> مذكور</td>
+<td>يربط المهمة بالطلب</td>
+</tr>
+<tr>
+<td>5</td>
+<td>مراجعة زميل <strong>مكتوبة ومحدّدة</strong></td>
+<td>تعليق على ملف أو سطر، لا «موافق»</td>
+</tr>
+</tbody>
+</table>
+<p><strong>سلّم تقييم جودة المراجعة (بند حرج — 6 نقاط):</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>المستوى</th>
+<th>مثال تعليق</th>
+<th>النقاط</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ممتاز</td>
+<td>«سطر 6: الأمر <code>npm start</code> لا يبدأ بـ <code>git</code>، هل تقصد <code>git status</code>؟ اقترح تعديلاً.»</td>
+<td>6</td>
+</tr>
+<tr>
+<td>جيد</td>
+<td>«الحقل <code>message</code> أقل من 10 أحرف، يُفضّل توضيح أدوارك.»</td>
+<td>4.5</td>
+</tr>
+<tr>
+<td>مقبول</td>
+<td>«البطاقة صحيحة، لكن الوسوم فارغة — ممكن تضيف JavaScript؟»</td>
+<td>3</td>
+</tr>
+<tr>
+<td>ضعيف</td>
+<td>«ممتاز ✔»</td>
+<td>1.5</td>
+</tr>
+<tr>
+<td>مرفوض</td>
+<td>لا تعليق / «موافق» / نقد شخصي</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>أخطاء متوقعة:</strong>
+- دمج الطالب فرعه بنفسه (<code>Merge pull request</code>) → <strong>−15</strong> (بند صريح في الورقة).
+- كتابة التعليق بلغة غير مهنية أو سخرية → <strong>−6 + جلسة إرشاد</strong>.
+- مراجعة PR لنفسه (لا فائدة) → 0 في هذا البند.
+- لم يطلب Reviewer محدداً → −2.</p>
+<div class="box tip"><div class="h">سكربت الجولة السريعة على GitHub (3 دقائق لكل فريق)<span class="en">Fast GitHub tour</span></div><p>لكل طالب: افتح صفحته <code>github.com/&lt;username&gt;</code> → تبويب <code>Activity</code> أو سجّل الدخول إلى
+المستودع ← <code>Pull requests</code> ← صفِّ بـ <code>author:&lt;username&gt;</code>. تحقّق من: العدد، العنوان،
+المراجعات، ومن فتح PR ولم يُدمج. هذا يعطيك لوحة تقييم حقيقية بلا أوراق.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">الاستجابة للملاحظات</div><div class="en">Responding to feedback</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ سلوك مهني</span><span class="chip t">★ 10 نقطة</span></div><p><strong>معيار القبول:</strong> التزام إضافي على <strong>نفس الفرع</strong> بعد ملاحظة المراجع + طلب السحب تحدّث
+تلقائياً (لا يُنشأ PR جديد).</p>
+<pre class="plain"><span class="ph">$ git add data/members/omar-qa.json
+$ git commit -m &quot;fix(members): add JavaScript tag per review feedback&quot;
+[feature/omar-qa-card 3c7d9e1] fix(members): add JavaScript tag per review feedback
+
+$ git push
+   89f5cff..3c7d9e1  feature/omar-qa-card -&gt; feature/omar-qa-card</span>
+</pre>
+
+<p><strong>أخطاء متوقعة:</strong> فتح PR جديد للتعديل الصغير (0) — علّمه أن PR الجديد يفقد سياق المراجعة.
+الاعتراض على الملاحظة بلا تنفيذ ولا شرح مقنع (3 من 10). الالتزام برسالة <code>fix</code> واضحة
+وبدون تفصيل كافٍ (6 من 10).</p>
+<div class="box info"><div class="h">مؤشر نضج مهني — راقبه<span class="en">Professional maturity signal</span></div><p>الطالب الذي يرد على الملاحظة بـ «رأيك صحيح، عدّلتُ الملف والتزمت، وما زلت أعتقد أن الوسم
+إضافي لكن لا مشكلة» — هذا <strong>أعلى مستوى</strong> في الورقة الثالثة: يتقبّل النقد، ينفّذ، ويحافظ
+على رأيه باحترام. اذكر هؤلاء في تقرير الفريق.</p></div></div></div>
+
+<div class="band violet"><span class="ar">إجابات الأسئلة</span><span class="en">Knowledge-check answers</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س1</div><div class="task-titles"><div class="ar">-c في switch</div><div class="en">switch -c</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ فهم</span><span class="chip t">★ 2.5 نقطة</span></div><p><code>git switch -c feature/x</code> تُنشئ فرعاً جديداً وتنتقل إليه في خطوة واحدة. أما
+<code>git switch feature/x</code> فتنتقل إلى فرع <strong>موجود مسبقاً</strong> فقط، وستفشل إن لم يكن موجوداً
+(<code>fatal: invalid reference</code>).</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س2</div><div class="task-titles"><div class="ar">لماذا المزامنة قبل الفرع</div><div class="en">Why sync first</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 2.5 نقطة</span></div><p>لأن الفرع الجديد يتفرّع من <strong>النقطة الحالية</strong> لـ <code>main</code>. فلو كان <code>main</code> قديماً، فستبني
+عملك على أساس ناقص، وسيظهر لاحقاً كتعارض أو كعدد هائل من «الالتزامات الغريبة» في طلب
+سحبك، وسيضطر المراجع للمقارنة مع نسخة قديمة.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س3</div><div class="task-titles"><div class="ar">معنى Closes #12</div><div class="en">Closes #12</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ استخدام</span><span class="chip t">★ 2.5 نقطة</span></div><p>تعني «هذا الطلب يُنهي المهمة رقم 12» — فيربط GitHub الطلب بالمهمة، وينشئ مرجعاً تلقائياً
+في الطرفين، <strong>ويُغلق المهمة تلقائياً</strong> عند دمج طلب السحب. فائدتها: تنظيم، وإثبات أن العمل
+استهدف مهمة معروفة، ومنع العمل المهدور على مهام منتهية.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س4</div><div class="task-titles"><div class="ar">رسالة التزام صحيحة</div><div class="en">Write a valid commit</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تطبيق</span><span class="chip t">★ 2.5 نقطة</span></div><p><strong>الإجابة النموذجية:</strong> <code>fix(ui): correct card alignment on mobile</code>
+(مقبول أيضاً: <code>fix(css): fix card alignment on mobile screens</code>).</p>
+<p><strong>معيار الدرجة:</strong> 1 نقطة للنوع <code>fix</code>، نقطة للنطاق <code>(ui)</code> أو <code>(css)</code>، ونصف لوصف واضح
+بصيغة الأمر وبالإنجليزية. رسالة عربية بلا نوع → نصف الدرجة فقط.</p></div></div>
+
+<div class="band green"><span class="ar">ملخّص التصحيح</span><span class="en">Marking summary</span></div>
+
+<div class="evidence"><div class="h">سجل الدرجات (مع أعمدة المراجعة)<span class="en">/ Grade sheet with review columns</span></div><table class="tbl">
+<thead>
+<tr>
+<th>الاسم</th>
+<th>م1 /10</th>
+<th>م2 /10</th>
+<th>م3 /20</th>
+<th>م4 /20</th>
+<th>م5 /20</th>
+<th>م6 /10</th>
+<th>أسئلة /10</th>
+<th>المجموع</th>
+<th>PR #</th>
+<th>هل راجع زميلاً؟</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box ok"><div class="h">قائمة تحقّق المدرّب على المستودع (قبل إغلاق الجلسة)<span class="en">Instructor repo checklist</span></div><pre class="plain"><span class="ph">1) Pull requests: عددها = عدد الطلاب (٧ أو ١٠)، وأي طالب بلا PR؟
+2) Issues: كل مهمة مرتبطة بـ Closes #n في وصف PR؟
+3) Files changed: هل ظهر ملف غريب (مثل .env أو صورة شخصية أو مفتاح)؟
+4) هل عدّل أحدهم ملف زميل؟ (git log --data/members/&lt;other&gt;.json)
+5) node tests/validate-members.mjs  ←  0 خطأ على main بعد الدمج
+6) حماية فرع main مُفعَّلة: Settings ← Branches ← Require pull request before merging  ✓</span>
+</pre></div>
+
+<div class="box warn"><div class="h">استعداد للورقة 04<span class="en">Preparing for Worksheet 04</span></div><p>من أنهى هذه الورقة تماماً: بطاقة <strong>مدموجة</strong> على <code>main</code>. من تأخر: بطاقة على فرع مرفوع
+ومفتوح بطلب سحب. المجموعة الثانية ستواجه الورقة 04 بظروف مختلفة (ديون دمج) — وهذه ليست
+مشكلة بل فرصة تدريبية، لكن رتّب المجموعتين في زوجين متكاملين حتى لا يبقى أحد بلا مهام.</p></div>
+<div class="footer-note"><span>دليل المدرّب — حلول ورقة 03 · ورشة Git وGitHub</span><span class="en">Instructor key · Worksheet 03 solutions</span></div>
+</div>
+</body>
+</html>

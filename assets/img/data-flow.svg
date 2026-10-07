@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 300" font-family="'IBM Plex Sans Arabic','Segoe UI',sans-serif">
+  <defs>
+    <marker id="d" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#1E3A5F"/>
+    </marker>
+  </defs>
+  <text x="490" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#12203C">كيف تصل بطاقتك إلى الشاشة؟ — How a card reaches the screen</text>
+
+  <!-- 1 -->
+  <rect x="20" y="70" width="170" height="96" rx="12" fill="#FFF1E6" stroke="#E8620C" stroke-width="1.6"/>
+  <text x="105" y="96" text-anchor="middle" font-size="12.5" font-weight="700" fill="#9A420A">1) ملف بطاقتك</text>
+  <text x="105" y="118" text-anchor="middle" font-size="10.5" fill="#22303F">data/members/</text>
+  <text x="105" y="136" text-anchor="middle" font-size="10.5" fill="#22303F">omar-qa.json</text>
+  <text x="105" y="156" text-anchor="middle" font-size="9.5" fill="#8494A8">أنت تكتبه / you write it</text>
+
+  <!-- 2 -->
+  <rect x="212" y="70" width="170" height="96" rx="12" fill="#E6F5F5" stroke="#0E7C7B" stroke-width="1.6"/>
+  <text x="297" y="96" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0A5D5C">2) الفهرس</text>
+  <text x="297" y="118" text-anchor="middle" font-size="10.5" fill="#22303F">members-index.json</text>
+  <text x="297" y="136" text-anchor="middle" font-size="10.5" fill="#22303F">قائمة أسماء الملفات</text>
+  <text x="297" y="156" text-anchor="middle" font-size="9.5" fill="#8494A8">يُولَّد آلياً / generated</text>
+
+  <!-- 3 -->
+  <rect x="404" y="70" width="170" height="96" rx="12" fill="#F2ECFD" stroke="#6D3BB5" stroke-width="1.6"/>
+  <text x="489" y="96" text-anchor="middle" font-size="12.5" font-weight="700" fill="#4B2683">3) الكود</text>
+  <text x="489" y="118" text-anchor="middle" font-size="10.5" fill="#22303F">js/app.js</text>
+  <text x="489" y="136" text-anchor="middle" font-size="10.5" fill="#22303F">fetchJSON()</text>
+  <text x="489" y="156" text-anchor="middle" font-size="9.5" fill="#8494A8">cardHTML()</text>
+
+  <!-- 4 -->
+  <rect x="596" y="70" width="170" height="96" rx="12" fill="#EEF4FD" stroke="#1E3A5F" stroke-width="1.6"/>
+  <text x="681" y="96" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1C4B86">4) الصفحة</text>
+  <text x="681" y="118" text-anchor="middle" font-size="10.5" fill="#22303F">index.html</text>
+  <text x="681" y="136" text-anchor="middle" font-size="10.5" fill="#22303F">#membersGrid</text>
+  <text x="681" y="156" text-anchor="middle" font-size="9.5" fill="#8494A8">مكان البطاقات</text>
+
+  <!-- 5 -->
+  <rect x="788" y="70" width="172" height="96" rx="12" fill="#E7F7F0" stroke="#128A5B" stroke-width="1.6"/>
+  <text x="874" y="96" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0B6244">5) المتصفح</text>
+  <text x="874" y="118" text-anchor="middle" font-size="10.5" fill="#22303F">بطاقتك ظاهرة</text>
+  <text x="874" y="136" text-anchor="middle" font-size="10.5" fill="#22303F">مع الاسم والدور</text>
+  <text x="874" y="156" text-anchor="middle" font-size="9.5" fill="#8494A8">rendered card</text>
+
+  <g stroke="#1E3A5F" stroke-width="2">
+    <line x1="192" y1="118" x2="208" y2="118" marker-end="url(#d)"/>
+    <line x1="384" y1="118" x2="400" y2="118" marker-end="url(#d)"/>
+    <line x1="576" y1="118" x2="592" y2="118" marker-end="url(#d)"/>
+    <line x1="768" y1="118" x2="784" y2="118" marker-end="url(#d)"/>
+  </g>
+
+  <rect x="20" y="196" width="940" height="76" rx="12" fill="#F5F8FB" stroke="#D6DDE6"/>
+  <text x="940" y="222" text-anchor="end" font-size="12.5" font-weight="700" fill="#12203C">النتيجة العملية: بطاقتان من طالبين مختلفين لا تتعارضان.</text>
+  <text x="940" y="244" text-anchor="end" font-size="11" fill="#5C6875">كل طالب يملك ملفاً باسمه، والتغيير الوحيد المشترك هو ملف الفهرس — وهو مُولَّد آلياً،</text>
+  <text x="940" y="262" text-anchor="end" font-size="11" fill="#5C6875">لذلك يُعاد توليده بدل حلّ تعارضه يدوياً: node tools/build-index.mjs</text>
+</svg>

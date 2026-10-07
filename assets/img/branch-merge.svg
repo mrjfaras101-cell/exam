@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 400" font-family="'IBM Plex Sans Arabic','Segoe UI',sans-serif">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#1E3A5F"/>
+    </marker>
+  </defs>
+
+  <text x="960" y="30" text-anchor="end" font-size="16" font-weight="700" fill="#12203C">دورة العمل في الفريق: فرع ← طلب سحب ← مراجعة ← دمج</text>
+  <text x="960" y="50" text-anchor="end" font-size="11.5" fill="#8494A8">Team workflow: branch → pull request → review → merge</text>
+
+  <!-- main line -->
+  <line x1="60" y1="230" x2="930" y2="230" stroke="#1E3A5F" stroke-width="3"/>
+  <text x="946" y="234" font-size="12" font-weight="700" fill="#1E3A5F">main</text>
+
+  <circle cx="90" cy="230" r="9" fill="#1E3A5F"/><text x="90" y="262" text-anchor="middle" font-size="10.5" fill="#5C6875">بداية</text>
+  <circle cx="250" cy="230" r="9" fill="#128A5B"/><text x="250" y="262" text-anchor="middle" font-size="10.5" fill="#5C6875">تحديث الفريق</text>
+  <circle cx="820" cy="230" r="9" fill="#6D3BB5"/><text x="820" y="262" text-anchor="middle" font-size="10.5" fill="#5C6875">دمج PR</text>
+  <circle cx="910" cy="230" r="9" fill="#1E3A5F"/>
+
+  <!-- branch 1 -->
+  <path d="M250,230 C300,230 300,130 350,130 L640,130 C690,130 690,230 735,230" fill="none" stroke="#E8620C" stroke-width="2.6"/>
+  <circle cx="350" cy="130" r="8" fill="#E8620C"/><circle cx="470" cy="130" r="8" fill="#E8620C"/><circle cx="590" cy="130" r="8" fill="#E8620C"/>
+  <text x="470" y="106" text-anchor="middle" font-size="12.5" font-weight="700" fill="#9A420A">فرع سارة: feature/sara-card</text>
+  <circle cx="735" cy="230" r="9" fill="#E8620C"/>
+
+  <!-- branch 2 -->
+  <path d="M250,230 C300,230 300,320 350,320 L620,320 C670,320 670,230 715,230" fill="none" stroke="#0E7C7B" stroke-width="2.6"/>
+  <circle cx="350" cy="320" r="8" fill="#0E7C7B"/><circle cx="470" cy="320" r="8" fill="#0E7C7B"/>
+  <text x="470" y="352" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0A5D5C">فرع عمر: feature/omar-card</text>
+  <circle cx="715" cy="230" r="9" fill="#0E7C7B"/>
+
+  <!-- labels -->
+  <g font-size="11.5" fill="#22303F">
+    <text x="520" y="176" text-anchor="middle">git switch -c</text>
+    <text x="520" y="196" text-anchor="middle">git push -u origin &lt;branch&gt;</text>
+    <text x="520" y="292" text-anchor="middle" font-size="11.5">git pull --rebase قبل كل دفعة جديدة</text>
+  </g>
+
+  <!-- PR box -->
+  <rect x="742" y="86" width="150" height="70" rx="10" fill="#F2ECFD" stroke="#6D3BB5" stroke-width="1.5"/>
+  <text x="817" y="112" text-anchor="middle" font-size="13" font-weight="700" fill="#4B2683">طلب سحب</text>
+  <text x="817" y="132" text-anchor="middle" font-size="11" fill="#6D3BB5">Pull Request</text>
+  <line x1="817" y1="156" x2="817" y2="218" stroke="#6D3BB5" stroke-width="2" marker-end="url(#a)"/>
+
+  <rect x="742" y="300" width="150" height="66" rx="10" fill="#E6F5F5" stroke="#0E7C7B" stroke-width="1.5"/>
+  <text x="817" y="326" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0A5D5C">مراجعة زميل</text>
+  <text x="817" y="346" text-anchor="middle" font-size="11" fill="#0E7C7B">Code review</text>
+  <line x1="817" y1="300" x2="817" y2="250" stroke="#0E7C7B" stroke-width="2" marker-end="url(#a)"/>
+
+  <!-- conflict marker -->
+  <rect x="60" y="300" width="230" height="66" rx="10" fill="#FDECEA" stroke="#B3261E" stroke-width="1.5"/>
+  <text x="175" y="326" text-anchor="middle" font-size="12.5" font-weight="700" fill="#8C1D17">قد يحدث تعارض هنا</text>
+  <text x="175" y="346" text-anchor="middle" font-size="11" fill="#B3261E">merge conflict → resolve → continue</text>
+  <line x1="175" y1="300" x2="175" y2="246" stroke="#B3261E" stroke-width="1.6" stroke-dasharray="4 3"/>
+</svg>

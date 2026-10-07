@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 330" font-family="'IBM Plex Sans Arabic','Segoe UI',sans-serif">
+  <text x="490" y="34" text-anchor="middle" font-size="17" font-weight="700" fill="#12203C">ما الفرق بين Git وGitHub؟</text>
+  <text x="490" y="56" text-anchor="middle" font-size="11.5" fill="#8494A8">Git is a tool on your computer · GitHub is a service on the internet</text>
+
+  <!-- Git box -->
+  <rect x="40" y="80" width="420" height="200" rx="14" fill="#F5F8FB" stroke="#1E3A5F" stroke-width="1.8"/>
+  <rect x="40" y="80" width="420" height="42" rx="14" fill="#1E3A5F"/>
+  <text x="250" y="108" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">Git — برنامج على جهازك</text>
+  <g font-size="13" fill="#22303F">
+    <text x="440" y="150" text-anchor="end">• يعمل بدون إنترنت وبدون حساب</text>
+    <text x="440" y="178" text-anchor="end">• يتتبّع التعديلات ويسجّل الالتزامات</text>
+    <text x="440" y="206" text-anchor="end">• ينشئ الفروع ويعيد الدمج ويحلّ التعارضات</text>
+    <text x="440" y="234" text-anchor="end">• يحفظ التاريخ كاملاً في مجلد ‎.git‎</text>
+  </g>
+  <text x="440" y="264" text-anchor="end" font-size="11.5" fill="#8494A8">local tool · no account · no internet needed</text>
+
+  <!-- GitHub box -->
+  <rect x="520" y="80" width="420" height="200" rx="14" fill="#FFF1E6" stroke="#E8620C" stroke-width="1.8"/>
+  <rect x="520" y="80" width="420" height="42" rx="14" fill="#E8620C"/>
+  <text x="730" y="108" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">GitHub — خدمة على الإنترنت</text>
+  <g font-size="13" fill="#22303F">
+    <text x="920" y="150" text-anchor="end">• يحتاج حساباً واتصالاً بالإنترنت</text>
+    <text x="920" y="178" text-anchor="end">• يستضيف المستودعات ويعمل نسخاً احتياطياً</text>
+    <text x="920" y="206" text-anchor="end">• طلبات السحب والمراجعة والتعليقات</text>
+    <text x="920" y="234" text-anchor="end">• المشكلات، الإجراءات، ونشر الصفحات</text>
+  </g>
+  <text x="920" y="264" text-anchor="end" font-size="11.5" fill="#8494A8">online service · account required · teamwork</text>
+
+  <text x="490" y="312" text-anchor="middle" font-size="12.5" font-weight="600" fill="#12203C">العلاقة: Git هو المحرّك، وGitHub هو المكان الذي نجتمع فيه — ولا يعمل أحدهما بدل الآخر.</text>
+</svg>

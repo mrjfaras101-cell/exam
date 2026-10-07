@@ -1,0 +1,23 @@
+# مُلّاك الكود — من يجب عليه مراجعة أي تغيير
+# Code owners — who must review which change.
+#
+# القاعدة: يُطلب المراجع المذكور تلقائياً عند تعديل الملف،
+# ولا يمكن الدمج قبل موافقته إن كان خيار "Require review from Code Owners" مُفعَّلاً.
+# Rule: the listed owner is requested automatically and (if "Require review from
+# Code Owners" is enabled) the pull request cannot merge without their approval.
+
+# الملفات المشتركة الحساسة → قائد الفريق
+/data/site-config.json      @you-instructor
+/js/                        @you-instructor
+/css/                       @you-instructor
+/tools/                     @you-instructor
+/tests/                     @you-instructor
+/.github/                   @you-instructor
+/docs/                      @you-instructor
+
+# كل ما تبقّى: المراجع الافتراضي (المدرّب) — إلا ملفات الأعضاء
+*                           @you-instructor
+
+# ملفات البطاقات: كل طالب مالك ملفه، ولا تُطلب مراجعة قائد الفريق عليها.
+# Member cards: each student owns their own file.
+/data/members/              @you-instructor

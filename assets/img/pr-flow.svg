@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 260" font-family="'IBM Plex Sans Arabic','Segoe UI',sans-serif">
+  <text x="490" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#12203C">رحلة طلب السحب — The pull request journey</text>
+
+  <g>
+    <rect x="16" y="70" width="168" height="112" rx="12" fill="#F5F8FB" stroke="#1E3A5F" stroke-width="1.5"/>
+    <text x="100" y="96" text-anchor="middle" font-size="13.5" font-weight="700" fill="#12203C">1) فرع جديد</text>
+    <text x="100" y="118" text-anchor="middle" font-size="11" fill="#5C6875">branch from main</text>
+    <text x="100" y="146" text-anchor="middle" font-size="11" fill="#22303F">git switch -c</text>
+    <text x="100" y="164" text-anchor="middle" font-size="11" fill="#22303F">feature/x</text>
+  </g>
+  <g>
+    <rect x="204" y="70" width="168" height="112" rx="12" fill="#FFF1E6" stroke="#E8620C" stroke-width="1.5"/>
+    <text x="288" y="96" text-anchor="middle" font-size="13.5" font-weight="700" fill="#9A420A">2) تعديل + التزام</text>
+    <text x="288" y="118" text-anchor="middle" font-size="11" fill="#5C6875">commit changes</text>
+    <text x="288" y="146" text-anchor="middle" font-size="11" fill="#22303F">git add</text>
+    <text x="288" y="164" text-anchor="middle" font-size="11" fill="#22303F">git commit -m</text>
+  </g>
+  <g>
+    <rect x="392" y="70" width="168" height="112" rx="12" fill="#E6F5F5" stroke="#0E7C7B" stroke-width="1.5"/>
+    <text x="476" y="96" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0A5D5C">3) رفع الفرع</text>
+    <text x="476" y="118" text-anchor="middle" font-size="11" fill="#5C6875">push to GitHub</text>
+    <text x="476" y="146" text-anchor="middle" font-size="11" fill="#22303F">git push -u</text>
+    <text x="476" y="164" text-anchor="middle" font-size="11" fill="#22303F">origin &lt;branch&gt;</text>
+  </g>
+  <g>
+    <rect x="580" y="70" width="168" height="112" rx="12" fill="#F2ECFD" stroke="#6D3BB5" stroke-width="1.5"/>
+    <text x="664" y="96" text-anchor="middle" font-size="13.5" font-weight="700" fill="#4B2683">4) طلب سحب</text>
+    <text x="664" y="118" text-anchor="middle" font-size="11" fill="#5C6875">open a pull request</text>
+    <text x="664" y="146" text-anchor="middle" font-size="11" fill="#22303F">Compare &amp; pull</text>
+    <text x="664" y="164" text-anchor="middle" font-size="11" fill="#22303F">request</text>
+  </g>
+  <g>
+    <rect x="768" y="70" width="196" height="112" rx="12" fill="#E7F7F0" stroke="#128A5B" stroke-width="1.5"/>
+    <text x="866" y="96" text-anchor="middle" font-size="13.5" font-weight="700" fill="#0B6244">5) مراجعة ودمج</text>
+    <text x="866" y="118" text-anchor="middle" font-size="11" fill="#5C6875">review &amp; merge</text>
+    <text x="866" y="146" text-anchor="middle" font-size="11" fill="#22303F">Squash and merge</text>
+    <text x="866" y="164" text-anchor="middle" font-size="11" fill="#22303F">then delete branch</text>
+  </g>
+
+  <g stroke="#1E3A5F" stroke-width="2" fill="none">
+    <path d="M186,126 L200,126" marker-end="url(#a)"/>
+    <path d="M374,126 L388,126" marker-end="url(#a)"/>
+    <path d="M562,126 L576,126" marker-end="url(#a)"/>
+    <path d="M750,126 L764,126" marker-end="url(#a)"/>
+  </g>
+
+  <text x="490" y="222" text-anchor="middle" font-size="12.5" fill="#12203C" font-weight="600">لا يُدمج أي فرع قبل مراجعة زميل — المراجعة ليست إجراءً شكلياً، بل جزء من التقييم.</text>
+  <text x="490" y="244" text-anchor="middle" font-size="11" fill="#8494A8">No branch is merged without a peer review — review is graded, not optional.</text>
+</svg>

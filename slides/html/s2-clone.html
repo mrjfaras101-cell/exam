@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الجلسة 02 — الاستنساخ والاستكشاف</title>
+<style>
+@font-face{font-family:CairoAr;src:url("../../assets/fonts/cairo-arabic-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:CairoAr;src:url("../../assets/fonts/cairo-arabic-700-normal.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:CairoLat;src:url("../../assets/fonts/cairo-latin-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:CairoLat;src:url("../../assets/fonts/cairo-latin-700-normal.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:JBMono;src:url("../../assets/fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2")}
+:root{--navy:#12203c;--navy2:#1e3a5f;--orange:#e8620c;--teal:#0e7c7b;--green:#128a5b;
+ --red:#b3261e;--violet:#6d3bb5;--ink:#12161c;--body:#22303f;--muted:#6b7684;--light:#f4f7fa;--line:#d6dde6}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0b1220;color:var(--ink);
+ font-family:CairoAr,CairoLat,"Segoe UI",system-ui,sans-serif}
+.deck{display:flex;flex-direction:column;align-items:center;gap:26px;padding:26px 10px 90px}
+.slide{width:1280px;height:720px;background:#fff;border-radius:10px;overflow:hidden;
+ box-shadow:0 18px 44px rgba(0,0,0,.45);position:relative;flex:0 0 auto;
+ transform-origin:top center}
+.slide>*{position:relative;z-index:1}
+.thead{height:88px;background:var(--navy);display:flex;align-items:center;justify-content:space-between;
+ padding:0 42px;gap:20px}
+.thead h1{margin:0;color:#fff;font-size:27px;font-weight:700}
+.thead .idx{color:#9fc0e6;font-size:12.5px;font-family:JBMono,monospace;direction:ltr;white-space:nowrap}
+.body{padding:24px 42px;display:flex;flex-direction:column;gap:14px;height:632px;overflow:hidden}
+.body p{margin:0;font-size:19px;line-height:1.65;color:var(--body)}
+.body ul{margin:0;padding:0 22px 0 0;list-style:none}
+.body ul li{position:relative;font-size:18px;line-height:1.75;color:var(--body);padding-right:22px}
+.body ul li:before{content:"•";position:absolute;right:0;color:var(--orange);font-weight:700}
+.code{background:#0f172a;border-radius:9px;padding:14px 18px;margin:0;direction:ltr;text-align:left;
+ font-family:JBMono,Consolas,monospace;font-size:14.5px;line-height:1.62;color:#e6edf7;overflow:hidden;white-space:pre-wrap}
+.code .cmd{color:#7fd1a8}.code .cm{color:#7d8ca3}.code .err{color:#f08c7a}
+.callout{border-radius:9px;padding:13px 18px;font-size:16.5px;line-height:1.6}
+.callout p{margin:0 0 4px;font-size:16.5px}
+.callout p:last-child{margin-bottom:0}
+.callout.info{background:#eef4fd;color:#1c4b86}.callout.tip{background:#e6f5f5;color:#0a5d5c}
+.callout.warn{background:#fff8e8;color:#8a5a06}.callout.err{background:#fdecea;color:#8c1d17}
+.callout.ok{background:#e7f7f0;color:#0b6244}.callout.rule{background:#f7f4fe;color:#4b2683}
+figure{margin:0;display:flex;justify-content:center}
+figure img{max-width:100%;max-height:430px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.cols ul{background:var(--light);border-radius:9px;padding:14px 20px 14px 14px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{background:var(--navy2);color:#fff;padding:9px 10px;font-size:15px}
+td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--body);vertical-align:top}
+tbody tr:nth-child(even){background:#fafcfe}
+b{font-weight:700}
+code{font-family:JBMono,Consolas,monospace;font-size:.92em;background:#eef2f7;border-radius:4px;padding:0 4px;direction:ltr;unicode-bidi:embed}
+/* شريحة العنوان */
+.slide.title{background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;
+ text-align:center;padding:0 70px;color:#fff;border-bottom:26px solid var(--orange)}
+.slide.title .kick{color:#9fc0e6;font-size:17px;margin-bottom:22px}
+.slide.title h1{font-size:52px;margin:0 0 18px;line-height:1.25}
+.slide.title .sub{color:#d3e2f2;font-size:22px;direction:ltr;font-family:JBMono,monospace}
+.slide.title .foot{position:absolute;bottom:34px;color:#cbdff0;font-size:14px}
+nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:rgba(11,18,32,.86);
+ border:1px solid #26364f;border-radius:999px;padding:8px 14px;display:flex;gap:10px;align-items:center;z-index:9}
+nav button{background:#1e3a5f;color:#fff;border:0;border-radius:999px;padding:8px 16px;font:inherit;font-size:14px;cursor:pointer}
+nav button:hover{background:#2b5486}
+nav .pos{color:#9fc0e6;font-size:13px;font-family:JBMono,monospace}
+html:fullscreen nav{opacity:.15}html:fullscreen nav:hover{opacity:1}
+.idx-page{max-width:1040px;margin:0 auto;padding:40px 22px 80px;color:#e8eef7;font-family:CairoLat,CairoAr,system-ui,sans-serif;direction:rtl}
+.idx-page h1{color:#fff;font-size:30px;margin:0 0 6px}
+.idx-page p.sub{color:#9fb6d4;margin:0 0 26px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{background:#152340;border:1px solid #26364f;border-radius:13px;padding:18px 20px;text-decoration:none;color:#e8eef7;display:block}
+.card:hover{border-color:var(--orange);transform:translateY(-2px)}
+.card b{display:block;font-size:19px;margin-bottom:8px}
+.card span{color:#9fb6d4;font-size:13.5px;font-family:JBMono,monospace;direction:ltr}
+@media print{
+ @page{size:338mm 190mm;margin:0}
+ html,body{background:#fff}
+ .deck{gap:0;padding:0}
+ .slide{box-shadow:none;border-radius:0;transform:none!important;page-break-after:always;width:338mm;height:190mm}
+ nav{display:none}
+ .thead{height:24mm}.body{height:calc(190mm - 24mm);padding:7mm 11mm}
+ .body p,.body ul li{font-size:15pt}.code{font-size:11.5pt}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+<section class="slide title"><div class="kick">ورشة GIT وGITHUB</div><h1>استنساخ مستودع الفريق واستكشافه</h1><div class="sub">Session 02 · Clone &amp; Explore</div><div class="foot">ورشة Git وGitHub · الجلسة 02 — الاستنساخ والاستكشاف</div></section>
+<section class="slide"><div class="thead"><h1>مشروعنا: دليل فريق الصف</h1><span class="idx">الجلسة 02 — الاستنساخ والاستكشاف · 2/11</span></div><div class="body"><ul><li>موقع ويب بسيط: بطاقة تعريفية لكل طالب في الفريق</li><li>HTML + CSS + JavaScript + ملفات بيانات JSON</li><li>لا يحتاج تثبيت أي برنامج — يعمل بالمتصفح</li><li>لماذا اخترناه؟ لأنه يعلّم التعاون بلا مشاكل بيئات التطوير</li></ul>
+<div class="callout tip"><p>المشروع مُصمَّم بحيث <b>لا يتعارض</b> عمل الطلاب: كل طالب له ملف بطاقة خاص باسمه.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>بنية المشروع — أين بطاقتي؟</h1><span class="idx">الجلسة 02 — الاستنساخ والاستكشاف · 3/11</span></div><div class="body"><pre class="code">class-team-hub/
+├── index.html              الصفحة الرئيسية
+├── css/style.css           التنسيقات
+├── js/app.js               يقرأ البيانات ويبني البطاقات
+├── data/
+│   ├── site-config.json    إعدادات الموقع المشتركة
+│   ├── members-index.json  فهرس أسماء البطاقات (مُولَّد آلياً)
+│   └── members/            بطاقة واحدة لكل طالب ← ملفك هنا
+├── sandbox/                مختبر تمارين التعارض
+├── tools/build-index.mjs   إعادة توليد الفهرس
+└── tests/validate-members.mjs   فحص صحة البطاقات</pre></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 1 — استنسخ المستودع</h1><span class="idx">الجلسة 02 — الاستنساخ والاستكشاف · 4/11</span></div><div class="body"><pre class="code"><span class="cmd">$ cd ~/projects</span>
+<span class="cmd">$ git clone https://github.com/&lt;org&gt;/class-team-hub.git</span>
+Cloning into &#x27;class-team-hub&#x27;...
+remote: Enumerating objects: 87, done.
+Unpacking objects: 100% (87/87), done.
+&nbsp;
+<span class="cmd">$ cd class-team-hub</span>
+<span class="cmd">$ git remote -v</span>
+origin  https://github.com/&lt;org&gt;/class-team-hub.git (fetch)
+origin  https://github.com/&lt;org&gt;/class-team-hub.git (push)</pre>
+<div class="callout warn"><p>لا تستخدم زر Download ZIP! النسخة المضغوطة بلا مجلد <code>.git</code>، فلن تستطيع الالتزام ولا الرفع، وستظهر لك <code>fatal: not a git repository</code>.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>ماذا يجلب الاستنساخ فعلاً؟</h1><span class="idx">الجلسة 02 — الاستنساخ والاستكشاف · 5/11</span></div><div class="body"><ul><li>كل الملفات، وليس الملفات الحالية فقط</li><li><b>كل</b> الالتزامات في التاريخ (يمكنك رؤية ما فعله زملاؤك قبل أسبوع)</li><li>كل الفروع الموجودة على الخادم</li><li>الربط بالخادم باسم <code>origin</code></li><li>الإعدادات في مجلد <code>.git</code> — لا تحذفه ولا تعدّله يدوياً</li></ul>
+<div class="callout info"><p>اختبار سريع: <code>ls -a</code> — إن لم ترَ <code>.git</code> فأنت لست داخل مستودع.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>مسارات البيانات: من ملفك إلى الشاشة</h1><span class="idx">الجلسة 02 — الاستنساخ والاستكشاف · 6/11</span></div><div class="body"><figure><img src="../../assets/img/png/data-flow.png" alt="data-flow"></figure></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 3 — شغّل الموقع</h1><span class="idx">الجلسة 02 — الاستنساخ والاستكشاف · 7/11</span></div><div class="body"><pre class="code"><span class="cm"># الطريقة الأسرع (موصى بها):</span>
+<span class="cmd">$ cd ~/projects/class-team-hub</span>
+<span class="cmd">$ python3 -m http.server 8000</span>
+Serving HTTP on 0.0.0.0 port 8000 ...
+&nbsp;
+<span class="cm"># افتح المتصفح على:  http://localhost:8000</span>
+<span class="cm"># للإيقاف: Ctrl+C</span></pre>
+<ul><li>الملف الذي يعطي العنوان والوصف: <code>data/site-config.json</code></li><li>الملف الذي يعطي قائمة البطاقات: <code>data/members-index.json</code></li><li>الطريقة البديلة: Live Server من VS Code (يمين على index.html)</li></ul>
+<div class="callout warn"><p>فتح الملف بالنقر المزدوج (file://) قد يفشل لأن المتصفح يمنع قراءة ملفات JSON محلياً لأسباب أمنية. الحل: خادم محلي كما أعلاه.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 5 — اقرأ تاريخ فريقك</h1><span class="idx">الجلسة 02 — الاستنساخ والاستكشاف · 8/11</span></div><div class="body"><pre class="code"><span class="cmd">$ git log --oneline --graph --all --decorate</span>
+*   a1b2c3d (HEAD -&gt; main, origin/main) Merge pull request #7 from nour/card
+|\
+| * 9f8e7d6 feat(members): add card for nour-dev
+|/
+*   5e6f7a8 Merge pull request #6 from ali-h/card
+|\
+| * 1a2b3c4 feat(members): add card for ali-h
+|/
+* 8de1e7a chore: initial commit of class-team-hub
+&nbsp;
+<span class="cmd">$ git shortlog -sn</span>
+     4  nour-dev
+     3  ali-h
+     1  Workshop Instructor</pre></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 5 — من عدّل ماذا؟</h1><span class="idx">الجلسة 02 — الاستنساخ والاستكشاف · 9/11</span></div><div class="body"><pre class="code"><span class="cmd">$ git log -p -- data/members/leen-docs.json     # تاريخ ملف واحد بالتفصيل</span>
+<span class="cmd">$ git blame data/members/leen-docs.json         # من كتب كل سطر</span>
+f9e8d7c9 (leen-docs 2026-10-06 11:02:40) 1) {
+f9e8d7c9 (leen-docs 2026-10-06 11:02:40) 2)   &quot;fullName&quot;: &quot;لينا حدّاد&quot;,</pre>
+<ul><li>سؤال: أي ملف عدّله <b>كل</b> الأعضاء؟ ولماذا؟</li><li>الجواب: <code>data/members-index.json</code> — لأنه يسجّل قائمة البطاقات، فيتغير مع كل بطاقة جديدة</li><li>وهذا سبب جعله <b>مُولَّداً آلياً</b>: لا نكتبه بيدنا ولا نحلّ تعارضه يدوياً</li></ul>
+<div class="callout rule"><p>القاعدة القادمة: الملف المُولَّد يُعاد توليده — <code>node tools/build-index.mjs</code></p></div></div></section>
+<section class="slide"><div class="thead"><h1>خطأ شائع اليوم</h1><span class="idx">الجلسة 02 — الاستنساخ والاستكشاف · 10/11</span></div><div class="body"><pre class="code"><span class="cmd">$ git add data/members/mycards.json</span>
+<span class="err">fatal: pathspec &#x27;data/members/mycards.json&#x27; did not match any files</span></pre>
+<p>هذه الرسالة تعني أن <b>الملف غير موجود</b> في المكان الذي كتبته. الأسباب الشائعة:</p>
+<ul><li>خطأ مطبعي في الاسم</li><li>لم تحفظ الملف فعلاً في المحرر</li><li>أنت في مجلد مختلف — افحص بـ <code>pwd</code> و<code>ls data/members/</code></li></ul>
+<div class="callout tip"><p>git يخبرك بالحقيقة: لا يوجد ملف بهذا المسار. اقرأ الرسالة قبل أن تسأل أحداً.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>قبل الجلسة القادمة</h1><span class="idx">الجلسة 02 — الاستنساخ والاستكشاف · 11/11</span></div><div class="body"><ul><li>الموقع يعمل على جهازك ولديك دليل (صورة أو خادم يعمل)</li><li>تعرف مكان ملف بطاقتك: <code>data/members/&lt;username&gt;.json</code></li><li>قرأت <code>git log --graph</code> وحدّدت أكثر الأعضاء مساهمة</li><li>الجلسة القادمة: <b>فرعك الأول وطلب السحب الأول</b> — ستضيف بطاقتك فعلاً</li></ul>
+<div class="callout ok"><p>تذكّر: لا عمل على main. كل تعديل — ولو سطراً — يبدأ من فرع خاص بك.</p></div></div></section>
+</div>
+<nav>
+<button onclick="go(cur-1)">السابق ‹</button>
+<span class="pos">1 / 11</span>
+<button onclick="go(cur+1)">› التالي</button>
+<button onclick="document.documentElement.requestFullscreen()">ملء الشاشة</button>
+<button onclick="window.print()">طباعة / PDF</button>
+</nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let cur=0;
+function fit(){const s=Math.min(1,(window.innerWidth-40)/1280,(window.innerHeight-70)/720);
+ document.querySelectorAll('.slide').forEach(el=>el.style.transform='scale('+s+')');}
+function go(n){cur=Math.max(0,Math.min(slides.length-1,n));
+ slides[cur].scrollIntoView({behavior:'smooth',block:'center'});show();}
+function show(){const p=document.querySelector('nav .pos');
+ if(p)p.textContent=(cur+1)+' / '+slides.length;
+ slides.forEach((el,i)=>el.style.outline=i===cur?'3px solid #e8620c':'none');}
+addEventListener('keydown',e=>{
+ if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','PageUp','PageDown'].includes(e.key))e.preventDefault();
+ if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '||e.key==='PageDown')go(cur+1);
+ else if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp')go(cur-1);
+ else if(e.key==='Home')go(0); else if(e.key==='End')go(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}});
+addEventListener('resize',fit);
+addEventListener('scroll',()=>{const mid=innerHeight/2;let best=0,bd=1e9;
+ slides.forEach((el,i)=>{const r=el.getBoundingClientRect();const d=Math.abs(r.top+r.height/2-mid);if(d<bd){bd=d;best=i;}});
+ if(best!==cur){cur=best;show();}},{passive:true});
+fit();show();
+</script>
+</body>
+</html>

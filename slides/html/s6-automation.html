@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الوحدة 06 — الأتمتة الاحترافية (اختيارية)</title>
+<style>
+@font-face{font-family:CairoAr;src:url("../../assets/fonts/cairo-arabic-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:CairoAr;src:url("../../assets/fonts/cairo-arabic-700-normal.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:CairoLat;src:url("../../assets/fonts/cairo-latin-400-normal.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:CairoLat;src:url("../../assets/fonts/cairo-latin-700-normal.woff2") format("woff2");font-weight:700;font-display:swap}
+@font-face{font-family:JBMono;src:url("../../assets/fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2")}
+:root{--navy:#12203c;--navy2:#1e3a5f;--orange:#e8620c;--teal:#0e7c7b;--green:#128a5b;
+ --red:#b3261e;--violet:#6d3bb5;--ink:#12161c;--body:#22303f;--muted:#6b7684;--light:#f4f7fa;--line:#d6dde6}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#0b1220;color:var(--ink);
+ font-family:CairoAr,CairoLat,"Segoe UI",system-ui,sans-serif}
+.deck{display:flex;flex-direction:column;align-items:center;gap:26px;padding:26px 10px 90px}
+.slide{width:1280px;height:720px;background:#fff;border-radius:10px;overflow:hidden;
+ box-shadow:0 18px 44px rgba(0,0,0,.45);position:relative;flex:0 0 auto;
+ transform-origin:top center}
+.slide>*{position:relative;z-index:1}
+.thead{height:88px;background:var(--navy);display:flex;align-items:center;justify-content:space-between;
+ padding:0 42px;gap:20px}
+.thead h1{margin:0;color:#fff;font-size:27px;font-weight:700}
+.thead .idx{color:#9fc0e6;font-size:12.5px;font-family:JBMono,monospace;direction:ltr;white-space:nowrap}
+.body{padding:24px 42px;display:flex;flex-direction:column;gap:14px;height:632px;overflow:hidden}
+.body p{margin:0;font-size:19px;line-height:1.65;color:var(--body)}
+.body ul{margin:0;padding:0 22px 0 0;list-style:none}
+.body ul li{position:relative;font-size:18px;line-height:1.75;color:var(--body);padding-right:22px}
+.body ul li:before{content:"•";position:absolute;right:0;color:var(--orange);font-weight:700}
+.code{background:#0f172a;border-radius:9px;padding:14px 18px;margin:0;direction:ltr;text-align:left;
+ font-family:JBMono,Consolas,monospace;font-size:14.5px;line-height:1.62;color:#e6edf7;overflow:hidden;white-space:pre-wrap}
+.code .cmd{color:#7fd1a8}.code .cm{color:#7d8ca3}.code .err{color:#f08c7a}
+.callout{border-radius:9px;padding:13px 18px;font-size:16.5px;line-height:1.6}
+.callout p{margin:0 0 4px;font-size:16.5px}
+.callout p:last-child{margin-bottom:0}
+.callout.info{background:#eef4fd;color:#1c4b86}.callout.tip{background:#e6f5f5;color:#0a5d5c}
+.callout.warn{background:#fff8e8;color:#8a5a06}.callout.err{background:#fdecea;color:#8c1d17}
+.callout.ok{background:#e7f7f0;color:#0b6244}.callout.rule{background:#f7f4fe;color:#4b2683}
+figure{margin:0;display:flex;justify-content:center}
+figure img{max-width:100%;max-height:430px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.cols ul{background:var(--light);border-radius:9px;padding:14px 20px 14px 14px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{background:var(--navy2);color:#fff;padding:9px 10px;font-size:15px}
+td{padding:8px 10px;border-bottom:1px solid var(--line);color:var(--body);vertical-align:top}
+tbody tr:nth-child(even){background:#fafcfe}
+b{font-weight:700}
+code{font-family:JBMono,Consolas,monospace;font-size:.92em;background:#eef2f7;border-radius:4px;padding:0 4px;direction:ltr;unicode-bidi:embed}
+/* شريحة العنوان */
+.slide.title{background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;
+ text-align:center;padding:0 70px;color:#fff;border-bottom:26px solid var(--orange)}
+.slide.title .kick{color:#9fc0e6;font-size:17px;margin-bottom:22px}
+.slide.title h1{font-size:52px;margin:0 0 18px;line-height:1.25}
+.slide.title .sub{color:#d3e2f2;font-size:22px;direction:ltr;font-family:JBMono,monospace}
+.slide.title .foot{position:absolute;bottom:34px;color:#cbdff0;font-size:14px}
+nav{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:rgba(11,18,32,.86);
+ border:1px solid #26364f;border-radius:999px;padding:8px 14px;display:flex;gap:10px;align-items:center;z-index:9}
+nav button{background:#1e3a5f;color:#fff;border:0;border-radius:999px;padding:8px 16px;font:inherit;font-size:14px;cursor:pointer}
+nav button:hover{background:#2b5486}
+nav .pos{color:#9fc0e6;font-size:13px;font-family:JBMono,monospace}
+html:fullscreen nav{opacity:.15}html:fullscreen nav:hover{opacity:1}
+.idx-page{max-width:1040px;margin:0 auto;padding:40px 22px 80px;color:#e8eef7;font-family:CairoLat,CairoAr,system-ui,sans-serif;direction:rtl}
+.idx-page h1{color:#fff;font-size:30px;margin:0 0 6px}
+.idx-page p.sub{color:#9fb6d4;margin:0 0 26px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.card{background:#152340;border:1px solid #26364f;border-radius:13px;padding:18px 20px;text-decoration:none;color:#e8eef7;display:block}
+.card:hover{border-color:var(--orange);transform:translateY(-2px)}
+.card b{display:block;font-size:19px;margin-bottom:8px}
+.card span{color:#9fb6d4;font-size:13.5px;font-family:JBMono,monospace;direction:ltr}
+@media print{
+ @page{size:338mm 190mm;margin:0}
+ html,body{background:#fff}
+ .deck{gap:0;padding:0}
+ .slide{box-shadow:none;border-radius:0;transform:none!important;page-break-after:always;width:338mm;height:190mm}
+ nav{display:none}
+ .thead{height:24mm}.body{height:calc(190mm - 24mm);padding:7mm 11mm}
+ .body p,.body ul li{font-size:15pt}.code{font-size:11.5pt}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+<section class="slide title"><div class="kick">وحدة متقدمة اختيارية</div><h1>الأتمتة الاحترافية: CI وحماية الفروع والإصدارات</h1><div class="sub">Advanced Unit 06 · Automation, Protection &amp; Releases</div><div class="foot">ورشة Git وGitHub · الوحدة 06 — الأتمتة الاحترافية</div></section>
+<section class="slide"><div class="thead"><h1>أين نحن؟ وما الجديد اليوم؟</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 2/18</span></div><div class="body"><ul><li>المشروع أصبح يعمل ومنشوراً: نعرفه الآن <b>يرفض</b> العمل السيئ تلقائياً</li><li>اليوم نضيف ثلاث قدرات يطلبها كل فريق محترف:</li><li>فحص آلي عند كل طلب سحب (GitHub Actions)</li><li>قواعد تمنع الوقوع في الخطأ (حماية الفرع + CODEOWNERS)</li><li>إصدار رسمي موثّق مع سجل تغييرات (SemVer + CHANGELOG)</li><li>المخرجات: طلب سحب أحمر يُصلَح حتى يصبح أخضر، ووسم <code>v1.0.0</code> حقيقي</li></ul>
+<div class="callout info"><p>هذه الوحدة اختيارية، لكنها <b>الأقرب لبيئة العمل الحقيقية</b> في البرنامج كله.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>المشكلة التي يحلّها الفحص الآلي</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 3/18</span></div><div class="body"><ul><li>أمس: كان المراجع البشري هو خط الدفاع الوحيد</li><li>المراجع يسهو، والوقت قصير، والملفات كثيرة</li><li>الحل: مراجع آلي صبور لا يمل، يفحص كل طلب سحب بنفس المعايير</li><li>لكن الفحص الآلي <b>لا يغني عن المراجعة البشرية</b> — بل يحرّرها للتفكير</li></ul>
+<div class="callout warn"><p>الفحص الآلي يقدّم <b>حكماً</b> (نجاح/فشل)، وحماية الفرع تفرض <b>قواعد وصول</b>. كلاهما ضروري، ولا أحدهما بديل عن الآخر.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>مسار الفحص: من الدفع إلى القرار</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 4/18</span></div><div class="body"><figure><img src="../../assets/img/png/ci-flow.png" alt="ci-flow"></figure></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 1 — ملف سير العمل (validate.yml)</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 5/18</span></div><div class="body"><pre class="code"><span class="cm"># .github/workflows/validate.yml</span>
+name: validate
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: &#x27;20&#x27; }
+      - run: node tools/build-index.mjs
+      - run: node tests/validate-members.mjs
+      - run: git diff --exit-code -- data/members-index.json data/members-bundle.js</pre></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 1 — اقرأه واسأل الأسئلة الأربعة</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 6/18</span></div><div class="body"><ul><li>متى يعمل؟ (عند كل طلب سحب نحو main، وعند كل دفع إلى main)</li><li>أين يعمل؟ (على خادم GitHub في بيئة نظيفة ubuntu-latest، لا على جهازك)</li><li>ما الخطوات الثلاث؟ (توليد الفهرس ← فحص البطاقات ← مطابقة الملفات المولَّدة)</li><li>لماذا <code>concurrency</code> مع <code>cancel-in-progress</code>؟ (ليلغي الفحص القديم عند دفعة جديدة، فلا ننتظر نتائج قديمة)</li></ul>
+<div class="callout info"><p>سؤال حاسم: ماذا تكشف الخطوة الأخيرة <code>git diff --exit-code</code>؟ ← نسيان إعادة توليد الفهرس بعد إضافة بطاقة — أشهر خطأ في هذا المشروع.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 2 — جرّب الفحص محلياً أولاً</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 7/18</span></div><div class="body"><pre class="code"><span class="cmd">$ node tools/ci-local.mjs</span>
+&nbsp;
+▸ الفهرس مُحدَّث / index up to date … ✔ نجح
+▸ بطاقات الأعضاء صحيحة / member cards valid … ✔ نجح
+▸ لا علامات تعارض / no conflict markers … ✔ نجح
+───────────────────────────────────────────────────
+✔ كل الفحوص نجحت — آمن للرفع (git push) / All checks passed.</pre>
+<div class="callout tip"><p>عادة احترافية: شغّل الفحص محلياً <b>قبل</b> الدفع. لا ترسل عملاً ليقوم غيرك باكتشاف أخطائه.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 3 — فخّان ينتظرانك</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 8/18</span></div><div class="body"><pre class="code"><span class="cm"># الفخ الأول: بطاقة تحمل وسم CHANGEME</span>
+<span class="cmd">$ node tests/validate-members.mjs</span>
+<span class="err">✘ خطأ: يبدو أن البطاقة نسخة غير معدَّلة (الوسم CHANGEME موجود ولم يُستبدل).</span>
+  الملف: data/members/omar-qa.json
+&nbsp;
+<span class="cm"># الفخ الثاني: نسيت إعادة توليد الفهرس</span>
+<span class="cmd">$ git diff --exit-code -- data/members-index.json</span>
+diff --git a/data/members-index.json b/data/members-index.json
+--- a/data/members-index.json
++++ b/data/members-index.json
+@@ -5,6 +5,7 @@
+     { &quot;username&quot;: &quot;leen-docs&quot;, ... }
++    { &quot;username&quot;: &quot;omar-qa&quot;, ... }
+exit status 1        ← الفحص سيفشل حتى تصلح هذا</pre>
+<ul><li>المطلوب: <b>خرّب المشروع عن قصد</b> في فرع تجريبي، وشاهد الفحص يفشل، ثم أصلحه</li></ul></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 3 — شبكة إضافية: التحقق الضعيف يكذب</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 9/18</span></div><div class="body"><pre class="code"><span class="cm"># الفحص القديم (غير دقيق):</span>
+<span class="cmd">$ grep -rInE &quot;^(&lt;&lt;&lt;&lt;&lt;&lt;&lt;|&gt;&gt;&gt;&gt;&gt;&gt;&gt;|=======)$&quot; --exclude-dir=.git .</span>
+&nbsp;
+<span class="cm"># ثلاث ثغرات، جرّبها على فرع تجريبي:</span>
+<span class="cm">#  1) نطاق محدود بامتدادات → تجاهل sandbox/team-slogan.txt  ← الأخطر</span>
+<span class="cm">#  2) يشترط العلامة وحدها في السطر؛ والحقيقية &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="cm">#  3) إيجابيات كاذبة على سطر ======= فاصل في التوثيق بعلامات دمج</span></pre>
+<div class="callout err"><p>لذلك المهمة الأخيرة في سجل التغييرات تكتب الفحص الصحيح:</p><p><code>grep -rInE &quot;^(&lt;{7}|={7}|&gt;{7})( |$)&quot; --exclude-dir=.git .</code></p></div>
+<ul><li>من يكتشف ضعف الفحص القديم ويوثّقه يحصل على <b>5 درجات إضافية</b></li></ul></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 4 — أصلح حتى يصبح أخضر</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 10/18</span></div><div class="body"><pre class="code"><span class="cmd">$ node tools/build-index.mjs</span>
+[build-index] ✔ تم توليد الفهرس: 7 بطاقة.
+&nbsp;
+<span class="cmd">$ node tests/validate-members.mjs</span>
+--- النتيجة / Result: 7 بطاقة، 0 خطأ، 0 تحذير ---
+&nbsp;
+<span class="cmd">$ git add data/members-index.json data/members-bundle.js</span>
+<span class="cmd">$ git commit -m &quot;chore(data): regenerate members index after adding card&quot;</span>
+<span class="cmd">$ git push</span></pre>
+<ul><li>راقب تبويب Actions في طلب السحب: <b>أصفر</b> (يعمل) ← <b>أخضر</b> ✔ (نجح)</li><li>القاعدة: لا تدمج ولا تطلب مراجعة وأنت ترى دائرة صفراء أو حمراء</li></ul></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 5 — حماية الفرع: القواعد الخمس</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 11/18</span></div><div class="body"><table><thead><tr><th>القاعدة</th><th>القيمة</th><th>لماذا</th></tr></thead><tbody><tr><td>منع الدفع المباشر إلى main</td><td>✔</td><td>لا تجاوز للمراجعة</td></tr><tr><td>طلب موافقة واحدة على الأقل</td><td>1</td><td>مراجعة بشرية حقيقية</td></tr><tr><td>فحص مطلوب قبل الدمج</td><td>validate</td><td>لا دمج بفحص فاشل</td></tr><tr><td>منع القوة (force push)</td><td>✔</td><td>لا حذف لتاريخ الفريق</td></tr><tr><td>منع حذف الفرع</td><td>✔</td><td>لا فقدان مفاجئ</td></tr></tbody></table>
+<div class="callout rule"><p>حماية الفرع ليست ثقة بالآخرين، بل تقليل لاحتمال الخطأ البشري — بما فيه خطؤك أنت.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>CODEOWNERS — من يجب أن يوافق؟</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 12/18</span></div><div class="body"><pre class="code"><span class="cm"># .github/CODEOWNERS</span>
+<span class="cm"># الترتيب مهم: الأخص سطراً يفوز</span>
+/data/members/site-config.json   @instructor-team
+/data/members/                   @instructor-team
+/tests/                          @instructor-team @qa-lead
+/docs/                           @docs-team
+*                                @instructor-team</pre>
+<ul><li>مالك الكود <b>لا يُستدعى تلقائياً للدمج</b>، بل <b>يُطلب تلقائياً كمراجع</b> — والموافقة شرط</li><li>لاحظ: سطر <code>/data/members/</code> يحمي بطاقات الطلاب، لا يسمح بتعديل بيانات عضوية أساسية</li></ul></div></section>
+<section class="slide"><div class="thead"><h1>المهمة 6 — الإصدار: الوسم والفحص والتحقق</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 13/18</span></div><div class="body"><pre class="code"><span class="cmd">$ git switch main &amp;&amp; git pull --ff-only</span>
+<span class="cmd">$ git tag -a v1.0.0 -m &quot;الإصدار الأول: بطاقات الفريق + CI + صفحات النشر&quot;</span>
+Tagger: Workshop Instructor &lt;instructor@example.com&gt;
+Date:   Tue Oct 6 12:05:41 2026 +0300
+&nbsp;
+<span class="cmd">$ git show v1.0.0 --stat --no-patch</span>
+commit 0b1c2d3...   ← يشير إلى عقدة الدمج الرئيسية
+&nbsp;
+<span class="cmd">$ git push origin v1.0.0</span>
+To https://github.com/&lt;org&gt;/class-team-hub.git
+ * [new tag]   v1.0.0 -&gt; v1.0.0</pre>
+<div class="callout warn"><p><code>git ls-remote --tags origin</code> هو <b>الدليل الوحيد</b> على أن الوسم على الخادم. وسم محلي لا يظهر لأحد ولا يمكن لأحد استخدامه.</p></div></div></section>
+<section class="slide"><div class="thead"><h1>الوسم العادي مقابل الوسم المعنون</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 14/18</span></div><div class="body"><table><thead><tr><th></th><th>خفيف (lightweight)</th><th>معنون (annotated)</th></tr></thead><tbody><tr><td>الأمر</td><td>git tag v1.0.0</td><td>git tag -a v1.0.0 -m &quot;...&quot;</td></tr><tr><td>من وسم؟</td><td>لا تسجيل</td><td>اسم ووقت ورسالة</td></tr><tr><td>الشائع في</td><td>علامات محلية سريعة</td><td>الإصدارات الرسمية</td></tr><tr><td>الاستخدام مع Releases</td><td>غير مناسب</td><td>✔ الموصى به</td></tr></tbody></table>
+<ul><li>أوامر الفحص: <code>git tag -l</code> · <code>git tag -n1</code> · <code>git show v1.0.0 --stat --no-patch</code> · <code>git ls-remote --tags origin</code></li></ul></div></section>
+<section class="slide"><div class="thead"><h1>خريطة SemVer — أي رقم يزيد؟</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 15/18</span></div><div class="body"><table><thead><tr><th>نوع التغيير</th><th>مثال من مشروعنا</th><th>الرقم الذي يزيد</th></tr></thead><tbody><tr><td>كسر التوافق</td><td>تغيير بنية بطاقة موجودة</td><td>MAJOR (2.0.0)</td></tr><tr><td>ميزة جديدة متوافقة</td><td>صفحة «الأسئلة الشائعة»</td><td>MINOR (1.1.0)</td></tr><tr><td>إصلاح</td><td>تصحيح محاذاة البطاقة</td><td>PATCH (1.0.1)</td></tr></tbody></table>
+<pre class="code"><span class="cmd">$ git tag -l</span>
+v1.0.0
+&nbsp;
+<span class="cmd">$ git tag -n1</span>
+v1.0.0          الإصدار الأول: بطاقات الفريق + CI</pre>
+<ul><li>القاعدة: القمة (MAJOR) الأكثر خطورة على المستخدمين — لا ترفعها إلا عند كسر توافق</li></ul></div></section>
+<section class="slide"><div class="thead"><h1>الشريط الجانبي: الإصدارات (Releases) وسجل التغييرات</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 16/18</span></div><div class="body"><pre class="code"><span class="cmd">$ git add CHANGELOG.md</span>
+<span class="cmd">$ git commit -m &quot;docs(changelog): add release notes for v1.0.0&quot;</span>
+<span class="cmd">$ git push</span>
+&nbsp;
+GitHub → Releases → Draft a new release
+  Tag:          v1.0.0
+  Target:       main
+  Title:        v1.0.0 — أول إصدار مستقر
+  Description:  ملخص التغييرات من CHANGELOG.md
+  → Publish release</pre>
+<pre class="code"><span class="cm"># من CHANGELOG.md</span>
+<span class="cm">## [1.0.0] - 2026-10-06</span>
+<span class="cm">### Added</span>
+- بطاقات تعريفية لكل أعضاء الفريق
+- فحص آلي عند كل طلب سحب (validate.yml)</pre>
+<ul><li>الفرق: <b>الوسم</b> علامة في التاريخ، <b>الإصدار</b> صفحة موثّقة بملفات نهائية</li></ul></div></section>
+<section class="slide"><div class="thead"><h1>فكرة الاحتراف — تجربة الفرق</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 17/18</span></div><div class="body"><div class="cols"><ul><li>«أجرتنا تعلّم كلاماً، وهذه الوحدة أظهرت لي ما يحدث فعلاً عند كل دفع.»</li><li>«رأيت أول مرة فحصاً يفشل بسبب ملف لم أُولّده — درس لا يُنسى.»</li><li>«صفحة الإصدار على GitHub تجعل مشروعنا يبدو حقيقياً.»</li></ul><ul><li><b>سؤال الحماية:</b> ما الفرق بين «فحص مطلوب» و«حماية الفرع»؟</li><li>الجواب: الفحص يعطي حكماً على الجودة؛ الحماية تفرض قواعد الوصول والدمج.</li><li><b>سؤال الإصدار:</b> ما الذي يجعل الإصدار رسمياً؟</li><li>الجواب: وسم معنون مرفوع + ملفات نهائية + سجل تغييرات.</li></ul></div>
+<div class="callout ok"><p>إتقان الأربعة — CI + الحماية + CODEOWNERS + الإصدار — هو الفرق بين «أعرف Git» و«جاهز للعمل في فريق هندسي».</p></div></div></section>
+<section class="slide"><div class="thead"><h1>ختام الوحدة والمشروع</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 18/18</span></div><div class="body"><ul><li>المشروع الآن: فحص آلي يحمي الجودة، قواعد تحمي الفرع، وإصدار موثّق يحمل رقمه</li><li>هذا ملف أعمال حقيقي يمكنك عرضه في السيرة الذاتية</li><li>طريقتك في الحديث عنه في المقابلة: «بنيت مشروعاً يستخدم Git Flow، مع CI على كل طلب سحب، وحماية فرع main، وإصدار معنون»</li><li>شكراً لكم — البرنامج ينتهي هنا، لكن المستودع يبقى لكم</li></ul>
+<div class="callout tip"><p>الخطوة التالية بعد الورشة: طبّق نفس العملية على مشروعك الشخصي، وشارك الرابط معي للمراجعة.</p></div></div></section>
+</div>
+<nav>
+<button onclick="go(cur-1)">السابق ‹</button>
+<span class="pos">1 / 18</span>
+<button onclick="go(cur+1)">› التالي</button>
+<button onclick="document.documentElement.requestFullscreen()">ملء الشاشة</button>
+<button onclick="window.print()">طباعة / PDF</button>
+</nav>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let cur=0;
+function fit(){const s=Math.min(1,(window.innerWidth-40)/1280,(window.innerHeight-70)/720);
+ document.querySelectorAll('.slide').forEach(el=>el.style.transform='scale('+s+')');}
+function go(n){cur=Math.max(0,Math.min(slides.length-1,n));
+ slides[cur].scrollIntoView({behavior:'smooth',block:'center'});show();}
+function show(){const p=document.querySelector('nav .pos');
+ if(p)p.textContent=(cur+1)+' / '+slides.length;
+ slides.forEach((el,i)=>el.style.outline=i===cur?'3px solid #e8620c':'none');}
+addEventListener('keydown',e=>{
+ if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' ','PageUp','PageDown'].includes(e.key))e.preventDefault();
+ if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '||e.key==='PageDown')go(cur+1);
+ else if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp')go(cur-1);
+ else if(e.key==='Home')go(0); else if(e.key==='End')go(slides.length-1);
+ else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}});
+addEventListener('resize',fit);
+addEventListener('scroll',()=>{const mid=innerHeight/2;let best=0,bd=1e9;
+ slides.forEach((el,i)=>{const r=el.getBoundingClientRect();const d=Math.abs(r.top+r.height/2-mid);if(d<bd){bd=d;best=i;}});
+ if(best!==cur){cur=best;show();}},{passive:true});
+fit();show();
+</script>
+</body>
+</html>

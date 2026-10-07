@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>دليل فريق الصف | Class Team Hub</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>" />
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">Class Team Hub · مشروع ورشة Git وGitHub</p>
+      <h1 id="siteTitle">دليل فريق الصف</h1>
+      <p class="lead" id="siteSubtitle">كل طالب يضيف بطاقته من فرعه الخاص، ثم ندمجها معاً.</p>
+      <div class="hero-meta">
+        <span class="pill" id="pillMembers">٠ بطاقة</span>
+        <span class="pill" id="pillSemester">الفصل الدراسي</span>
+        <span class="pill" id="pillInstructor">المدرب</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="toolbar" aria-label="أدوات البحث">
+      <label class="search">
+        <span class="sr-only">بحث باسم الطالب</span>
+        <input id="searchInput" type="search" placeholder="ابحث باسم الطالب أو اسم المستخدم…" autocomplete="off" />
+      </label>
+      <div class="filters" id="roleFilters"></div>
+    </section>
+
+    <section id="statsBar" class="stats"></section>
+
+    <section>
+      <h2 class="section-title">بطاقات الفريق <span class="dim">/ Team cards</span></h2>
+      <div id="membersGrid" class="grid" role="list"></div>
+      <p id="emptyState" class="empty" hidden>لا توجد نتائج مطابقة.</p>
+      <p id="errorState" class="error" hidden></p>
+    </section>
+
+    <section class="howto">
+      <h2 class="section-title">كيف تضيف بطاقتك؟ <span class="dim">/ How to add your card</span></h2>
+      <ol>
+        <li>أنشئ فرعاً: <code>git switch -c feature/&lt;username&gt;-card</code></li>
+        <li>انسخ <code>data/members/00-template.json</code> إلى <code>data/members/&lt;username&gt;.json</code></li>
+        <li>املأ الحقول الخمسة الإلزامية، ثم <code>git add</code> و <code>git commit</code> و <code>git push</code></li>
+        <li>افتح طلب سحب (Pull Request) واطلب مراجعة زميل</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <div class="wrap">
+      <p>مشروع تدريبي — ورشة Git وGitHub · <span class="dim">Training project for the Git &amp; GitHub workshop</span></p>
+      <p class="dim small">آخر تحديث للبيانات: <span id="lastUpdated">—</span></p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

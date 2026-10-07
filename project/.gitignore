@@ -1,0 +1,37 @@
+# ملفات مؤقتة ونظام / OS & editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# إعدادات المحررات / editor settings
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+
+# أسرار وبيانات حساسة — لا تُرفع أبداً / never commit secrets
+.env
+.env.*
+*.pem
+*.key
+secrets.local.json
+
+# حزم وتبعيات / dependencies & builds
+node_modules/
+dist/
+build/
+.cache/
+
+# ملفات الطلاب المؤقتة / student scratch files
+*.bak
+*.orig
+*.rej
+notes-*.md
+scratch/
+
+# أرشيف مضغوط / archives
+*.zip
+*.rar
+*.7z

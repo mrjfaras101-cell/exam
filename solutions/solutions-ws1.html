@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حلول ورقة العمل 01: التهيئة والتعريف</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top" style="background:#7A1220"><div class="badge"><div class="n">01</div><div class="l">نموذج حل</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — دليل المدرّب المرجعي</div><h1>حلول ورقة العمل 01: التهيئة والتعريف</h1><div class="sub">Solutions · Worksheet 01 — Setup &amp; Orientation</div></div></div><div class="meta"><div><span class="k">التقييم الكلي / Total</span><span class="v">100 نقطة</span></div><div><span class="k">زمن التصحيح المقترح / Marking time</span><span class="v">6–8 دقائق لكل طالب</span></div><div><span class="k">أدلة إلزامية / Mandatory evidence</span><span class="v">7 بنود</span></div><div><span class="k">معيار النجاح / Pass mark</span><span class="v">70 نقطة</span></div></div></div>
+<div class="box err"><div class="h">نسخة المدرّب — نماذج الحلول والتقييم <span class="en">/ Instructor copy — do not distribute</span></div></div><div class="band "><span class="ar">كيف تستخدم هذا النموذج</span><span class="en">How to use this key</span></div>
+
+<div class="bi "><div class="ar"><p>هذا الملف مرجعك أثناء التصحيح. لكل مهمة ستجد: <strong>معيار القبول الفعلي</strong> (ما الذي يجعل
+المهمة مكتملة)، و<strong>الإجابة النموذجية</strong>، و<strong>أخطاء الطلاب المتوقعة</strong> وكيف تُحتسب درجاتها،
+و<strong>ملاحظة تصحيح</strong> مختصرة. المبدأ الأساسي في التقييم: <strong>الدليل المُنتَج أهم من الإجابة
+الصحيحة</strong> — نحن ندرّب على مهارة عملية، لا على امتحان نظري.</p></div><div class="eng"><p>This is your marking reference. For each task you get the acceptance criterion, the model
+answer, expected student mistakes and how they affect the mark, plus a short grading note.
+Guiding principle: produced evidence outweighs theoretical correctness.</p></div></div>
+
+<div class="box rule"><div class="h">قاعدة ذهبية في التصحيح<span class="en">Golden marking rule</span></div><p>لا تخصم على اختلاف المسارات أو أسماء الملفات أو أرقام الإصدارات، ولا على رسائل الخطأ في
+المرات الأولى. اخصم فقط على: <strong>دليل مفقود</strong>، أو <strong>فهم خاطئ يظهر في خطوة لاحقة</strong>، أو
+<strong>مخالفة قواعد الأمان</strong> (بيانات حساسة، <code>--force</code> على <code>main</code>).</p></div>
+
+<div class="band alt"><span class="ar">جدول التقييم المُجمَّع</span><span class="en">Marking rubric</span></div>
+
+<table class="tbl">
+<thead>
+<tr>
+<th>#</th>
+<th>المهمة</th>
+<th>النقاط</th>
+<th>معيار القبول الأساسي (يجب أن أراه)</th>
+<th>وزن الجودة*</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>تثبيت Git والتحقق</td>
+<td>10</td>
+<td>مخرجات <code>git --version</code> حقيقية برقم إصدار</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2</td>
+<td>ضبط الهوية</td>
+<td>10</td>
+<td><code>user.name</code> و<code>user.email</code> مطابقان لبريد GitHub</td>
+<td>3</td>
+</tr>
+<tr>
+<td>3</td>
+<td>حساب GitHub مهني</td>
+<td>15</td>
+<td>اسم مستخدم مهني + تأكيد البريد + 2FA</td>
+<td>3</td>
+</tr>
+<tr>
+<td>4</td>
+<td>PAT أو SSH</td>
+<td>15</td>
+<td>دليل نجاح الاتصال فعلاً (لا شرح نظري)</td>
+<td>3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>بيئة العمل</td>
+<td>10</td>
+<td><code>pwd</code> و<code>ls</code> من مجلد المشاريع + إضافة واحدة على الأقل</td>
+<td>2</td>
+</tr>
+<tr>
+<td>6</td>
+<td>أول مستودع: clone → commit → push</td>
+<td>25</td>
+<td>رابط المستودع + <code>git log --oneline</code> فيه التزام الطالب</td>
+<td>5</td>
+</tr>
+<tr>
+<td>7</td>
+<td>أسئلة التحقّق (س1–س5)</td>
+<td>15</td>
+<td>3 نقاط لكل سؤال — الفكرة لا الصياغة</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>* عمود «وزن الجودة»: عند التردد بين درجتين، امنح الأعلى إذا كانت الجودة (وضوح الالتزامات،
+صحة الصياغة، نظافة الملفات) أعلى من الحد الأدنى، وامنح الأدنى إذا كان العمل «الحد الأدنى فقط».</p>
+<div class="band "><span class="ar">إجابات المهام — المهام العملية</span><span class="en">Task-by-task solutions</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">تثبيت Git والتحقق</div><div class="en">Install and verify</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ قبول</span><span class="chip t">★ 10 نقطة</span></div><p><strong>معيار القبول:</strong> مخرجات حقيقية برقم إصدار (مثل <code>git version 2.39.5</code>) — لا مقتبسة من
+الورقة بلا تنفيذ. العلامة الخاصة بأنه نفّذ فعلاً: اختلاف رقم الإصدار عن رقم الورقة.</p>
+<p><strong>الإجابة النموذجية:</strong></p>
+<pre class="plain"><span class="ph">$ git --version
+git version 2.43.0.windows.1</span>
+</pre>
+
+<p><strong>أخطاء متوقعة وطريقة احتسابها:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الخطأ</th>
+<th>الدلالة</th>
+<th>الخصم</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>كتب <code>git –version</code> بشرطة عربية/طويلة</td>
+<td>خطأ نسخ من مستند</td>
+<td>لا خصم — صحّح له فقط</td>
+</tr>
+<tr>
+<td>لا يوجد أي دليل</td>
+<td>لم يُنفّذ</td>
+<td>−10</td>
+</tr>
+<tr>
+<td>استخدم <code>cmd</code> بدل Git Bash</td>
+<td>مشكلة بيئة شائعة</td>
+<td>لا خصم، لكن أرشده الآن لتوفير وقته لاحقاً</td>
+</tr>
+<tr>
+<td><code>command not found</code></td>
+<td>لم يُكمل التثبيت</td>
+<td>−4 مع إمهاله حتى نهاية الجلسة</td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">ملاحظة تصحيح<span class="en">Marking note</span></div><p>تحقّق سريعاً أثناء الجولة على الطلاب: <code>which git</code> يجب أن يُخرج مساراً. هذا يمنع أكثر
+مشكلة تُعطّل الجلسة كلها (طالب يأخذ 20 دقيقة لأمر واحد).</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">ضبط الهوية</div><div class="en">Configure identity</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ قبول</span><span class="chip t">★ 10 نقطة</span></div><p><strong>معيار القبول:</strong> البريد في <code>git config --list</code> <strong>مطابق</strong> لبريد حساب GitHub. هذا أهم
+بند في الورقة لأن خطأه يظهر متأخراً على شكل «التزامات باسم غريب» بلا صورة.</p>
+<p><strong>الإجابة النموذجية:</strong></p>
+<pre class="plain"><span class="ph">$ git config --list
+user.name=سارة الحسن
+user.email=sara@example.com
+init.defaultbranch=main
+pull.rebase=true
+core.editor=code --wait</span>
+</pre>
+
+<p><strong>أخطاء متوقعة:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الحالة</th>
+<th>التشخيص</th>
+<th>العلاج/الخصم</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>إعداد البريد مختلف عن GitHub</td>
+<td>التزاماته ستظهر غير مرتبطة بحسابه</td>
+<td>−3 وأصلحها معه فوراً</td>
+</tr>
+<tr>
+<td>إعداد محلي (<code>--local</code>) في مستودع فقط</td>
+<td>سيتكرر الخطأ في كل مستودع جديد</td>
+<td>−2</td>
+</tr>
+<tr>
+<td><code>user.name</code> أرقام أو لقب غريب</td>
+<td>يظهر في تاريخ المشروع</td>
+<td>−1 مع تنبيه على الأثر المهني</td>
+</tr>
+<tr>
+<td>عمل <code>git config --list</code> من مجلد غير مستودع</td>
+<td>لا شيء — الأمر يعمل</td>
+<td>لا خصم</td>
+</tr>
+</tbody>
+</table>
+<div class="box info"><div class="h">سؤال اطرحه على الطالب<span class="en">Ask the student</span></div><p>«لو أضفت التزاماً ببريد مختلف، كيف ستتحقّق من أن GitHub ربطه بحسابك؟» الجواب المتوقع:
+افتح صفحة الالتزامات أو <code>git log --format="%an %ae"</code> وقارن البريد والبريد المسجّل في
+إعدادات الحساب.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">حساب GitHub مهني</div><div class="en">Professional GitHub account</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ قبول</span><span class="chip t">★ 15 نقطة</span></div><p><strong>معيار القبول الثلاثي:</strong> (1) اسم مستخدم مهني، (2) بريد مؤكَّد، (3) 2FA مُفعَّل.
+النقطتان (2) و(3) تتحقّقان نظراً في الملف الشخصي — ولا تُقبل شهادة الطالب وحده.</p>
+<p><strong>معايير تقييم اسم المستخدم:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>المستوى</th>
+<th>معيار</th>
+<th>مثال</th>
+<th>النقاط</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ممتاز</td>
+<td>اسم + صفة مهنية</td>
+<td><code>sara-alhassan</code> أو <code>omar-qa</code></td>
+<td>5</td>
+</tr>
+<tr>
+<td>جيد</td>
+<td>اسم واضح بلا زخرفة</td>
+<td><code>sarahassan2026</code></td>
+<td>3.5</td>
+</tr>
+<tr>
+<td>مقبول</td>
+<td>مفهوم لكن غير مهني</td>
+<td><code>sara_student</code></td>
+<td>2</td>
+</tr>
+<tr>
+<td>ضعيف</td>
+<td>لا يعبّر</td>
+<td><code>xx_sara_xx</code> أو <code>asdfgh123</code></td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>**قائمة تحقّق للمدرّب (استخدم صفحة الملف):</p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الفحص</th>
+<th>المكان في GitHub</th>
+<th>علامة ✔</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>البريد مؤكَّد</td>
+<td><code>Settings ← Emails</code></td>
+<td></td>
+</tr>
+<tr>
+<td>التحقق بخطوتين</td>
+<td><code>Settings ← Password and authentication</code></td>
+<td></td>
+</tr>
+<tr>
+<td>الصورة/الوصف</td>
+<td>الصفحة الرئيسية للملف الشخصي</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>أخطاء متوقعة:</strong>
+- طالب يرى 2FA «اختيارية» — وضّح أنها شرط تسليم لأن كل الطلاب ينشرون على مستودع مشترك.
+- طالب احتفظ برموز الاستعادة في متصفح الجهاز المشترك — نبّهه لحذفها فوراً (بند أمان).
+- طالب فقد الرمز وأصبح خارج حسابه — امنحه مهلة واحدة ولا تخصم، لكن سجّل الملاحظة.</p>
+<div class="box warn"><div class="h">حسّاسية أمنية<span class="en">Security sensitivity</span></div><p>إذا رأيت رمز استعادة أو كلمة مرور مكتوبة على ورقة الطالب أو في ملف داخل المشروع:
+<strong>اخصم 5 نقاط وسجّل الحادث</strong>، وأبلغه أنه لا يجوز تخزين أسرار في مستودع — هذا درس
+الورقة 05 بخصوص الملفات المحذوفة من السجل.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">تأمين الاتصال PAT أو SSH</div><div class="en">PAT or SSH</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ قبول</span><span class="chip t">★ 15 نقطة</span></div><p><strong>معيار القبول:</strong> نجاح الاتصال فعلاً. للـ SSH: <code>Hi &lt;username&gt;! You've successfully
+authenticated…</code>. للـ PAT: نجاح <code>git push</code> أو <code>git pull</code> على مستودع خاص/عام بلا طلب
+كلمة مرور.</p>
+<p><strong>الإجابة النموذجية (SSH):</strong></p>
+<pre class="plain"><span class="ph">$ ssh-keygen -t ed25519 -C &quot;sara@example.com&quot;
+$ cat ~/.ssh/id_ed25519.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI... sara@example.com
+
+$ ssh -T git@github.com
+Hi sara-alhassan! You&#x27;ve successfully authenticated, but GitHub does not provide shell access.</span>
+</pre>
+
+<p><strong>أخطاء متوقعة وخصوماتها:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الخطأ</th>
+<th>الدلالة</th>
+<th>الخصم</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>لا دليل تنفيذ، شرح فقط</td>
+<td>لم يُجرّب</td>
+<td>−15 (مع مهلة أثناء الجلسة)</td>
+</tr>
+<tr>
+<td>نشر <strong>المفتاح الخاص</strong> (<code>id_ed25519</code> بلا <code>.pub</code>)</td>
+<td>خطأ أمني خطير</td>
+<td>−5 + إبلاغ فوري وحذف المفتاح</td>
+</tr>
+<tr>
+<td>PAT بصلاحيات كاملة (<code>repo</code> + <code>admin:org</code> + <code>delete_repo</code>)</td>
+<td>تجاوز مبدأ أقل صلاحية</td>
+<td>−3</td>
+</tr>
+<tr>
+<td>PAT بلا تاريخ انتهاء</td>
+<td>مخاطرة دائمة</td>
+<td>−1</td>
+</tr>
+<tr>
+<td>حفظ PAT في <code>~/.git-credentials</code> على جهاز مشترك</td>
+<td>خطر أمني</td>
+<td>−4</td>
+</tr>
+</tbody>
+</table>
+<div class="box tip"><div class="h">ملاحظة تصحيح عملية<span class="en">Practical marking note</span></div><p>أسرع اختبار: اطلب من الطالب تنفيذ <code>git ls-remote &lt;رابط المستودع&gt;</code> — إن ظهرت قائمة
+المراجع (refs) بلا طلب كلمة مرور فالاتصال سليم.</p></div></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">بيئة العمل: VS Code والطرفية</div><div class="en">Workspace setup</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ قبول</span><span class="chip t">★ 10 نقطة</span></div><p><strong>معيار القبول:</strong> <code>pwd</code> و<code>ls</code> من مجلد المشاريع، و VS Code يعمل، وإضافة واحدة على الأقل
+(GitLens هي الأهم للأهداف التدريبية).</p>
+<p><strong>أخطاء متوقعة:</strong> نُفّذ الأمر من <code>C:\Windows\System32</code> (مجلد افتراضي على Windows) →
+وجّهه إلى مجلد المشاريع. الطالب لم يفتح الطرفية المدمجة بل استخدم نافذة منفصلة → لا
+خصم، لكن ذكّره بأن الطرفية المدمجة تفتح على مسار المشروع تلقائياً وتوفّر عليه <code>cd</code>.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">6</div><div class="task-titles"><div class="ar">المستودع الأول: clone → commit → push</div><div class="en">First repo cycle</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ إتقان</span><span class="chip t">★ 25 نقطة</span></div><p><strong>معيار القبول (خمسة عناصر):</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>العنصر</th>
+<th>ما أبحث عنه</th>
+<th>النقاط</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>المستودع أُنشئ وصار عاماً</td>
+<td>رابط صالح يفتح للزائر</td>
+<td>5</td>
+</tr>
+<tr>
+<td>الاستنساخ نجح</td>
+<td>مجلد محلي + <code>git remote -v</code> يُظهر origin</td>
+<td>5</td>
+</tr>
+<tr>
+<td>التعديل موجود على GitHub</td>
+<td>فتح الرابط ورؤية السطرين المضافين</td>
+<td>5</td>
+</tr>
+<tr>
+<td>رسالة التزام صحيحة</td>
+<td>صيغة <code>type(scope): وصف</code> ولو مبدئية</td>
+<td>6</td>
+</tr>
+<tr>
+<td><code>git log --oneline</code> في الدليل</td>
+<td>سطران: Initial commit + التزامه</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<p><strong>الإجابة النموذجية:</strong></p>
+<pre class="plain"><span class="ph">$ git log --oneline
+3f1a9c2 (HEAD -&gt; main, origin/main) docs(readme): add a short personal introduction
+9d4b1a7 Initial commit
+
+$ git status
+On branch main
+Your branch is up to date with &#x27;origin/main&#x27;.
+
+nothing to commit, working tree clean</span>
+</pre>
+
+<p><strong>أخطاء متوقعة وخصوماتها:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الخطأ</th>
+<th>الدلالة</th>
+<th>الخصم</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>التعديل موجود محلياً فقط (بلا push)</td>
+<td>خلط بين commit و push</td>
+<td>−8 (وهو هدف التعلم الأساسي)</td>
+</tr>
+<tr>
+<td>رسالة الالتزام <code>update</code> أو <code>first commit</code> فقط</td>
+<td>لا معنى للمراجع</td>
+<td>−2</td>
+</tr>
+<tr>
+<td><code>git status</code> غير نظيفة</td>
+<td>عمل غير مكتمل</td>
+<td>−2</td>
+</tr>
+<tr>
+<td>استخدم واجهة GitHub للتحرير لا الطرفية</td>
+<td>تجاوز التمرين</td>
+<td>−6 (أعد تكليفه بالطرفية)</td>
+</tr>
+<tr>
+<td>أنشأ ملفات مشروع كاملة بدل تعديل README</td>
+<td>تفوق لا خطأ</td>
+<td>لا خصم، أشر إلى تميّزه</td>
+</tr>
+</tbody>
+</table>
+<div class="box info"><div class="h">اختبار الحقيقة الواحد<span class="en">The one truth test</span></div><p>افتح رابط المستودع في متصفحك: هل ترى السطر الذي أضافه الطالب في <code>README.md</code> <strong>وهل
+الرسالة تظهر باسمه وصورته</strong>؟ إن كانت الصورة الافتراضية (identicon رمادي)، فبريده
+مختلف عن بريد حساب GitHub — راجع المهمة 2 واطلب التصحيح.</p></div></div></div>
+
+<div class="band violet"><span class="ar">إجابات أسئلة التحقّق</span><span class="en">Knowledge-check answers</span></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س1</div><div class="task-titles"><div class="ar">الفرق بين add و commit</div><div class="en">add vs. commit</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ فهم</span><span class="chip t">★ 3 نقطة</span></div><p><strong>الإجابة النموذجية:</strong> <code>git add</code> ينقل التعديل من مجلد العمل إلى <strong>منطقة الانتظار</strong> (لا
+يحفظ شيئاً في التاريخ)، و<code>git commit</code> يحوّل ما في منطقة الانتظار إلى <strong>التزام</strong> محفوظ
+في المستودع المحلي برسالة تعريفية. نحتاجهما معاً لأن منطقة الانتظار تسمح باختيار ما
+يدخل الالتزام بدقة (مثلاً: بطاقتي + الفهرس، دون ملفات تجريبية).</p>
+<p><strong>معيار منح الدرجة:</strong> 2 نقطة للفصل الصحيح بين المنطقتين + 1 نقطة لذكر فائدة الاختيار
+الانتقائي. الإجابة «add يحفظ و commit يرفع» <strong>خاطئة</strong> (الخطأ يخلط مع push) → 0.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س2</div><div class="task-titles"><div class="ar">لماذا لا يرى الزميل التعديل</div><div class="en">Why the teammate sees nothing</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 3 نقطة</span></div><p><strong>الإجابة النموذجية (احتمالان):</strong>
+1. <strong>لم يُرفع العمل</strong>: التعديل التُزم محلياً لكن <code>git push</code> لم يُنفّذ، فهو على جهاز
+   الطالب فقط.
+2. <strong>رفع على فرع غير main</strong>: الالتزام موجود على فرع <code>feature/...</code> ولم يُدمج بعد،
+   والصفحة تقرأ من <code>main</code>.</p>
+<p><strong>إجابات مقبولة إضافية:</strong> كان الزميل يقرأ نسخة مخزّنة في المتصفح (نادر)، أو الطالب
+رفع إلى مستودع مختلف (fork) بلا طلب سحب.</p>
+<p><strong>معيار الدرجة:</strong> 1.5 نقطة لكل احتمال صحيح، بحد أقصى 3. الإجابة «لم يحدّث المتصفح» →
+نقطة واحدة فقط مع تنبيه.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س3</div><div class="task-titles"><div class="ar">أوامر الحالة والسجل</div><div class="en">State and log commands</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ حفظ تطبيقي</span><span class="chip t">★ 3 نقطة</span></div><p><strong>الإجابة النموذجية:</strong> (أ) <code>git status</code> (أو <code>git status -sb</code> للصيغة المختصرة).
+(ب) <code>git log --oneline</code> (والمقبول أيضاً <code>git log --oneline --graph</code>).</p>
+<p><strong>خصم شائع:</strong> كتابة <code>git status</code> لطلب «آخر الالتزامات» → 1.5 من 3. كتابة <code>git log</code> وحدها
+بلا <code>--oneline</code> → 2.5 (تفي بالغرض لكنها ليست كما طُلب).</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س4</div><div class="task-titles"><div class="ar">أهمية الهوية المهنية</div><div class="en">Why professional identity matters</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 3 نقطة</span></div><p><strong>الإجابة النموذجية (سببان):</strong> (1) المراجع في طلب السحب يعرف من صاحب التعديل ويثق به
+أسرع؛ (2) التاريخ (log/blame) يبقى مفهوماً، فيعرف الفريق من يسأل عند خطأ في ملف معيّن؛
+(3) الانطباع الأول عند المشاركة في مشروع مفتوح المصدر أو التقدّم لفرصة تدريب.</p>
+<p><strong>معيار الدرجة:</strong> نقطتان لأي سببين صحيحين مرتبطين بالعمل الجماعي، ونقطة إضافية لذكر
+التاريخ/التتبّع تحديداً. إجابات عامة («حتى تبدو محترماً») → نقطة واحدة.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">س5</div><div class="task-titles"><div class="ar">اختلاف البريد</div><div class="en">Mismatched email</div></div></div><div class="task-body"><div class="task-tools"><span class="chip o">◆ تحليل</span><span class="chip t">★ 3 نقطة</span></div><p><strong>الإجابة النموذجية:</strong> لن يُربط الالتزام بحساب GitHub؛ سيظهر باسم المستخدم المُعدّ محلياً
+بصورة افتراضية، ولن يُحتسب في إحصاءات المساهمات (Contribution graph)، وقد يظهر التزام
+غير موثّق (Unverified). الحل: إعادة الإعداد بالبريد الصحيح ثم <code>git commit --amend
+--reset-author</code> للالتزامات غير المرفوعة.</p>
+<p><strong>معيار الدرجة:</strong> نقطتان لذكر «عدم ربط/إحصاءات» + نقطة لذكر حل التصحيح. الإجابة التي
+تقول «لن يُحفظ الالتزام» → 0 لأنها فهم خاطئ.</p></div></div>
+
+<div class="band green"><span class="ar">ملخّص التصحيح وسجل الدرجات</span><span class="en">Marking summary</span></div>
+
+<div class="evidence"><div class="h">جدول سجل الدرجات السريع<span class="en">/ Quick grade sheet</span></div><table class="tbl">
+<thead>
+<tr>
+<th>اسم الطالب</th>
+<th>username</th>
+<th>م1 /10</th>
+<th>م2 /10</th>
+<th>م3 /15</th>
+<th>م4 /15</th>
+<th>م5 /10</th>
+<th>م6 /25</th>
+<th>أسئلة /15</th>
+<th>المجموع /100</th>
+<th>ملاحظة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box ok"><div class="h">علامات الخطر المبكرة<span class="en">Early warning signs</span></div><p>هذه الأنماط تُنبئ بمشكلات في الأوراق التالية — تدخّل فيها الآن لا لاحقاً:
+1. <strong>لا يوجد أي دليل مخرجات</strong> في الورقة كلها ← الطالب لم ينفّذ، سيتراكم عليه العمل.
+2. <strong>git مثبّت لكن الهوية خاطئة</strong> ← ستظهر التزاماته مجهولة على GitHub في الورقة 03.
+3. <strong>لا 2FA ولا PAT/SSH</strong> ← سيتوقف في أول <code>git push</code> ويتعطّل بقية الجلسة.
+4. <strong>يعمل على جهاز مشترك دون فهم مسار المشروع</strong> ← خطر عمل في مجلد النظام.
+5. <strong>يقول «فعلت» بلا دليل</strong> ← نبّهه أن الورقة تُقيّم بالأدلة، وأعد التمرين عليه.</p></div>
+
+<p class="center"><span class="stamp navy">نهاية نموذج الحل 01 — انتقل إلى نموذج الحل 02</span></p>
+<div class="footer-note"><span>دليل المدرّب — حلول ورقة 01 · ورشة Git وGitHub</span><span class="en">Instructor key · Worksheet 01 solutions</span></div>
+</div>
+</body>
+</html>

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>استنساخ مستودع الفريق واستكشافه</title>
+<link rel="stylesheet" href="../assets/print.css">
+</head>
+<body>
+<div class="sheet">
+<div class="doc-head"><div class="top"><div class="badge"><div class="n">02</div><div class="l">ورقة عمل</div></div><div class="titles"><div class="kicker">ورشة Git وGitHub — البرنامج التدريبي العملي</div><h1>استنساخ مستودع الفريق واستكشافه</h1><div class="sub">Workshop 2 · Clone &amp; Explore — Getting the Team Repository</div></div></div><div class="meta"><div><span class="k">المدة / Duration</span><span class="v">75 دقيقة</span></div><div><span class="k">المستوى / Level</span><span class="v">مبتدئ — بعد إتمام ورقة 01</span></div><div><span class="k">المتطلبات / Prerequisites</span><span class="v">حساب GitHub فعّال + Git مثبّت</span></div><div><span class="k">المخرجات / Deliverable</span><span class="v">المستودع يعمل على جهازك</span></div><div><span class="k">المهام / Tasks</span><span class="v">5 مهام</span></div><div><span class="k">الدرجة / Points</span><span class="v">100 نقطة</span></div></div></div>
+
+<div class="identity">
+  <div class="fld"><span class="k">اسم الطالب / Student</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">اسم المستخدم / GitHub username</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">المجموعة / Group</span><span class="dots"></span></div>
+  <div class="fld"><span class="k">التاريخ / Date</span><span class="dots"></span></div>
+</div>
+<div class="band "><span class="ar">نظرة عامة على الورقة</span><span class="en">Worksheet overview</span></div>
+
+<div class="bi "><div class="ar"><p>سنتعرّف اليوم على <strong>مشروع الفريق</strong>: موقع ويب بسيط اسمه <code>class-team-hub</code> (دليل فريق الصف).
+سيفتح كل طالب موقع الفريق على جهازه، ويقرأ بنية الملفات، ويفهم دورة البيانات من ملف
+JSON إلى الصفحة المعروضة في المتصفح. وفي نهاية الورقة تشغّل الموقع بنفسك وتوثّق ذلك
+بالأدلة.</p></div><div class="eng"><p>Today you meet the <strong>team project</strong>: a simple static website called <code>class-team-hub</code>.
+Every student will open it on their machine, read its file structure, and understand the data
+flow from a JSON card file to the rendered page. By the end you will run the site yourself and
+document it with evidence.</p></div></div>
+
+<div class="goal-list"><strong>أهداف التعلّم<span class="muted tiny"> / Learning objectives</span></strong><ul>
+<li>تنفيذ <code>git clone</code> وفهم ما يجلبه فعلاً إلى جهازك (الملفات + التاريخ + الإعدادات).</li>
+<li>التمييز بين المستودع البعيد <code>origin</code> والمستودعات المحلية، وقراءة ذلك من <code>git remote -v</code>.</li>
+<li>قراءة بنية مشروع حقيقي: HTML وCSS وJavaScript وبيانات JSON.</li>
+<li>تشغيل الموقع محلياً (فتح مباشر أو خادم محلي) وفهم الفرق بين الطريقتين.</li>
+<li>تتبّع ملف بطاقة واحد من <code>data/members/</code> إلى البطاقة المرسومة على الشاشة.</li>
+<li>استخدام <code>git log</code> و<code>git show</code> و<code>git diff</code> لفهم ما تغيّر ومَن غيّره.</li>
+</ul></div>
+
+<div class="box info"><div class="h">القاعدة الذهبية<span class="en">Golden rule</span></div><p>لا تعمل على <code>main</code> أبداً. كل تعديل — ولو كان سطراً واحداً — يبدأ من فرع (branch) خاص
+بك. هذا يحمي عمل الفريق ويجعل مراجعة تعديلاتك سهلة. سنفصّل ذلك في ورقة العمل 03.</p></div>
+
+<div class="band alt"><span class="ar">الجزء الأول · الاستنساخ</span><span class="en">Part 1 · Cloning</span></div>
+
+<h2>ما معنى «clone» بالتحديد؟</h2>
+<div class="bi "><div class="ar"><p>أمر <code>git clone</code> لا ينسخ الملفات فقط، بل ينشئ نسخة كاملة من المستودع على جهازك: كل
+الملفات، وكل الالتزامات في التاريخ، وكل الفروع، وكل إعدادات الربط بالخادم. وبعد
+الاستنساخ يصبح لديك مستودع محلي مربوط بالمستودع البعيد باسم <code>origin</code>.</p></div><div class="eng"><p><code>git clone</code> copies the whole repository — files, full commit history, all branches, and the
+remote connection settings — into a local repository that knows its remote as <code>origin</code>.</p></div></div>
+
+<div class="task"><div class="task-head"><div class="task-num">1</div><div class="task-titles"><div class="ar">جهّز مكان العمل ثم استنسخ مستودع الفريق</div><div class="en">Prepare a workspace and clone the team repository</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 15 دقيقة</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 10 نقطة</span><span class="chip">git clone</span><span class="chip">git remote</span></div><p><strong>الهدف:</strong> مجلد مشاريع منظّم + نسخة كاملة من مستودع الفريق على جهازك.</p>
+<p><strong>الخطوة 1 — أنشئ مجلداً واحداً لكل مشاريعك (سنسمّيه <code>projects</code>):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — تجهيز مكان العمل</span></div><pre><span class="p">$</span> <span class="k">cd ~</span>
+<span class="p">$</span> <span class="k">mkdir -p projects</span>
+<span class="p">$</span> <span class="k">cd projects</span>
+<span class="p">$</span> <span class="k">pwd</span>
+<span class="o">/home/sara/projects</span></pre></div>
+
+<div class="box tip"><div class="h">لماذا مجلد واحد؟<span class="en">Why a single folder?</span></div><p>لأن الطرفية تعمل دائماً داخل «مجلد حالي». جمع المشاريع في <code>projects/</code> يجعل التنقّل
+سهلاً، ويمنع أشهر خطأ للطلاب: تنفيذ أوامر Git داخل مجلد غير مستودع، فتظهر رسالة
+<code>fatal: not a git repository</code>.</p></div>
+
+<p><strong>الخطوة 2 — استنسخ المشروع.</strong> المدرب سلّمك رابط المستودع مسبقاً. مع <code>class-team-hub</code>
+سيعمل كالتالي:</p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الاستنساخ</span></div><pre><span class="p">$</span> <span class="k">git clone https://github.com/school-git-workshop/class-team-hub.git</span>
+<span class="o">Cloning into &#x27;class-team-hub&#x27;...</span>
+<span class="c">remote: Enumerating objects: 87, done.</span>
+<span class="c">remote: Counting objects: 100% (87/87), done.</span>
+<span class="o">Unpacking objects: 100% (87/87), done.</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">cd class-team-hub</span>
+<span class="p">$</span> <span class="k">ls</span>
+<span class="o">CODE_OF_CONDUCT.md  CONTRIBUTING.md  LICENSE  README.md  assets  css  data</span>
+<span class="o">docs  index.html  js  sandbox  tests  tools</span></pre></div>
+
+<div class="box warn"><div class="h">إن استخدمت SSH<span class="en">If you use SSH</span></div><p>استبدل الرابط بالصيغة: <code>git@github.com:school-git-workshop/class-team-hub.git</code>
+ويفضّل أن يكون مفتاح SSH قد اختُبر في ورقة العمل 01.</p></div>
+
+<p><strong>الخطوة 3 — تأكد من الربط بالمستودع البعيد:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — فحص المستودعات البعيدة</span></div><pre><span class="p">$</span> <span class="k">git remote -v</span>
+<span class="o">origin  https://github.com/school-git-workshop/class-team-hub.git (fetch)</span>
+<span class="o">origin  https://github.com/school-git-workshop/class-team-hub.git (push)</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git status</span>
+<span class="o">On branch main</span>
+<span class="o">Your branch is up to date with &#x27;origin/main&#x27;.</span>
+<span class="o"></span>
+<span class="o">nothing to commit, working tree clean</span></pre></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>المسار الذي استنسخت إليه: <code>………………………………</code></li>
+<li>الصق مخرجات <code>git remote -v</code>:</li>
+</ul>
+<pre class="plain"><span class="ph">$ git remote -v</span>
+</pre>
+
+<ul>
+<li>الصق مخرجات <code>git status</code> الحالية:</li>
+</ul>
+<pre class="plain"><span class="ph">$ git status</span>
+</pre></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">2</div><div class="task-titles"><div class="ar">اقرأ بنية المشروع وافهم دور كل ملف</div><div class="en">Read the project structure</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 15 دقيقة</span><span class="chip o">◆ مبتدئ</span><span class="chip t">★ 20 نقطة</span><span class="chip">ls</span><span class="chip">tree</span><span class="chip">cat</span></div><p><strong>الهدف:</strong> أن تصف لغة المشروع وملفاته وموضع بياناتك فيه.</p>
+<p><strong>الخطوة 1 — اعرض الشجرة الكاملة:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — عرض الملفات</span></div><pre><span class="p">$</span> <span class="k">ls -la</span>
+<span class="p">$</span> <span class="k">find . -type f -not -path &quot;./.git/*&quot; | sort</span>
+<span class="o">./.github/PULL_REQUEST_TEMPLATE.md</span>
+<span class="o">./.gitignore</span>
+<span class="o">./CODE_OF_CONDUCT.md</span>
+<span class="o">./CONTRIBUTING.md</span>
+<span class="o">./LICENSE</span>
+<span class="o">./README.md</span>
+<span class="o">./css/style.css</span>
+<span class="o">./data/members-bundle.js</span>
+<span class="o">./data/members-index.json</span>
+<span class="o">./data/members/00-template.json</span>
+<span class="o">./data/members/01-example-student.json</span>
+<span class="o">./data/members/99-you-instructor.json</span>
+<span class="o">./data/members/ali-h.json</span>
+<span class="o">./data/members/nour-dev.json</span>
+<span class="o">./data/schedule.md</span>
+<span class="o">./data/site-config.json</span>
+<span class="o">./docs/git-cheatsheet.md</span>
+<span class="o">./docs/team-workflow.md</span>
+<span class="o">./docs/troubleshooting.md</span>
+<span class="o">./index.html</span>
+<span class="o">./js/app.js</span>
+<span class="o">./sandbox/conflict-lab.md</span>
+<span class="o">./sandbox/team-slogan.txt</span>
+<span class="o">./tests/validate-members.mjs</span>
+<span class="o">./tools/build-index.mjs</span></pre></div>
+
+<p><strong>الخطوة 2 — املأ جدول الفهم التالي من قراءتك للملفات:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الملف</th>
+<th>ما هو دوره؟</th>
+<th>من يعدّله؟</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>index.html</code></td>
+<td>…………………………………………</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>css/style.css</code></td>
+<td>…………………………………………</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>js/app.js</code></td>
+<td>…………………………………………</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>data/site-config.json</code></td>
+<td>…………………………………………</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>data/members/&lt;username&gt;.json</code></td>
+<td>…………………………………………</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>data/members-index.json</code></td>
+<td>…………………………………………</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>tools/build-index.mjs</code></td>
+<td>…………………………………………</td>
+<td>………………………</td>
+</tr>
+<tr>
+<td><code>.gitignore</code></td>
+<td>…………………………………………</td>
+<td>………………………</td>
+</tr>
+</tbody>
+</table>
+<p><strong>الخطوة 3 — اقرأ ملف الإعدادات وملف البطاقة النموذجي:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — قراءة ملفين مهمّين</span></div><pre><span class="p">$</span> <span class="k">cat data/site-config.json</span>
+<span class="o">{</span>
+<span class="o">  &quot;siteTitle&quot;: &quot;دليل فريق الصف&quot;,</span>
+<span class="o">  &quot;subtitle&quot;: &quot;فريق ورشة Git وGitHub — كل بطاقة أضافها طالب من فرعه الخاص ثم دمجناها معاً.&quot;,</span>
+<span class="o">  &quot;semester&quot;: &quot;الفصل الدراسي الأول 2026&quot;,</span>
+<span class="o">  &quot;instructor&quot;: &quot;اسم المدرب&quot;,</span>
+<span class="o">  &quot;primaryColor&quot;: &quot;#12203C&quot;,</span>
+<span class="o">  &quot;accentColor&quot;: &quot;#E8620C&quot;</span>
+<span class="o">  ...</span>
+<span class="o">}</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">cat data/members/00-template.json</span>
+<span class="o">{</span>
+<span class="o">  &quot;_comment&quot;: &quot;انسخ هذا الملف باسم مستخدمك على GitHub ثم املأ الحقول …&quot;,</span>
+<span class="o">  &quot;fullName&quot;: &quot;الاسم الكامل&quot;,</span>
+<span class="o">  &quot;github&quot;: &quot;your-github-username&quot;,</span>
+<span class="o">  &quot;role&quot;: &quot;مطوّر&quot;,</span>
+<span class="o">  &quot;favoriteCommand&quot;: &quot;git status&quot;,</span>
+<span class="o">  &quot;message&quot;: &quot;اكتب جملة واحدة تعرّف بها عن نفسك وعمّا تعلمته في الورشة.&quot;,</span>
+<span class="o">  &quot;tags&quot;: [&quot;HTML&quot;, &quot;CSS&quot;],</span>
+<span class="o">  &quot;joinedAt&quot;: &quot;2026-10-06&quot;</span>
+<span class="o">}</span></pre></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><p>اكتب بلغتك (سطران لكل ملف) دور هذه الملفات الأربعة:
+<code>js/app.js</code> و<code>data/members-index.json</code> و<code>tools/build-index.mjs</code> و<code>.gitignore</code></p>
+<pre class="plain"><span class="ph">……………………………………………………………………………………………………………………</span>
+</pre></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">3</div><div class="task-titles"><div class="ar">شغّل الموقع على جهازك</div><div class="en">Run the site on your machine</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 15 نقطة</span><span class="chip">المتصفح</span><span class="chip">Python http.server</span><span class="chip">Live Server</span></div><p><strong>الهدف:</strong> رؤية المشروع يعمل فعلاً، وفهم لماذا قد تفشل طريقة الفتح المباشر.</p>
+<div class="bi "><div class="ar"><p>هناك طريقتان لفتح الموقع. الفتح المباشر لملف <code>index.html</code> يعمل لأن كود المشروع يحتوي
+نسخة مدمجة من البيانات (<code>data/members-bundle.js</code>). لكن الطريقة الاحترافية — والمستخدمة
+في GitHub Pages — هي تشغيل <strong>خادم محلي</strong>، لأن المتصفح يمنع JavaScript من قراءة ملفات
+JSON عبر <code>fetch</code> عند العمل بنظام الملفات <code>file://</code>.</p></div><div class="eng"><p>You can open <code>index.html</code> directly (the project ships a bundled data file), but the
+professional way — and the way GitHub Pages works — is a <strong>local server</strong>, because browsers
+block <code>fetch</code> reads of JSON files under the <code>file://</code> scheme.</p></div></div>
+
+<p><strong>الطريق أ — الفتح المباشر:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">مدير الملفات / File manager</span></div><pre><span class="o">افتح مجلد class-team-hub ثم انقر نقراً مزدوجاً على index.html</span>
+<span class="o">يُفتح المتصفح وتظهر الصفحة وبطاقتان تجريبيتان</span></pre></div>
+
+<p><strong>الطريق ب — خادم محلي (الموصى به):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — تشغيل خادم محلي</span></div><pre><span class="p">$</span> <span class="k">cd ~/projects/class-team-hub</span>
+<span class="p">$</span> <span class="k">python3 -m http.server 8000</span>
+<span class="o">Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...</span>
+<span class="o"></span>
+<span class="c"># افتح المتصفح على العنوان التالي / open in the browser:</span>
+<span class="c"># http://localhost:8000</span>
+<span class="c"># لإيقاف الخادم اضغط Ctrl+C</span></pre></div>
+
+<div class="box tip"><div class="h">في VS Code<span class="en">In VS Code</span></div><p>الطريقة الأسرع: افتح مجلد المشروع في VS Code ثم انقر بزر الفأرة الأيمن على
+<code>index.html</code> ← <code>Open with Live Server</code>. تظهر الصفحة وتُحدَّث تلقائياً عند أي تعديل.</p></div>
+
+<p><strong>افحص ما تراه واربطه بالبنية:</strong>
+- ما عنوان الموقع الظاهر في الشريط العلوي؟ ……………………………………
+- كم بطاقة تظهر حالياً؟ ……………………………………
+- من أي ملف جاء اسم المدرب في الشريط؟ ……………………………………</p>
+<p><strong>افتح أدوات المطوّر واطلع على رسائل الطرفية:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">المتصفح — أدوات المطوّر</span></div><pre><span class="o">اضغط F12 ثم اختر تبويب Console</span>
+<span class="o">يجب ألّا تظهر أي رسائل حمراء للأخطاء</span>
+<span class="o">إن ظهر &quot;Failed to fetch&quot; فالسبب غالباً أنك فتحت الملف بـ file://</span></pre></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>الطريقة التي استخدمتها: ☐ فتح مباشر  ☐ خادم محلي  ☐ Live Server</li>
+<li>عنوان الصفحة عندك: <code>…………………………………</code></li>
+<li>ضع صورة شاشة للموقع يعمل (أو اكتب اسم الملف الذي حفظت فيه الصورة): ……………………………………</li>
+</ul></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">4</div><div class="task-titles"><div class="ar">تتبّع مسار البيانات من ملف JSON إلى الشاشة</div><div class="en">Trace the data path from JSON to screen</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 15 نقطة</span><span class="chip">js/app.js</span><span class="chip">data/</span></div><p><strong>الهدف:</strong> فهم كيف يقرأ الكود ملفات البطاقات ويبني الواجهة — وهو الملف الذي ستطوّره لاحقاً.</p>
+<div class="bi "><div class="ar"><p>الموقع لا يحتوي بطاقات مكتوبة يدوياً في HTML. بل يقرأ <code>data/members-index.json</code>
+لمعرفة أسماء ملفات البطاقات، ثم يقرأ كل بطاقة، ثم يبني HTML لها ويعرضها. هذا يسمّى
+<strong>فصل البيانات عن العرض</strong> — وهو سبب عدم حدوث تعارض عند إضافة بطاقات جديدة.</p></div><div class="eng"><p>The page contains no hard-coded cards. It reads <code>data/members-index.json</code> for the list of
+card files, loads each card, then builds the HTML for it. This is <strong>separation of data from
+presentation</strong> — and the reason two students can add cards without conflicting.</p></div></div>
+
+<figure class="dia"><img src="../assets/img/data-flow.svg" alt="مسار البيانات"><figcaption>شكل 1: من ملف البطاقة إلى البطاقة المعروضة <span class="en">— card file → index → app.js → DOM</span></figcaption></figure>
+
+<p><strong>نشاط: افتح <code>js/app.js</code> وابحث عن الأسماء التالية، واكتب ماذا تفعل:</strong></p>
+<table class="tbl">
+<thead>
+<tr>
+<th>الاسم في الكود</th>
+<th>وظيفته</th>
+<th>السطر التقريبي</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DATA</code></td>
+<td>…………………………………………</td>
+<td>………</td>
+</tr>
+<tr>
+<td><code>fetchJSON()</code></td>
+<td>…………………………………………</td>
+<td>………</td>
+</tr>
+<tr>
+<td><code>cardHTML()</code></td>
+<td>…………………………………………</td>
+<td>………</td>
+</tr>
+<tr>
+<td><code>render()</code></td>
+<td>…………………………………………</td>
+<td>………</td>
+</tr>
+<tr>
+<td><code>window.MEMBERS_DATA</code></td>
+<td>…………………………………………</td>
+<td>………</td>
+</tr>
+</tbody>
+</table>
+<div class="box info"><div class="h">اختبار صغير بنفسك<span class="en">A quick self-test</span></div><p>أضف اسم ملف بطاقة <strong>غير موجود</strong> إلى <code>data/members-index.json</code>، ثم أعد تحميل الصفحة
+(بـ <code>Ctrl+Shift+R</code>). ماذا حدث؟ ولماذا لم تتعطّل الصفحة كلها؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div></div></div></div>
+<div class="task"><div class="task-head"><div class="task-num">5</div><div class="task-titles"><div class="ar">اقرأ تاريخ الفريق: من فعل ماذا؟</div><div class="en">Read the team history: who did what?</div></div></div><div class="task-body"><div class="task-tools"><span class="chip k">★ 15 دقيقة</span><span class="chip o">◆ متوسط</span><span class="chip t">★ 25 نقطة</span><span class="chip">git log</span><span class="chip">git show</span><span class="chip">git shortlog</span></div><p><strong>الهدف:</strong> مهارة أساسية في العمل الجماعي: معرفة من عدّل ماذا ومتى، ومراجعة تعديلات زميل.</p>
+<p><strong>الخطوة 1 — استعرض التاريخ بشكل مقروء:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — قراءة السجل</span></div><pre><span class="p">$</span> <span class="k">git log --oneline -10</span>
+<span class="o">a1b2c3d (HEAD -&gt; main, origin/main) Merge pull request #7 from nour-dev/feature/nour-card</span>
+<span class="o">9f8e7d6 feat(members): add card for nour-dev</span>
+<span class="o">c4d5e6f Merge pull request #6 from ali-h/feature/ali-card</span>
+<span class="o">1a2b3c4 feat(members): add card for ali-h</span>
+<span class="o">8de1e7a chore: initial commit of class-team-hub</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git log --oneline --graph --all --decorate</span>
+<span class="o">*   a1b2c3d (HEAD -&gt; main, origin/main) Merge pull request #7 from nour-dev/feature/nour-card</span>
+<span class="o">|\</span>
+<span class="o">| * 9f8e7d6 feat(members): add card for nour-dev</span>
+<span class="o">|/</span>
+<span class="o">*   5e6f7a8 Merge pull request #6 from ali-h/feature/ali-card</span>
+<span class="o">|\</span>
+<span class="o">| * 1a2b3c4 feat(members): add card for ali-h</span>
+<span class="o">|/</span>
+<span class="o">* 8de1e7a chore: initial commit of class-team-hub</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git shortlog -sn</span>
+<span class="o">     4  nour-dev</span>
+<span class="o">     3  ali-h</span>
+<span class="o">     2  سارة الحسن</span>
+<span class="o">     1  Workshop Instructor</span></pre></div>
+
+<p><strong>الخطوة 2 — افحص تعديلاً واحداً بالتفصيل:</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — فحص التفاصيل</span></div><pre><span class="p">$</span> <span class="k">git show 9f8e7d6 --stat</span>
+<span class="o">commit 9f8e7d6a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e</span>
+<span class="o">Author: nour-dev &lt;nour@example.com&gt;</span>
+<span class="o">Date:   Mon Oct 6 10:24:11 2026 +0300</span>
+<span class="o"></span>
+<span class="o">    feat(members): add card for nour-dev</span>
+<span class="o"></span>
+<span class="o"> data/members-bundle.js      | 13 +++++++++++++</span>
+<span class="o"> data/members-index.json     |  3 ++-</span>
+<span class="o"> data/members/nour-dev.json  |  9 +++++++++</span>
+<span class="o"> 3 files changed, 24 insertions(+), 1 deletion(-)</span>
+<span class="o"></span>
+<span class="p">$</span> <span class="k">git log --oneline -- data/members/nour-dev.json</span>
+<span class="o">9f8e7d6 feat(members): add card for nour-dev</span></pre></div>
+
+<p><strong>الخطوة 3 — مقارنة بين نسختين (وهذا ما ستراه داخل طلب السحب):</strong></p>
+<div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — مقارنة</span></div><pre><span class="p">$</span> <span class="k">git diff HEAD~3..HEAD --stat</span>
+<span class="o"> data/members/ali-h.json    |  9 +++++++++</span>
+<span class="o"> data/members/nour-dev.json |  9 +++++++++</span>
+<span class="o"> data/members-index.json    |  5 +++--</span>
+<span class="o"> 3 files changed, 22 insertions(+), 1 deletion(-)</span></pre></div>
+
+<div class="evidence"><div class="h">دليل المطلوب<span class="en">/ Evidence</span></div><ul>
+<li>اكتب هنا مخرجات <code>git log --oneline -5</code> من مستودعك:</li>
+</ul>
+<pre class="plain"><span class="ph">$ git log --oneline -5</span>
+</pre>
+
+<ul>
+<li>من هو أكثر مساهم في المشروع حسب <code>git shortlog -sn</code>؟ ……………………………………</li>
+<li>اذكر ملفاً واحداً عدّله زميلان مختلفان (استعن بالخطوة 2):
+  اسم الملف: …………………………………… — الزميلان: ……………………………………</li>
+</ul></div>
+
+<div class="box warn"><div class="h">أسئلة شائعة<span class="en">FAQ</span></div><p><strong>هل أنّ أهمل <code>data/members-bundle.js</code>؟</strong> لا هو ملف مُولَّد آلياً، وقد سترى اسمه في كل
+تعديل. لا تعدّله بيدك؛ سيُعاد توليده تلقائياً.
+<strong>لماذا يظهر ملف الفهرس في كل التعديلات؟</strong> لأنه يسجّل عدد البطاقات وقائمتها، فيتغيّر كلما
+أضاف أحدهم بطاقة.</p></div></div></div>
+<div class="band violet"><span class="ar">الجزء الثالث · تحقّق ومراجعة</span><span class="en">Part 3 · Check your understanding</span></div>
+
+<h2>أسئلة تحقّق سريعة (15 نقطة)</h2>
+<p><strong>س1.</strong> ما الفرق بين <code>git clone</code> و<code>git pull</code>؟ ومتى تستخدم كل واحد؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س2.</strong> فتح زميلك <code>index.html</code> مباشرة ورأى خطأ <code>Failed to fetch</code>، ما السبب وما الحل؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<p><strong>س3.</strong> لماذا لا يحدث تعارض عندما يضيف طالبان بطاقتين مختلفتين في الوقت نفسه؟</p>
+<div class="write"><div class="lbl">إجابتك / Your answer</div><div class="ln"></div><div class="ln"></div><div class="ln"></div></div>
+
+<div class="band green"><span class="ar">قبل التسليم</span><span class="en">Before you submit</span></div>
+
+<div class="write"><strong>قائمة الفحص النهائية<span class="muted tiny"> / Final checklist</span></strong><ul class="checklist">
+<li>[ ] مجلد <code>projects</code> منشأ والمستودع مستنسخ داخله بنجاح</li>
+<li>[ ] <code>git remote -v</code> يُظهر <code>origin</code> صحيحاً، و<code>git status</code> نظيف</li>
+<li>[ ] جدول الملفات في المهمة 2 مملوء بالكامل (8 أسطر)</li>
+<li>[ ] الموقع يعمل، ولديك دليل (رابط أو صورة شاشة)</li>
+<li>[ ] جدول دوال <code>js/app.js</code> مملوء (5 دوال)</li>
+<li>[ ] مخرجات <code>git log</code> واسم أكثر المساهمين مدوّنان</li>
+</ul></div>
+
+<div class="evidence"><div class="h">بطاقة التسليم<span class="en">/ Submission card</span></div><table class="tbl">
+<thead>
+<tr>
+<th>البند</th>
+<th>القيمة</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>مسار المستودع على جهازي</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>طريقة تشغيل الموقع</td>
+<td>☐ مباشر  ☐ خادم محلي  ☐ Live Server</td>
+</tr>
+<tr>
+<td>عدد البطاقات الظاهرة</td>
+<td>…………</td>
+</tr>
+<tr>
+<td>أكثر مساهم في الفريق</td>
+<td><code>…………………………………</code></td>
+</tr>
+<tr>
+<td>الوقت المستغرق</td>
+<td>…………</td>
+</tr>
+</tbody>
+</table></div>
+
+<div class="box info"><div class="h">ما القادم؟<span class="en">What&#x27;s next</span></div><p>في <strong>ورقة العمل 03</strong> ستضيف بطاقتك الخاصة: تنشئ فرعاً، وتكتب ملف JSON، وتلتزم، وترفع
+فرعك، ثم تفتح طلب سحب (Pull Request) وتعرضه لزميل للمراجعة.</p></div>
+<div class="footer-note"><span>ورشة Git وGitHub · ورقة عمل 02 — استنساخ المستودع واستكشافه</span><span class="en">Git &amp; GitHub Workshop · Worksheet 02 — Clone &amp; Explore</span></div>
+</div>
+</body>
+</html>

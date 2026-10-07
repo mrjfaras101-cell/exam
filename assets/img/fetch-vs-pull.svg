@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 340" font-family="'IBM Plex Sans Arabic','Segoe UI',sans-serif">
+  <defs>
+    <marker id="f" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#1E3A5F"/>
+    </marker>
+  </defs>
+  <text x="490" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#12203C">fetch مقابل pull — الفرق في خطوة واحدة</text>
+
+  <!-- GitHub -->
+  <rect x="380" y="56" width="220" height="64" rx="12" fill="#FFF1E6" stroke="#E8620C" stroke-width="1.6"/>
+  <text x="490" y="82" text-anchor="middle" font-size="14" font-weight="700" fill="#9A420A">GitHub — origin/main</text>
+  <text x="490" y="104" text-anchor="middle" font-size="11" fill="#5C6875">التزامات جديدة من الزملاء</text>
+
+  <!-- fetch path -->
+  <rect x="40" y="170" width="270" height="120" rx="12" fill="#EEF4FD" stroke="#1E3A5F" stroke-width="1.6"/>
+  <text x="175" y="196" text-anchor="middle" font-size="14" font-weight="700" fill="#1C4B86">git fetch</text>
+  <text x="175" y="222" text-anchor="middle" font-size="11.5" fill="#22303F">ينزّل التحديثات ويسجّلها في</text>
+  <text x="175" y="240" text-anchor="middle" font-size="11.5" fill="#22303F">origin/main فقط</text>
+  <text x="175" y="264" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0B6244">ملفاتك لا تتغيّر إطلاقاً</text>
+  <text x="175" y="282" text-anchor="middle" font-size="10.5" fill="#8494A8">قراءة آمنة — read only</text>
+
+  <!-- pull path -->
+  <rect x="670" y="170" width="270" height="120" rx="12" fill="#E7F7F0" stroke="#128A5B" stroke-width="1.6"/>
+  <text x="805" y="196" text-anchor="middle" font-size="14" font-weight="700" fill="#0B6244">git pull = fetch + merge</text>
+  <text x="805" y="222" text-anchor="middle" font-size="11.5" fill="#22303F">ينزّل ثم يدمج فوراً في فرعك</text>
+  <text x="805" y="240" text-anchor="middle" font-size="11.5" fill="#22303F">(أو rebase مع --rebase)</text>
+  <text x="805" y="264" text-anchor="middle" font-size="11.5" font-weight="700" fill="#8C1D17">قد ينتج تعارض مباشرة</text>
+  <text x="805" y="282" text-anchor="middle" font-size="10.5" fill="#8494A8">قراءة + تنفيذ — read &amp; integrate</text>
+
+  <path d="M430,120 C380,150 300,140 190,166" fill="none" stroke="#1E3A5F" stroke-width="2" marker-end="url(#f)"/>
+  <path d="M550,120 C600,150 680,140 790,166" fill="none" stroke="#128A5B" stroke-width="2" marker-end="url(#f)"/>
+
+  <text x="490" y="322" text-anchor="middle" font-size="12.5" fill="#12203C" font-weight="600">
+    العادة الاحترافية: git fetch ثم git log HEAD..origin/main لترى ما سيحدث قبل أن يحدث
+  </text>
+</svg>
