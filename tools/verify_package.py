@@ -13,6 +13,8 @@ verify_package.py — تدقيق سلامة الحزمة التدريبية (ف�
   6. العروض: لكل مصدر عرض مخرجات PPTX/HTML/PDF، وعدد الشرائح متطابق.
   7. الفهرس: كل رابط في `index.html` يشير إلى ملف موجود.
   8. الترقيم: أرقام الجلسات/الأوراق في دليل المدرّب مطابقة للأوراق الفعلية.
+  10. الجداول مُنسَّقة: كل جدول في مخرجات HTML يحمل الصنف `tbl` الذي تستهدفه print.css
+      (جداول بلا صنف تظهر بلا حدود ولا ترويسة ملونة في PDF وDOCX وHTML).
   9. المشروع يعمل فعلاً: تُنفَّذ سكربتات المشروع على نسخة مؤقتة (بناء الفهرس، فحص البطاقات،
      الفحص المحلي) ويجب أن تنجح، وأن تفشل عند إدخال تعارض مقصود — ويُتحقق من أن الأسطر
      التي تقتبسها الأوراق من مخرجات السكربتات موجودة فعلاً في المخرجات الحقيقية.
@@ -319,6 +321,34 @@ def check_project_runs() -> None:
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+# ------------------------------------------------- 10: تنسيق الجداول في المخرجات
+def check_tables_styled() -> None:
+    """كل <table> في مخرجات HTML يجب أن يحمل الصنف tbl الذي تستهدفه print.css."""
+    import re as _re
+
+    docs = list((ROOT / "worksheets").glob("*.html")) + \
+        list((ROOT / "solutions").glob("*.html")) + \
+        list((ROOT / "trainer").glob("*.html"))
+    total = 0
+    for h in docs:
+        text = h.read_text(encoding="utf-8")
+        for m in _re.finditer(r"<table(?![^>]*class=\"tbl\")[^>]*>", text):
+            total += 1
+            if total <= 3:
+                err(f"{h.relative_to(ROOT)}: جدول بلا صنف tbl (يظهر بلا تنسيق) — {m.group(0)}")
+    if total > 3:
+        err(f"إجمالاً: {total} جدولاً بلا صنف tbl في المخرجات")
+    if docs and total == 0:
+        styled = sum(h.read_text(encoding="utf-8").count('class="tbl"') for h in docs)
+        if styled == 0:
+            err("لا يوجد أي جدول مُنسَّق في المخرجات — تحقق من آلية توليد الجداول")
+
+    # قاعدة التنسيق نفسها يجب أن تكون موجودة في print.css
+    css = (ROOT / "assets" / "print.css").read_text(encoding="utf-8")
+    if "table.tbl" not in css:
+        err("print.css: لا توجد قاعدة table.tbl لتنسيق الجداول")
+
+
 def main() -> None:
     quiet = "--quiet" in sys.argv
     check_sheets()
@@ -329,6 +359,7 @@ def main() -> None:
     check_hub()
     check_numbering()
     check_project_runs()
+    check_tables_styled()
 
     print("=" * 70)
     print("تدقيق سلامة الحزمة / Package integrity audit")

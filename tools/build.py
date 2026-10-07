@@ -93,7 +93,9 @@ def md(text: str) -> str:
         return "\n\n" + store(f'<pre class="plain">{inner}\n</pre>') + "\n\n"
 
     text = FENCE_RE.sub(repl, text)
-    return markdown.markdown(text, extensions=MD_EXTENSIONS)
+    html_out = markdown.markdown(text, extensions=MD_EXTENSIONS)
+    # جداول المصادر تُولَّد بلا صنف، وقواعد التنسيق في print.css تستهدف table.tbl
+    return html_out.replace("<table>", '<table class="tbl">')
 
 
 def md_restore(text: str) -> str:
@@ -493,15 +495,41 @@ def run_docx(html_file: Path) -> None:
     fix_docx_rtl(dest)
 
 
+def RGBColor_HELPER(hexstr: str):
+    """لون RGB لمكتبة python-docx بلا استيراد إضافي في أعلى الملف."""
+    from docx.shared import RGBColor
+    return RGBColor.from_string(hexstr)
+
+
 def fix_docx_rtl(path: Path) -> None:
     try:
         from docx import Document
         from docx.oxml.ns import qn
         from docx.oxml import OxmlElement
         from docx.shared import Pt
+        from docx.enum.table import WD_TABLE_ALIGNMENT
     except ImportError:
         return
     doc = Document(str(path))
+
+    NAVY2 = "1E3A5F"
+    STRIPE = "FAFCFE"
+
+    def shade(cell, hexcolor: str) -> None:
+        tcPr = cell._tc.get_or_add_tcPr()
+        if tcPr.find(qn("w:shd")) is None:
+            shd = OxmlElement("w:shd")
+            shd.set(qn("w:val"), "clear")
+            shd.set(qn("w:color"), "auto")
+            shd.set(qn("w:fill"), hexcolor)
+            tcPr.append(shd)
+
+    def set_repeat_header(row) -> None:
+        trPr = row._tr.get_or_add_trPr()
+        if trPr.find(qn("w:tblHeader")) is None:
+            el = OxmlElement("w:tblHeader")
+            el.set(qn("w:val"), "true")
+            trPr.append(el)
 
     def rtl_para(p):
         pPr = p._p.get_or_add_pPr()
@@ -517,10 +545,33 @@ def fix_docx_rtl(path: Path) -> None:
     for p in doc.paragraphs:
         rtl_para(p)
     for t in doc.tables:
-        for row in t.rows:
+        try:
+            t.style = doc.styles["Table Grid"]      # حدود ظاهرة لكل خلية
+        except KeyError:
+            borders = OxmlElement("w:tblBorders")   # بديل: فرض الحدود يدوياً
+            for edge in ("top", "left", "bottom", "right", "insideH", "insideV"):
+                el = OxmlElement(f"w:{edge}")
+                el.set(qn("w:val"), "single")
+                el.set(qn("w:sz"), "4")
+                el.set(qn("w:color"), "C9D3DE")
+                borders.append(el)
+            t._tbl.tblPr.append(borders)
+        if t.alignment is None:
+            t.alignment = WD_TABLE_ALIGNMENT.CENTER
+        for ri, row in enumerate(t.rows):
             for cell in row.cells:
                 for p in cell.paragraphs:
                     rtl_para(p)
+                if ri == 0:                          # ترويسة الجدول
+                    shade(cell, NAVY2)
+                    for p in cell.paragraphs:
+                        for r in p.runs:
+                            r.font.bold = True
+                            r.font.color.rgb = RGBColor_HELPER("FFFFFF")
+                elif ri % 2 == 0:                    # صفوف متبادلة
+                    shade(cell, STRIPE)
+            if ri == 0:
+                set_repeat_header(row)
         tblPr = t._tbl.tblPr
         if tblPr.find(qn("w:bidiVisual")) is None:
             tblPr.append(OxmlElement("w:bidiVisual"))
