@@ -202,7 +202,7 @@ hint: "git add/rm <conflicted_files>", then run "git rebase --continue".
 
 :::term{title="Terminal — الحل الصحيح: أعد التوليد"}
 $ node tools/build-index.mjs
-[build-index] ✓ تم توليد الفهرس: 5 بطاقة.
+[build-index] ✔ تم توليد الفهرس: 5 بطاقة.
    • example-student        مطوّر
    • leen-docs              كاتب توثيق
    • omar-qa                مختبر QA

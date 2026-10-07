@@ -100,7 +100,7 @@ $ git diff --check
 **الحل الصحيح الوحيد (وهو مقياس فهم الورقة):**
 ```text
 $ node tools/build-index.mjs
-[build-index] ✓ تم توليد الفهرس: 5 بطاقة.
+[build-index] ✔ تم توليد الفهرس: 5 بطاقة.
    • example-student  • leen-docs  • omar-qa  • sara-design  • you-instructor
 
 $ git add data/members-index.json data/members-bundle.js

@@ -74,20 +74,20 @@ async function main() {
   if (checkMode) {
     const stale = prevIndex !== nextIndex || prevBundle !== bundle;
     if (stale) {
-      console.error("[build-index] ✗ الفهرس غير محدَّث. شغّل: node tools/build-index.mjs");
+      console.error("[build-index] ✘ الفهرس غير محدَّث. شغّل: node tools/build-index.mjs");
       process.exit(1);
     }
-    console.log("[build-index] ✓ الفهرس محدَّث بالفعل.");
+    console.log("[build-index] ✔ الفهرس محدَّث بالفعل.");
     return;
   }
 
   await writeFile(INDEX_FILE, nextIndex, "utf8");
   await writeFile(BUNDLE_FILE, bundle, "utf8");
-  console.log(`[build-index] ✓ تم توليد الفهرس: ${entries.length} بطاقة.`);
+  console.log(`[build-index] ✔ تم توليد الفهرس: ${entries.length} بطاقة.`);
   members.forEach((m) => console.log(`   • ${m.github.padEnd(22)} ${m.role}`));
 }
 
 main().catch((err) => {
-  console.error("[build-index] ✗ خطأ:", err.message);
+  console.error("[build-index] ✘ خطأ:", err.message);
   process.exit(1);
 });

@@ -144,7 +144,7 @@ broken case has reached the target insight — treat it as a highlight, not an e
 <pre class="plain"><span class="ph">=== فحص محلي يشبه GitHub Actions / Local CI simulation ===
 
 ▸ الفهرس مُحدَّث / index up to date … ✔ نجح
-    [build-index] ✓ الفهرس محدَّث بالفعل.
+    [build-index] ✔ الفهرس محدَّث بالفعل.
 ▸ بطاقات الأعضاء صحيحة / member cards valid … ✔ نجح
     --- النتيجة / Result: 3 بطاقة، 0 خطأ، 0 تحذير ---
 ▸ لا علامات تعارض / no conflict markers … ✔ نجح
@@ -253,9 +253,17 @@ broken case has reached the target insight — treat it as a highlight, not an e
 </tbody>
 </table>
 <div class="box err"><div class="h">الدرس المصمَّم بعناية: فحص ضعيف يخدع صاحبه<span class="en">The designed trap: a weak check lies</span></div><p>الإصدار الأول من فحص علامات التعارض كان يستخدم نمطاً غير دقيق:
-<code>grep -rInE "^(&lt;&lt;&lt;&lt;&lt;&lt;&lt;|&gt;&gt;&gt;&gt;&gt;&gt;&gt;|=======)$"</code> مع حصر البحث بامتدادات محددة. فكان يمرّ
-<strong>بنجاح</strong> رغم وجود علامات حقيقية مثل <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code>، ورغم أن ملف <code>sandbox/team-slogan.txt</code>
-(موضع التعارض المقصود في الورقة 05) مستثنى من النطاق.</p>
+<code>grep -rInE "^(&lt;&lt;&lt;&lt;&lt;&lt;&lt;|&gt;&gt;&gt;&gt;&gt;&gt;&gt;|=======)$"</code> مع حصر البحث بامتدادات محددة. الثغرات الثلاث
+(مُختبرة فعلياً على هذا المشروع):</p>
+<ol>
+<li><strong>النطاق:</strong> <code>sandbox/team-slogan.txt</code> — ملف مختبر التعارض في الورقة 05 — خارج نطاق
+   البحث، فكان الفحص <strong>أخضر على مستودع مكسور</strong>. هذه هي الثغرة الكبرى.</li>
+<li><strong>شكل العلامة:</strong> النمط يشترط أن تكون العلامة وحدها في السطر، والعلامة الحقيقية
+   <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> تحمل اسم الفرع، وكذلك <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/x</code>؛ فالنمط لا يلتقط إلا السطر
+   الأوسط <code>=======</code> وحده — وأي ملف فُقد فيه السطر الأوسط أو أُزيح يمرّ.</li>
+<li><strong>إيجابية كاذبة:</strong> سطر <code>=======</code> فاصل في ملف Markdown سليم يُظهر «علامات تعارض»
+   فيتعوّد الفريق على تجاهل الإنذار (Alarm fatigue) — وهذا ما جعل الثغرة الأولى تعيش طويلاً.</li>
+</ol>
 <p>النمط الصحيح بعد الإصلاح:</p>
 <pre class="plain"><span class="ph">grep -rInE &quot;^(&lt;{7}|={7}|&gt;{7})( |$)&quot; --exclude-dir=.git --exclude-dir=node_modules .</span>
 </pre>
@@ -296,7 +304,7 @@ broken case has reached the target insight — treat it as a highlight, not an e
 </table>
 <p><strong>المخرجات المتوقعة بعد الإصلاح:</strong></p>
 <pre class="plain"><span class="ph">$ node tools/build-index.mjs
-[build-index] ✓ تم توليد الفهرس: 4 بطاقة.
+[build-index] ✔ تم توليد الفهرس: 4 بطاقة.
 
 $ node tools/ci-local.mjs
 ▸ الفهرس مُحدَّث … ✔ نجح

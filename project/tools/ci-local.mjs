@@ -4,7 +4,7 @@
  * ci-local.mjs — run the exact CI checks locally before you push.
  *
  * الاستخدام / Usage:   node tools/ci-local.mjs
- * الناتج  / Output:    جدول ✅/❌ لكل فحص، والخروج بكود 1 عند أي فشل.
+ * الناتج  / Output:    جدول ✔/✘ لكل فحص، والخروج بكود 1 عند أي فشل.
  */
 
 import { execSync } from "node:child_process";
@@ -18,7 +18,7 @@ const STEPS = [
   {
     name: "بطاقات الأعضاء صحيحة / member cards valid",
     cmd: "node tests/validate-members.mjs",
-    hint: "اصلح السطور التي تبدأ بـ ✗ في المخرجات أعلاه",
+    hint: "اصلح السطور التي تبدأ بـ ✘ في المخرجات أعلاه",
   },
   {
     name: "لا علامات تعارض / no conflict markers",
@@ -38,11 +38,11 @@ for (const step of STEPS) {
   try {
     const out = execSync(step.cmd, { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
     results.push({ ...step, ok: true });
-    console.log("✅ نجح");
+    console.log("✔ نجح");
     if (out.trim()) console.log(out.trim().split("\n").map((l) => "    " + l).join("\n"));
   } catch (err) {
     results.push({ ...step, ok: false });
-    console.log("❌ فشل");
+    console.log("✘ فشل");
     const out = (err.stdout || "") + (err.stderr || "");
     if (out.trim()) console.log(out.trim().split("\n").map((l) => "    " + l).join("\n"));
     console.log(`    ↳ الحل المقترح: ${step.hint}`);
@@ -52,10 +52,10 @@ for (const step of STEPS) {
 const failed = results.filter((r) => !r.ok);
 console.log("\n" + "─".repeat(60));
 if (failed.length === 0) {
-  console.log("✅ كل الفحوص نجحت — آمن للرفع (git push) / All checks passed.");
+  console.log("✔ كل الفحوص نجحت — آمن للرفع (git push) / All checks passed.");
   console.log("─".repeat(60) + "\n");
   process.exit(0);
 }
-console.log(`❌ ${failed.length} من ${results.length} فحص فشل — لا ترفع قبل الإصلاح.`);
+console.log(`✘ ${failed.length} من ${results.length} فحص فشل — لا ترفع قبل الإصلاح.`);
 console.log("─".repeat(60) + "\n");
 process.exit(1);

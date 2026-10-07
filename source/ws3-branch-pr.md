@@ -201,7 +201,7 @@ $ ls data/members/
 
 :::term{title="Terminal — توليد الفهرس والتحقق"}
 $ node tools/build-index.mjs
-[build-index] ✓ تم توليد الفهرس: 6 بطاقة.
+[build-index] ✔ تم توليد الفهرس: 6 بطاقة.
    • ali-h                 مطوّر
    • example-student        مطوّر
    • nour-dev               مصمّم

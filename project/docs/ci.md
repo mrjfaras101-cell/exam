@@ -18,8 +18,8 @@ node tests/validate-members.mjs        # الحقول الإلزامية، اس�
 grep -rInE "^(<{7}|={7}|>{7})( |$)" --exclude-dir=.git .   # آثار تعارض دُمجت بالخطأ
 ```
 
-**:الحكم / The verdict:** إذا فشل أي فحص، يظهر ❌ بجانب اسم الفحص في طلب السحب ولا يُسمح
-بالدمج (إن كانت حماية الفرع تطلب نجاح الفحوص). إذا نجحت كلها يظهر ✅ أخضر.
+**:الحكم / The verdict:** إذا فشل أي فحص، يظهر ✘ بجانب اسم الفحص في طلب السحب ولا يُسمح
+بالدمج (إن كانت حماية الفرع تطلب نجاح الفحوص). إذا نجحت كلها يظهر ✔ أخضر.
 
 ### تشغيل نفس الفحوص محلياً قبل الرفع (وفّر وقت المراجع)
 
@@ -49,13 +49,13 @@ GitHub صاحب الملف في قائمة المراجعين تلقائياً.
 
 `Settings ← Branches ← Add branch protection rule` ثم اختر الفرع `main` وفعّل:
 
-- ✅ **Require a pull request before merging** (واحد مراجع على الأقل)
-- ✅ **Require approvals: 1**
-- ✅ **Dismiss stale pull request approvals when new commits are pushed**
-- ✅ **Require status checks to pass before merging** ← اختر الفحص: `validate / فحص البطاقات والفهرس`
-- ✅ **Require conversation resolution before merging**
-- ✅ **Do not allow bypassing the above settings**
-- ❌ **Allow force pushes** (اتركه معطّلاً دائماً)
+- ✔ **Require a pull request before merging** (واحد مراجع على الأقل)
+- ✔ **Require approvals: 1**
+- ✔ **Dismiss stale pull request approvals when new commits are pushed**
+- ✔ **Require status checks to pass before merging** ← اختر الفحص: `validate / فحص البطاقات والفهرس`
+- ✔ **Require conversation resolution before merging**
+- ✔ **Do not allow bypassing the above settings**
+- ✘ **Allow force pushes** (اتركه معطّلاً دائماً)
 
 ## 4) الإصدارات — Releases & tags
 

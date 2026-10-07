@@ -13,6 +13,9 @@ verify_package.py — تدقيق سلامة الحزمة التدريبية (ف�
   6. العروض: لكل مصدر عرض مخرجات PPTX/HTML/PDF، وعدد الشرائح متطابق.
   7. الفهرس: كل رابط في `index.html` يشير إلى ملف موجود.
   8. الترقيم: أرقام الجلسات/الأوراق في دليل المدرّب مطابقة للأوراق الفعلية.
+  9. المشروع يعمل فعلاً: تُنفَّذ سكربتات المشروع على نسخة مؤقتة (بناء الفهرس، فحص البطاقات،
+     الفحص المحلي) ويجب أن تنجح، وأن تفشل عند إدخال تعارض مقصود — ويُتحقق من أن الأسطر
+     التي تقتبسها الأوراق من مخرجات السكربتات موجودة فعلاً في المخرجات الحقيقية.
 
 الاستخدام:
     python3 tools/verify_package.py           # تدقيق كامل
@@ -254,6 +257,68 @@ def check_numbering() -> None:
         warn("دليل المدرّب: لم يُذكر المجموع الكلي 600 نقطة")
 
 
+# ------------------------------------------------- 9: المشروع يعمل فعلاً (وظيفي)
+def check_project_runs() -> None:
+    """يتحقق أن سكربتات المشروع تعمل وتُنتج السطور المقتبسة في الأوراق."""
+    import shutil
+    import subprocess
+    import tempfile
+
+    if not shutil.which("node"):
+        warn("فحص المشروع الوظيفي متخطّى: node غير متوفّر في هذه البيئة.")
+        return
+
+    tmp = Path(tempfile.mkdtemp(prefix="pkgcheck-"))
+    try:
+        shutil.copytree(ROOT / "project", tmp / "project")
+        cwd = tmp / "project"
+
+        def run(cmd: str) -> subprocess.CompletedProcess:
+            return subprocess.run(cmd, shell=True, cwd=cwd, capture_output=True, text=True)
+
+        r1 = run("node tools/build-index.mjs")
+        if r1.returncode != 0:
+            err(f"المشروع: تعذّر توليد الفهرس — {(r1.stderr or r1.stdout).strip()[:120]}")
+        r2 = run("node tests/validate-members.mjs")
+        if r2.returncode != 0:
+            err(f"المشروع: فحص البطاقات يفشل على مستودع نظيف — {(r2.stdout).strip()[-140:]}")
+        r3 = run("node tools/ci-local.mjs")
+        if r3.returncode != 0:
+            err("المشروع: الفحص المحلي يفشل على مستودع نظيف (يجب أن يمرّ)")
+
+        clean_out = (r1.stdout + r2.stdout + r3.stdout)
+
+        # الأسطر التي تقتبسها الأوراق من السكربتات يجب أن تطابق المخرجات الحقيقية
+        for quoted in ("[build-index] ✔ تم توليد الفهرس", "--- النتيجة / Result:",
+                       "▸ لا علامات تعارض / no conflict markers … ✔ نجح",
+                       "✔ كل الفحوص نجحت"):
+            if quoted not in clean_out:
+                err(f"اقتباس لا يطابق الواقع: «{quoted}» غير موجود في مخرجات المشروع الحقيقية")
+
+        # المشروع يجب أن يكشف تعارضاً مزروعاً في ملف مختبر التعارض نفسه
+        lab = cwd / "sandbox" / "team-slogan.txt"
+        original = lab.read_text(encoding="utf-8")
+        lab.write_text("<<<<<<< HEAD\nلافتة الصف\n=======\nلافتة الزميل\n>>>>>>> feature/omar-slogan\n",
+                       encoding="utf-8")
+        r4 = run("node tools/ci-local.mjs")
+        if r4.returncode == 0:
+            err("المشروع: الفحص المحلي لم يكشف تعارضاً مزروعاً في sandbox/team-slogan.txt")
+        elif "team-slogan" not in (r4.stdout + r4.stderr):
+            warn("المشروع: كشف التعارض لكن دون الإشارة إلى الملف المزروع")
+
+        # درس الورقة 06: النمط القديم يفوّت العلامات التي تحمل اسم فرع، والصحيح يلتقطها
+        lab.write_text("<<<<<<< HEAD\nبلا سطر أوسط\n>>>>>>> feature/x\n", encoding="utf-8")
+        weak = run("grep -rInE '^(<<<<<<<|>>>>>>>|=======)$' --exclude-dir=.git sandbox/")
+        strong = run("grep -rInE '^(<{7}|={7}|>{7})( |$)' --exclude-dir=.git sandbox/")
+        if weak.returncode == 0:
+            warn("درس الفحص الضعيف: النمط القديم التقط العلامات — راجع نص الورقة 06")
+        if strong.returncode != 0:
+            err("النمط المصحّح في الورقة 06 لا يلتقط العلامات التي تحمل اسم فرع")
+        lab.write_text(original, encoding="utf-8")
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
 def main() -> None:
     quiet = "--quiet" in sys.argv
     check_sheets()
@@ -263,6 +328,7 @@ def main() -> None:
     check_decks()
     check_hub()
     check_numbering()
+    check_project_runs()
 
     print("=" * 70)
     print("تدقيق سلامة الحزمة / Package integrity audit")

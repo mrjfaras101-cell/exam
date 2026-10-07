@@ -111,11 +111,12 @@ jobs:
 <section class="slide"><div class="thead"><h1>المهمة 1 — اقرأه واسأل الأسئلة الأربعة</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 6/18</span></div><div class="body"><ul><li>متى يعمل؟ (عند كل طلب سحب نحو main، وعند كل دفع إلى main)</li><li>أين يعمل؟ (على خادم GitHub في بيئة نظيفة ubuntu-latest، لا على جهازك)</li><li>ما الخطوات الثلاث؟ (توليد الفهرس ← فحص البطاقات ← مطابقة الملفات المولَّدة)</li><li>لماذا <code>concurrency</code> مع <code>cancel-in-progress</code>؟ (ليلغي الفحص القديم عند دفعة جديدة، فلا ننتظر نتائج قديمة)</li></ul>
 <div class="callout info"><p>سؤال حاسم: ماذا تكشف الخطوة الأخيرة <code>git diff --exit-code</code>؟ ← نسيان إعادة توليد الفهرس بعد إضافة بطاقة — أشهر خطأ في هذا المشروع.</p></div></div></section>
 <section class="slide"><div class="thead"><h1>المهمة 2 — جرّب الفحص محلياً أولاً</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 7/18</span></div><div class="body"><pre class="code"><span class="cmd">$ node tools/ci-local.mjs</span>
-=== فحص محلي مكافئ لـ CI المحلي ===
-[1/3] توليد الفهرس ................ ✔
-[2/3] فحص البطاقات ................ ✔
-[3/3] مطابقة الملفات المولَّدة ...... ✔
---- النتيجة: كل الفحوص نجحت ✔ ---</pre>
+&nbsp;
+▸ الفهرس مُحدَّث / index up to date … ✔ نجح
+▸ بطاقات الأعضاء صحيحة / member cards valid … ✔ نجح
+▸ لا علامات تعارض / no conflict markers … ✔ نجح
+───────────────────────────────────────────────────
+✔ كل الفحوص نجحت — آمن للرفع (git push) / All checks passed.</pre>
 <div class="callout tip"><p>عادة احترافية: شغّل الفحص محلياً <b>قبل</b> الدفع. لا ترسل عملاً ليقوم غيرك باكتشاف أخطائه.</p></div></div></section>
 <section class="slide"><div class="thead"><h1>المهمة 3 — فخّان ينتظرانك</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 8/18</span></div><div class="body"><pre class="code"><span class="cm"># الفخ الأول: بطاقة تحمل وسم CHANGEME</span>
 <span class="cmd">$ node tests/validate-members.mjs</span>
@@ -132,12 +133,13 @@ diff --git a/data/members-index.json b/data/members-index.json
 +    { &quot;username&quot;: &quot;omar-qa&quot;, ... }
 exit status 1        ← الفحص سيفشل حتى تصلح هذا</pre>
 <ul><li>المطلوب: <b>خرّب المشروع عن قصد</b> في فرع تجريبي، وشاهد الفحص يفشل، ثم أصلحه</li></ul></div></section>
-<section class="slide"><div class="thead"><h1>المهمة 3 — شبكة إضافية: التحقق الضعيف يكذب</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 9/18</span></div><div class="body"><pre class="code"><span class="cm"># فحص قديم وحيد:</span>
+<section class="slide"><div class="thead"><h1>المهمة 3 — شبكة إضافية: التحقق الضعيف يكذب</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 9/18</span></div><div class="body"><pre class="code"><span class="cm"># الفحص القديم (غير دقيق):</span>
 <span class="cmd">$ grep -rInE &quot;^(&lt;&lt;&lt;&lt;&lt;&lt;&lt;|&gt;&gt;&gt;&gt;&gt;&gt;&gt;|=======)$&quot; --exclude-dir=.git .</span>
 &nbsp;
-<span class="cm"># لماذا يكون صحيحاً أحياناً؟ لأنه:</span>
-<span class="cm">#  - يفشل في كشف &quot;&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD&quot; (بعدها مسافة ثم كلمة)</span>
-<span class="cm">#  - يفشل في كشف ملفات .txt أنشأها الطلاب بعلامات دمج</span></pre>
+<span class="cm"># ثلاث ثغرات، جرّبها على فرع تجريبي:</span>
+<span class="cm">#  1) نطاق محدود بامتدادات → تجاهل sandbox/team-slogan.txt  ← الأخطر</span>
+<span class="cm">#  2) يشترط العلامة وحدها في السطر؛ والحقيقية &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+<span class="cm">#  3) إيجابيات كاذبة على سطر ======= فاصل في التوثيق بعلامات دمج</span></pre>
 <div class="callout err"><p>لذلك المهمة الأخيرة في سجل التغييرات تكتب الفحص الصحيح:</p><p><code>grep -rInE &quot;^(&lt;{7}|={7}|&gt;{7})( |$)&quot; --exclude-dir=.git .</code></p></div>
 <ul><li>من يكتشف ضعف الفحص القديم ويوثّقه يحصل على <b>5 درجات إضافية</b></li></ul></div></section>
 <section class="slide"><div class="thead"><h1>المهمة 4 — أصلح حتى يصبح أخضر</h1><span class="idx">الوحدة 06 — الأتمتة الاحترافية (اختيارية) · 10/18</span></div><div class="body"><pre class="code"><span class="cmd">$ node tools/build-index.mjs</span>

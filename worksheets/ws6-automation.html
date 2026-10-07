@@ -147,7 +147,7 @@ Run it before every push.</p></div></div>
 <span class="o">=== فحص محلي يشبه GitHub Actions / Local CI simulation ===</span>
 <span class="o"></span>
 <span class="o">▸ الفهرس مُحدَّث / index up to date … ✔ نجح</span>
-<span class="o">    [build-index] ✓ الفهرس محدَّث بالفعل.</span>
+<span class="o">    [build-index] ✔ الفهرس محدَّث بالفعل.</span>
 <span class="o">▸ بطاقات الأعضاء صحيحة / member cards valid … ✔ نجح</span>
 <span class="o">    --- النتيجة / Result: 3 بطاقة، 0 خطأ، 0 تحذير ---</span>
 <span class="o">▸ لا علامات تعارض / no conflict markers … ✔ نجح</span>
@@ -211,11 +211,17 @@ check against a deliberately broken case first.</p></div></div>
 <span class="o"></span>
 <span class="o">✘ 1 من 3 فحص فشل — لا ترفع قبل الإصلاح.      (exit=1)</span></pre></div>
 
-<div class="box warn"><div class="h">درس عميق: كيف يخدعك فحص ضعيف؟<span class="en">A deeper lesson: how a weak check fools you</span></div><p>الفحص أعلاه استخدم في الإصدار الأول من المشروع نمط بحث غير دقيق:
-<code>grep -rInE "^(&lt;&lt;&lt;&lt;&lt;&lt;&lt;|&gt;&gt;&gt;&gt;&gt;&gt;&gt;|=======)$"</code> — ونتيجته أنه <strong>كان يمرّ بنجاح</strong> رغم وجود
-علامات تعارض حقيقية، لأن العلامات الفعلية تكون <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> (مع اسم الفرع بعدها)،
-ولأن البحث كان محدوداً بامتدادات ملفات معيّنة فأهمل <code>sandbox/team-slogan.txt</code>.
-<strong>النتيجة:</strong> فحص يجتاز حالة معطوبة = ثقة زائفة. الدرس: اختبر فحصك على حالة مكسورة،
+<div class="box warn"><div class="h">درس عميق: كيف يخدعك فحص ضعيف؟<span class="en">A deeper lesson: how a weak check fools you</span></div><p>استخدم الإصدار الأول من المشروع نمط بحث غير دقيق:
+<code>grep -rInE "^(&lt;&lt;&lt;&lt;&lt;&lt;&lt;|&gt;&gt;&gt;&gt;&gt;&gt;&gt;|=======)$"</code> — وفيه ثلاث ثغرات، جرّبها بنفسك على فرع تجريبي:</p>
+<ol>
+<li><strong>النطاق محدود بامتدادات ملفات:</strong> اكتب علامات كاملة في <code>sandbox/team-slogan.txt</code>
+   وشغّل النمط القديم ← <strong>لا يجد شيئاً</strong>. وهذه أخطر ثغرة، لأن هذا الملف هو مختبر التعارض نفسه.</li>
+<li><strong>العلامات تُشترط وحدها في السطر:</strong> اكتب <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> و<code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/x</code>
+   بلا السطر الأوسط ← <strong>لا يجد شيئاً</strong>، لأن طرفي العلامة يحملان اسم الفرع.</li>
+<li><strong>إيجابيات كاذبة:</strong> ضع سطر <code>=======</code> فاصل في ملف توثيق (Markdown) ← <strong>يفشل الفحص</strong>
+   على مستودع سليم، فيتعوّد الفريق على تجاهل الإنذار قبل أن يأتي الإنذار الحقيقي.</li>
+</ol>
+<p><strong>النتيجة:</strong> فحص يجتاز حالة معطوبة = ثقة زائفة. الدرس: اختبر فحصك على حالة مكسورة،
 ووسّع نطاقه ليشمل كل الملفات النصية:</p>
 <pre class="plain"><span class="ph">grep -rInE &quot;^(&lt;{7}|={7}|&gt;{7})( |$)&quot; --exclude-dir=.git --exclude-dir=node_modules .</span>
 </pre></div>
@@ -283,7 +289,7 @@ check against a deliberately broken case first.</p></div></div>
 </tbody>
 </table>
 <div class="term"><div class="bar"><i class="r"></i><i class="y"></i><i class="g"></i><span class="t">Terminal — الفحص بعد الإصلاح</span></div><pre><span class="p">$</span> <span class="k">node tools/build-index.mjs</span>
-<span class="o">[build-index] ✓ تم توليد الفهرس: 4 بطاقة.</span>
+<span class="o">[build-index] ✔ تم توليد الفهرس: 4 بطاقة.</span>
 <span class="o">   • ali-h                  مطوّر</span>
 <span class="o"></span>
 <span class="p">$</span> <span class="k">node tools/ci-local.mjs</span>
