@@ -1,0 +1,29 @@
+# ===== Visual Studio =====
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+[Ll]og/
+[Ll]ogs/
+*.log
+*.user
+*.userosscache
+*.suo
+*.cache
+*.nupkg
+packages/
+.vs/
+.idea/
+TestResults/
+[Tt]est[Rr]esult*/
+*.rsuser
+
+# ===== NuGet =====
+!**/*.nupkg
+**/*.nupkg
+
+# ===== PostgreSQL =====
+*.dump
+*.backup

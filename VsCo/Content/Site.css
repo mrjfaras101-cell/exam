@@ -1,0 +1,37 @@
+/* تطبيق vsco التعليمي - أنماط عامة */
+
+body {
+    font-family: "Segoe UI", Tahoma, "Noto Kufi Arabic", Arial, sans-serif;
+    background-color: #f6f7f9;
+}
+
+.navbar-brand {
+    font-weight: 700;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1rem;
+}
+
+.card-header {
+    background-color: #ffffff;
+    font-weight: 600;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.table {
+    background-color: #ffffff;
+    margin-bottom: 0;
+}
+
+footer {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+/* إخفاء رسالة التنبيه عندما تكون فارغة */
+.alert:empty {
+    display: none;
+}
